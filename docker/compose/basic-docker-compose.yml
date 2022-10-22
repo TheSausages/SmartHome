@@ -1,0 +1,73 @@
+version: '3.9'
+
+services:
+  postgres-app:
+    build:
+      context: ../postgres
+      dockerfile: Dockerfile
+    container_name: SmartHome_App_Database
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresApp:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: SmartHomeApp
+      POSTGRES_USER: SmartHomeAdminUser
+      POSTGRES_PASSWORD: SmartHomeAdminPassword1
+      APP_USER_USERNAME: SmartHomeUser
+      APP_USER_PASSWORD: SmartHomePassword
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d SmartHomeApp -U SmartHomeUser" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-keycloak:
+    image: postgres:14.1-alpine
+    container_name: SmartHome_Keycloak_Database
+    restart: always
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgresKeycloak:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloakUser
+      POSTGRES_PASSWORD: keycloakPassword1
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d keycloak -U keycloakUser" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:15.0.0
+    container_name: Keycloak-Server-Instance
+    depends_on:
+      postgres-keycloak:
+        condition: service_healthy
+    ports:
+      - "8180:8180"
+    command:
+      - "-Djboss.socket.binding.port-offset=100"
+      - "-Dkeycloak.profile.feature.upload_scripts=enabled"
+    volumes:
+      - ../keycloak/realm:/opt/jboss/keycloak/imports
+    environment:
+      KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/realm-export.json
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgresKeycloak
+      DB_DATABASE: keycloak
+      DB_USER: keycloakUser
+      DB_PASSWORD: keycloakPassword1
+      #During first starting of the volumes, please use:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Password1
+
+
+volumes:
+  postgresKeycloak:
+    driver: local
+  postgresApp:
+    driver: local

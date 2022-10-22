@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo Startup Script - start
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB"<< EOF
+       CREATE USER "$APP_USER_USERNAME" WITH PASSWORD '$APP_USER_PASSWORD';
+       GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "$APP_USER_USERNAME";
+       GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "$POSTGRES_USER";
+EOF
+
+echo Startup Script - end
