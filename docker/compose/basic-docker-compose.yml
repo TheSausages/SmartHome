@@ -57,7 +57,7 @@ services:
     environment:
       KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/realm-export.json
       DB_VENDOR: POSTGRES
-      DB_ADDR: postgresKeycloak
+      DB_ADDR: postgres-keycloak
       DB_DATABASE: keycloak
       DB_USER: keycloakUser
       DB_PASSWORD: keycloakPassword1
