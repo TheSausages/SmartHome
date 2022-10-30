@@ -1,6 +1,6 @@
 {
-  "id": "Test-App",
-  "realm": "Test-App",
+  "id": "SmartHome",
+  "realm": "SmartHome",
   "notBefore": 0,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
@@ -47,7 +47,7 @@
     "realm": [
       {
         "id": "a9638f82-7825-4054-bf3b-c135356f43ea",
-        "name": "default-roles-test-app",
+        "name": "default-roles-smarthome",
         "description": "${role_default-roles}",
         "composite": true,
         "composites": {
@@ -63,7 +63,7 @@
           }
         },
         "clientRole": false,
-        "containerId": "Test-App",
+        "containerId": "SmartHome",
         "attributes": {}
       },
       {
@@ -72,7 +72,7 @@
         "description": "${role_offline-access}",
         "composite": false,
         "clientRole": false,
-        "containerId": "Test-App",
+        "containerId": "SmartHome",
         "attributes": {}
       },
       {
@@ -80,7 +80,7 @@
         "name": "User",
         "composite": false,
         "clientRole": false,
-        "containerId": "Test-App",
+        "containerId": "SmartHome",
         "attributes": {}
       },
       {
@@ -89,7 +89,7 @@
         "description": "${role_uma_authorization}",
         "composite": false,
         "clientRole": false,
-        "containerId": "Test-App",
+        "containerId": "SmartHome",
         "attributes": {}
       }
     ],
@@ -306,7 +306,7 @@
           "attributes": {}
         }
       ],
-      "test-app": [
+      "smarthome": [
         {
           "id": "033bf4bf-549d-454c-9957-bb5d2844e988",
           "name": "Endpoint_Access",
@@ -414,11 +414,11 @@
   "groups": [],
   "defaultRole": {
     "id": "a9638f82-7825-4054-bf3b-c135356f43ea",
-    "name": "default-roles-test-app",
+    "name": "default-roles-smarthome",
     "description": "${role_default-roles}",
     "composite": true,
     "clientRole": false,
-    "containerId": "Test-App"
+    "containerId": "SmartHome"
   },
   "requiredCredentials": [
     "password"
@@ -469,11 +469,11 @@
         }
       ],
       "realmRoles": [
-        "default-roles-test-app",
+        "default-roles-smarthome",
         "User"
       ],
       "clientRoles": {
-        "test-app": [
+        "smarthome": [
           "Endpoint_Access"
         ],
         "account": [
@@ -490,11 +490,11 @@
       "enabled": true,
       "totp": false,
       "emailVerified": true,
-      "serviceAccountClientId": "test-app",
+      "serviceAccountClientId": "smarthome",
       "disableableCredentialTypes": [],
       "requiredActions": [],
       "realmRoles": [
-        "default-roles-test-app-realm"
+        "default-roles-smarthome-realm"
       ],
       "notBefore": 0,
       "groups": []
@@ -510,7 +510,7 @@
       "disableableCredentialTypes": [],
       "requiredActions": [],
       "realmRoles": [
-        "default-roles-test-app-realm"
+        "default-roles-smarthome-realm"
       ],
       "notBefore": 0,
       "groups": []
@@ -540,13 +540,13 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/Test-App/account/",
+      "baseUrl": "/realms/SmartHome/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/Test-App/account/*"
+        "/realms/SmartHome/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -581,13 +581,13 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/Test-App/account/",
+      "baseUrl": "/realms/SmartHome/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/Test-App/account/*"
+        "/realms/SmartHome/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -745,13 +745,13 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/Test-App/console/",
+      "baseUrl": "/admin/SmartHome/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/admin/Test-App/console/*"
+        "/admin/SmartHome/console/*"
       ],
       "webOrigins": [
         "+"
@@ -804,7 +804,7 @@
     },
     {
       "id": "01c825b1-e254-4ed8-bf70-8bd916bf62bf",
-      "clientId": "test-app",
+      "clientId": "smarthome",
       "rootUrl": "https://localhost:3000",
       "surrogateAuthRequired": false,
       "enabled": true,
@@ -1304,8 +1304,8 @@
     },
     {
       "id": "7fcae792-2138-4755-9c03-aceb74a60856",
-      "name": "GetEndpoint",
-      "description": "Get the test Endpoint",
+      "name": "GetEndpoints",
+      "description": "Get access the Endpoints",
       "protocol": "openid-connect",
       "attributes": {
         "include.in.token.scope": "true",

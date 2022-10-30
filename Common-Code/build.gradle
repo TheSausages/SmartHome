@@ -11,6 +11,12 @@ repositories {
 }
 
 dependencies {
+    // Spring security dependencies for Jwt Converter
+    implementation "org.springframework.boot:spring-boot-starter-security:${springVersion}"
+    implementation "org.springframework.security:spring-security-oauth2-jose:${springJoseVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${springVersion}"
+
+    // Testing
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
 }

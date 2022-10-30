@@ -50,3 +50,12 @@ For local development:
 
 - Keycloak: 8180
 - Keycloak Database: 5433
+
+### Apis
+
+The 2 backend services each have their own base path:
+* Control Service: /api/control
+* Data Service: /api/data
+These apis are set in the app properties for each service.
+
+Keycloak does not  abase path. All url can be found in the keycloak documentation.

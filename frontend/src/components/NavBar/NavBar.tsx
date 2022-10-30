@@ -2,8 +2,9 @@ import React from 'react';
 import { Button,IconButton } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import { NavLink } from 'react-router-dom';
-import { help_path, history_path, login_path } from '../../common/Paths';
+import { help_path, history_path } from '../../common/Paths';
 import { styled } from '@mui/system';
+import UserService from "../../service/UserService";
 
 export interface NavbarProps {
 }
@@ -30,8 +31,8 @@ export default function NavBar(props: NavbarProps) {
                     <Button color="inherit" component={NavLink} to={help_path}>Pomoc</Button>
                 </div>
                 <div style={{ marginBlock: 'auto' }}>
-                    <Button color="inherit" component={NavLink} to={login_path}>Zaloguj</Button>
-                    <Button color="inherit">Wyloguj</Button>
+                    {!UserService.isLoggedIn() && <Button color="inherit" onClick={() => UserService.doLogin()}>Zaloguj</Button>}
+                    {UserService.isLoggedIn() && <Button color="inherit" onClick={() => UserService.doLogout()}>Wyloguj</Button>}
                 </div>
             </StyledDiv>
         </AppBar>
