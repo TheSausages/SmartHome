@@ -21,7 +21,7 @@ import org.testcontainers.containers.startupcheck.MinimumDurationRunningStartupC
 import java.time.Duration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 /**

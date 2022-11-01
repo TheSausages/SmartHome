@@ -1,4 +1,1 @@
-INSERT INTO country (name) VALUES ('India');
-INSERT INTO country (name) VALUES ('Brazil');
-INSERT INTO country (name) VALUES ('USA');
-INSERT INTO country (name) VALUES ('Italy');
+INSERT INTO SENSOR VALUES (1, 'AIR_PURIFIER', 'NAME1', 'PHILIPS', 'HIBWCDUIYHWASDAD', '2022-11-01', 1);

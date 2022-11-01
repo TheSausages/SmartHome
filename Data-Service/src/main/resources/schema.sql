@@ -1,6 +1,19 @@
-DROP TABLE IF EXISTS country;
-
-CREATE TABLE country (
+DROP TABLE IF EXISTS SENSORS;
+CREATE TABLE SENSORS (
     id   SERIAL PRIMARY KEY,
-    name VARCHAR(128) NOT NULL
+    type VARCHAR(128) NOT NULL,
+    name VARCHAR(128) NOT NULL,
+    manufacturer VARCHAR(128) NOT NULL,
+    serial_number VARCHAR(128) NOT NULL,
+    created_at DATE,
+    home_id INT
+);
+
+DROP TABLE IF EXISTS MEASUREMENTS;
+CREATE TABLE MEASUREMENTS (
+    id   SERIAL PRIMARY KEY,
+    type VARCHAR(128) NOT NULL,
+    value int NOT NULL,
+    created_at DATE,
+    sensor_id INT
 );
