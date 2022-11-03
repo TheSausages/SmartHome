@@ -59,7 +59,7 @@ export default function Home(props: HomeProps) {
     }
 
     const deviceParameterRows = deviceParameters.map((item, index) => (
-        <TableRow sx={{backgroundColor: 'green'}}>
+        <TableRow sx={{backgroundColor: 'green'}} key={index}>
             <TableCell>{item.name}</TableCell>
             <TableCell>{item.value}</TableCell>
         </TableRow>
