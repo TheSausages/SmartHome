@@ -2,7 +2,7 @@ import React from 'react';
 import { Button,IconButton } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import { NavLink } from 'react-router-dom';
-import { help_path, history_path } from '../../common/Paths';
+import { help_path, history_path, settings_path } from '../../common/Paths';
 import { styled } from '@mui/system';
 import UserService from "../../service/UserService";
 
@@ -29,6 +29,7 @@ export default function NavBar(props: NavbarProps) {
                     <Button color="inherit" component={NavLink} to="/">Dom</Button>
                     <Button color="inherit" component={NavLink} to={history_path}>Historia odczytów</Button>
                     <Button color="inherit" component={NavLink} to={help_path}>Pomoc</Button>
+                    <Button color="inherit" component={NavLink} to={settings_path}>Ustawienia</Button>
                 </div>
                 <div style={{ marginBlock: 'auto' }}>
                     {!UserService.isLoggedIn() && <Button color="inherit" onClick={() => UserService.doLogin()}>Zaloguj</Button>}

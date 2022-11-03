@@ -155,18 +155,6 @@ export default function Home(props: HomeProps) {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {/* <TableRow sx={{backgroundColor: 'green'}}>
-                                    <TableCell>PM 2</TableCell>
-                                    <TableCell>5</TableCell>
-                                </TableRow>
-                                <TableRow sx={{backgroundColor: 'red'}}>
-                                    <TableCell>PM 10</TableCell>
-                                    <TableCell>24</TableCell>
-                                </TableRow>
-                                <TableRow sx={{backgroundColor: 'green'}}>
-                                    <TableCell>IAI</TableCell>
-                                    <TableCell>03</TableCell>
-                                </TableRow> */}
                                 {deviceParameterRows}
                             </TableBody>
                         </Table>
