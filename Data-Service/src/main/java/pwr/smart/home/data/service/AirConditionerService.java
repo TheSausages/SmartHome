@@ -18,7 +18,6 @@ public class AirConditionerService {
     @Autowired
     private SensorRepository sensorRepository;
 
-
     public void addAirConditionerMeasurements(AirConditionerData airConditionerData) {
         Optional<Sensor> sensor = sensorRepository.findBySerialNumber(airConditionerData.getSerialNumber());
         sensor.ifPresent(value ->
@@ -31,5 +30,12 @@ public class AirConditionerService {
                         )
                 )
         );
+    }
+
+    public Measurement getLastAirConditionerMeasurement(String sensorSerialNumber) {
+        Optional<Sensor> sensor = sensorRepository.findBySerialNumber(sensorSerialNumber);
+        return sensor
+                .map(value -> measurementRepository.findTopBySensorIdOrderByCreatedAtDesc(value.getId()))
+                .orElse(null);
     }
 }

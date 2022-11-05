@@ -10,6 +10,7 @@ import pwr.smart.home.data.repository.MeasurementRepository;
 import pwr.smart.home.data.repository.SensorRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,5 +30,12 @@ public class AirFilterDataService {
             measurementList.add(new Measurement(MeasurementType.GAS, airFilterData.getGas(), sensor.get().getId(), airFilterData.getTimestamp()));
             measurementRepository.saveAll(measurementList);
         }
+    }
+
+    public List<Measurement> getLastAirFilterMeasurements(String sensorSerialNumber) {
+        Optional<Sensor> sensor = sensorRepository.findBySerialNumber(sensorSerialNumber);
+        return sensor
+                .map(value -> measurementRepository.findTop3BySensorIdOrderByCreatedAtDesc(value.getId()))
+                .orElse(new ArrayList<>());
     }
 }

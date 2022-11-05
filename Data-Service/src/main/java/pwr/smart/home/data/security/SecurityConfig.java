@@ -44,6 +44,9 @@ public class SecurityConfig {
                 // The filter will check the security, so we permit the endpoint for all
                 .mvcMatchers("/api/data/filter").permitAll()
                 .mvcMatchers("/api/data/temperature").permitAll()
+                // TEMPORARY
+                .mvcMatchers("/api/data/lastAirFilterMeasurements").permitAll()
+                .mvcMatchers("/api/data/lastAirConditionerMeasurement").permitAll()
                 .mvcMatchers("/api/**").authenticated()
                 .anyRequest().denyAll()
                 .and()
