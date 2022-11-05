@@ -1,5 +1,6 @@
 package pwr.smart.home.data.security;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +12,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pwr.smart.home.common.configuration.security.KeycloakJwtAuthenticationConverter;
+import pwr.smart.home.data.repository.SensorRepository;
 
 import java.util.Arrays;
 
@@ -18,12 +20,28 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Configuration
 public class SecurityConfig {
+    private final SensorAuthenticationFilter sensorAuthenticationFilter;
+
+    SecurityConfig(SensorRepository sensorRepository) {
+        this.sensorAuthenticationFilter = new SensorAuthenticationFilter(sensorRepository);
+    }
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public FilterRegistrationBean<SensorAuthenticationFilter> sensorAuthenticationFilter() {
+        FilterRegistrationBean<SensorAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(sensorAuthenticationFilter);
+        registrationBean.addUrlPatterns("/api/data/filter");
+        return registrationBean;
+    }
+
+    @Bean
+    public SecurityFilterChain jwtTokenFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .cors().and()
                 .authorizeRequests()
+                // The filter will check the security, so we permit the endpoint for all
+                .mvcMatchers("/api/data/filter").permitAll()
                 .mvcMatchers("/api/**").authenticated()
                 .anyRequest().denyAll()
                 .and()

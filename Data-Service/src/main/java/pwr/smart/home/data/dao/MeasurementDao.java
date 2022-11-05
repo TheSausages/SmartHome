@@ -2,17 +2,16 @@ package pwr.smart.home.data.dao;
 
 import pwr.smart.home.data.model.MeasurementsType;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
 
-@Entity
+@Entity(name = "measurements")
 public class MeasurementDao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(value = EnumType.STRING)
     private MeasurementsType type;
     private int value;
     private Date created_at;

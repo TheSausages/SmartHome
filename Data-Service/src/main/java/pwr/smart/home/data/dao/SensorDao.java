@@ -2,17 +2,16 @@ package pwr.smart.home.data.dao;
 
 import pwr.smart.home.data.model.SensorType;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
 
-@Entity
+@Entity(name = "sensors")
 public class SensorDao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(value = EnumType.STRING)
     private SensorType type;
     private String name;
     private String manufacturer;
