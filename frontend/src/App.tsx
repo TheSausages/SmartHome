@@ -3,9 +3,9 @@ import './App.css';
 import NavBar from './components/NavBar/NavBar';
 import Content from './components/Content/Content';
 import Footer from './components/Footer/Footer';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { Box, styled } from '@mui/material';
-import { QueryClient, QueryClientProvider } from 'react-query' 
+import {BrowserRouter as Router} from 'react-router-dom';
+import {styled} from '@mui/material';
+import {QueryClient, QueryClientProvider} from 'react-query'
 
 const queryClient = new QueryClient();
 

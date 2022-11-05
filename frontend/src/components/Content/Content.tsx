@@ -1,11 +1,11 @@
 import React from 'react';
 
-import {Routes, Route} from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
 import Home from './subcomponents/Home';
 import History from './subcomponents/History';
 import Help from './subcomponents/Help';
-import { add_device_path, help_path, history_path, settings_path, add_sensor_path } from '../../common/Paths';
-import { DeviceDestiny } from '../../common/DeviceType';
+import {add_device_path, add_sensor_path, help_path, history_path, settings_path} from '../../common/Paths';
+import {DeviceDestiny} from '../../common/DeviceType';
 import Settings from './subcomponents/Settings';
 import DeviceAdder from './subcomponents/DeviceAdder';
 

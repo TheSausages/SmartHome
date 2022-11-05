@@ -1,7 +1,7 @@
-import { Button, Input, InputLabel, Select, MenuItem } from '@mui/material';
-import { Box, Stack } from '@mui/system';
-import React, { useState } from 'react';
-import { deviceNameMapper, DeviceType, SensorType, sensorTypeMapper, DeviceDestiny } from '../../../common/DeviceType';
+import {Button, Input, InputLabel, MenuItem, Select} from '@mui/material';
+import {Box, Stack} from '@mui/system';
+import React, {useState} from 'react';
+import {DeviceDestiny, deviceNameMapper, DeviceType, SensorType, sensorTypeMapper} from '../../../common/DeviceType';
 
 export interface DeviceProps
 {

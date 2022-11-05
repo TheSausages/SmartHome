@@ -1,9 +1,21 @@
 import React, {useState} from 'react';
-import { Grid, Stack, Box, InputLabel, Input, Button, TableContainer, Table, TableBody, TableRow, TableHead, TableCell, Paper } from "@mui/material";
-import { calculateNewValue } from '@testing-library/user-event/dist/utils';
-import { validateHeaderValue } from 'http';
-import { add_device_path, add_sensor_path } from '../../../common/Paths';
-import { NavLink } from 'react-router-dom';
+import {
+    Box,
+    Button,
+    Grid,
+    Input,
+    InputLabel,
+    Paper,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
+} from "@mui/material";
+import {add_device_path, add_sensor_path} from '../../../common/Paths';
+import {NavLink} from 'react-router-dom';
 
 export interface SettingsProps
 {};

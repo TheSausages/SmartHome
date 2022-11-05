@@ -6,60 +6,52 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.Random;
 
 public class DataEmitter {
     private final Logger logger = LoggerFactory.getLogger(DataEmitter.class);
-    private String URL = "http://localhost:8081/api/data/filter";
-    private Sensor sensor;
+    private final String URL = "http://localhost:8081/api/data/filter";
+    private final Sensor sensor;
 
     DataEmitter(Sensor sensor) {
         this.sensor = sensor;
     }
 
-    public void emit(Sensor sensor) {
-        sendToServer(sensor);
+    public void emit() {
+        sendToServer();
         try {
-            Thread.sleep(1000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             logger.error(e.getMessage());
         }
     }
 
-    public boolean sendToServer(Sensor sensor) {
+    public boolean sendToServer() {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        Data data = getData(sensor);
+        headers.set("Serial-Number", sensor.getSerialNumber());
+        AirFilterData data = getData();
 
         logger.info("SENT " + data.toString());
+        HttpEntity<AirFilterData> entity = new HttpEntity<>(data, headers);
 
-        HttpEntity<Data> entity = new HttpEntity<>(data, headers);
-
-        ResponseEntity<Data> response = restTemplate
-                .exchange(URL, HttpMethod.POST, entity, Data.class);
+        ResponseEntity<AirFilterData> response = restTemplate
+                .exchange(URL, HttpMethod.POST, entity, AirFilterData.class);
 
         return response.getStatusCode() == HttpStatus.OK;
     }
 
-    public Data getData(Sensor sensor) {
-        Data data = new Data();
+    public AirFilterData getData() {
+        AirFilterData data = new AirFilterData();
         data.setSerialNumber(sensor.getSerialNumber());
         data.setTimestamp(getSystemTimestamp());
         data.setType(sensor.getType());
-        data.setPM10(getPM());
-        data.setPM25(getPM());
+        data.setPM25(getIAI());
         data.setIAI(getIAI());
         data.setGas(getIAI());
         return data;
-    }
-
-    private float getPM() {
-        Random random = new Random();
-        return random.nextFloat();
     }
 
     private int getIAI() {
@@ -68,6 +60,6 @@ public class DataEmitter {
     }
 
     public Timestamp getSystemTimestamp() {
-        return new Timestamp(System.currentTimeMillis() / 1000);
+        return new Timestamp(System.currentTimeMillis());
     }
 }

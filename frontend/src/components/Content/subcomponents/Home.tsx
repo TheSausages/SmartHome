@@ -1,13 +1,27 @@
 import React, {useState} from 'react';
 
-import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Select, MenuItem, SelectChangeEvent } from "@mui/material";
+import {
+    Box,
+    Button,
+    Grid,
+    MenuItem,
+    Paper,
+    Select,
+    SelectChangeEvent,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
+} from "@mui/material";
 import WbSunnyIcon from '@mui/icons-material/WbSunny'
 import NightlightIcon from '@mui/icons-material/Nightlight';
 import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import BloodtypeIcon from '@mui/icons-material/Bloodtype';
-import { DeviceType, deviceNameMapper } from '../../../common/DeviceType';
+import {deviceNameMapper, DeviceType} from '../../../common/DeviceType';
 
 export interface HomeProps
 {

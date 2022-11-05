@@ -1,12 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-import { Grid, Paper, Box, Button, TextField, styled } from "@mui/material";
-import { Stack } from "@mui/system";
+import {Box, Grid, Input} from "@mui/material";
+import {Stack} from "@mui/system";
 import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { useState } from "react";
-import { Input } from '@mui/material';
-import { DeviceType, deviceNameMapper } from '../../../common/DeviceType';
+import {deviceNameMapper, DeviceType} from '../../../common/DeviceType';
 
 export interface HistoryProps
 {

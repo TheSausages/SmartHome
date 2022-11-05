@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button,IconButton } from '@mui/material';
+import {Button, IconButton} from '@mui/material';
 import AppBar from '@mui/material/AppBar';
-import { NavLink } from 'react-router-dom';
-import { help_path, history_path, settings_path } from '../../common/Paths';
-import { styled } from '@mui/system';
+import {NavLink} from 'react-router-dom';
+import {help_path, history_path, settings_path} from '../../common/Paths';
+import {styled} from '@mui/system';
 import UserService from "../../service/UserService";
 
 export interface NavbarProps {

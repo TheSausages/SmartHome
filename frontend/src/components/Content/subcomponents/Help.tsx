@@ -1,5 +1,5 @@
-import { Grid } from '@mui/material';
-import { Box } from '@mui/system';
+import {Grid} from '@mui/material';
+import {Box} from '@mui/system';
 import React from 'react';
 
 export interface HelpProps

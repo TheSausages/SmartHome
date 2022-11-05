@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pwr.smart.home.data.dao.SensorDao;
+import pwr.smart.home.data.dao.Sensor;
 import pwr.smart.home.data.repository.SensorRepository;
 
 import javax.servlet.FilterChain;
@@ -27,7 +27,7 @@ public class SensorAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String serialNumber = request.getHeader("Serial-Number");
 
-        Optional<SensorDao> sensor = sensorRepository.findBySerialNumber(serialNumber);
+        Optional<Sensor> sensor = sensorRepository.findBySerialNumber(serialNumber);
 
         if (sensor.isEmpty()) {
             throw new SecurityException("A sensor with serial number " + serialNumber + " does not exist!");

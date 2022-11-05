@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Paper, Typography } from "@mui/material";
+import {Paper, Typography} from "@mui/material";
 
 export interface FooterProps
 {
