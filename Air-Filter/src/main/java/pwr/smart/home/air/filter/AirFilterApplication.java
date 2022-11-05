@@ -2,6 +2,9 @@ package pwr.smart.home.air.filter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import pwr.smart.home.air.filter.sensor.DataEmitter;
+import pwr.smart.home.air.filter.sensor.Sensor;
+import pwr.smart.home.air.filter.sensor.SensorType;
 
 @SpringBootApplication
 public class AirFilterApplication {

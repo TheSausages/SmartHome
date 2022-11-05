@@ -1,4 +1,4 @@
-package pwr.smart.home.air.filter;
+package pwr.smart.home.air.filter.sensor;
 
 
 import lombok.Getter;

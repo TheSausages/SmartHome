@@ -31,6 +31,7 @@ public class SecurityConfig {
         FilterRegistrationBean<SensorAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(sensorAuthenticationFilter);
         registrationBean.addUrlPatterns("/api/data/filter");
+        registrationBean.addUrlPatterns("/api/data/temperature");
         return registrationBean;
     }
 
@@ -42,6 +43,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 // The filter will check the security, so we permit the endpoint for all
                 .mvcMatchers("/api/data/filter").permitAll()
+                .mvcMatchers("/api/data/temperature").permitAll()
                 .mvcMatchers("/api/**").authenticated()
                 .anyRequest().denyAll()
                 .and()

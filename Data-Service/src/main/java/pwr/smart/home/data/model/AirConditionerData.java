@@ -1,6 +1,5 @@
 package pwr.smart.home.data.model;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,20 +7,16 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AirFilterData extends SensorDataAbstract {
-    private int PM25;
-    private int IAI;
-    private int gas;
+public class AirConditionerData extends SensorDataAbstract {
+    private int temperature;
 
     @Override
     public String toString() {
-        return "AirFilterData{" +
+        return "AirConditionerData{" +
                 "serialNumber='" + getSerialNumber() + '\'' +
                 ", timestamp=" + getTimestamp() +
                 ", type='" + getType() + '\'' +
-                ", PM25=" + PM25 +
-                ", IAI=" + IAI +
-                ", gas=" + gas +
+                "temperature=" + temperature +
                 '}';
     }
 }

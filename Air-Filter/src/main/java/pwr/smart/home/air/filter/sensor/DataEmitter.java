@@ -1,4 +1,4 @@
-package pwr.smart.home.air.filter;
+package pwr.smart.home.air.filter.sensor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ public class DataEmitter {
     private final String URL = "http://localhost:8081/api/data/filter";
     private final Sensor sensor;
 
-    DataEmitter(Sensor sensor) {
+    public DataEmitter(Sensor sensor) {
         this.sensor = sensor;
     }
 
@@ -26,24 +26,24 @@ public class DataEmitter {
         }
     }
 
-    public boolean sendToServer() {
+    private boolean sendToServer() {
         RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
+
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Serial-Number", sensor.getSerialNumber());
+
         AirFilterData data = getData();
+        logger.info("SENT " + data);
 
-        logger.info("SENT " + data.toString());
         HttpEntity<AirFilterData> entity = new HttpEntity<>(data, headers);
-
         ResponseEntity<AirFilterData> response = restTemplate
                 .exchange(URL, HttpMethod.POST, entity, AirFilterData.class);
 
         return response.getStatusCode() == HttpStatus.OK;
     }
 
-    public AirFilterData getData() {
+    private AirFilterData getData() {
         AirFilterData data = new AirFilterData();
         data.setSerialNumber(sensor.getSerialNumber());
         data.setTimestamp(getSystemTimestamp());
@@ -59,7 +59,7 @@ public class DataEmitter {
         return random.nextInt(30);
     }
 
-    public Timestamp getSystemTimestamp() {
+    private Timestamp getSystemTimestamp() {
         return new Timestamp(System.currentTimeMillis());
     }
 }

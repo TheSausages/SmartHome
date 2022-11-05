@@ -3,13 +3,12 @@ package pwr.smart.home.data.dao;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pwr.smart.home.common.enums.MeasurementType;
+import pwr.smart.home.data.model.enums.MeasurementType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Getter
