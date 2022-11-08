@@ -1,3 +1,2 @@
 rootProject.name = 'SmartHome'
-include 'Common-Code', 'Data-Service', 'Control-Service', 'Air-Filter', 'Air-Conditioning', 'Heating'
-
+include 'Common-Code', 'Data-Service', 'Control-Service', 'Air-Filter', 'Air-Conditioning', 'Air-Humidifier'

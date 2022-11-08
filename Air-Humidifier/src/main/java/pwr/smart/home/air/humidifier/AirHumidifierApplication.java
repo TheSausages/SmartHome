@@ -1,13 +1,13 @@
-package pwr.smart.home.heating;
+package pwr.smart.home.air.humidifier;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class HeatingApplication {
+public class AirHumidifierApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HeatingApplication.class, args);
+		SpringApplication.run(AirHumidifierApplication.class, args);
 	}
 
 }

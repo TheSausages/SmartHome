@@ -1,10 +1,10 @@
-package pwr.smart.home.heating;
+package pwr.smart.home.air.humidifier;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class HeatingApplicationTests {
+class AirHumidifierApplicationTests {
 
 	@Test
 	void contextLoads() {

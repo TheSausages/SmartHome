@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 
-group = 'pwr.smart.home.heating'
+group = 'pwr.smart.home.air.humidifier'
 version = '1.0-SNAPSHOT'
 sourceCompatibility = '11'
 
