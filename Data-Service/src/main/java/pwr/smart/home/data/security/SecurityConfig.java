@@ -43,9 +43,9 @@ public class SecurityConfig {
                 .cors().and()
                 .authorizeRequests()
                 // The filter will check the security, so we permit the endpoint for all
-                .mvcMatchers("/api/data/filter").permitAll()
+                .mvcMatchers("/api/data/air-quality").permitAll()
                 .mvcMatchers("/api/data/temperature").permitAll()
-                .mvcMatchers("/api/data/humidifier").permitAll()
+                .mvcMatchers("/api/data/humidity").permitAll()
                 // TEMPORARY
                 .mvcMatchers("/api/data/lastAirFilterMeasurements").permitAll()
                 .mvcMatchers("/api/data/allAirFilterMeasurements").permitAll()

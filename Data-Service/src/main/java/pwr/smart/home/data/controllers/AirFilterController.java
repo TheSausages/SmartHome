@@ -25,7 +25,7 @@ public class AirFilterController {
     @Autowired
     private MeasurementService measurementService;
 
-    @PostMapping("/filter")
+    @PostMapping("/air-quality")
     public ResponseEntity<?> getFilterMeasurements(@RequestBody AirFilterData filterData) {
         logger.info(filterData.toString());
         airFilterService.addAirFilterMeasurements(filterData);

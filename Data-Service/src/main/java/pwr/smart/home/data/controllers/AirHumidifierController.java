@@ -26,7 +26,7 @@ public class AirHumidifierController {
     @Autowired
     private MeasurementService measurementService;
 
-    @PostMapping("/humidifier")
+    @PostMapping("/humidity")
     public ResponseEntity<?> getHumidifierMeasurements(@RequestBody AirHumidifierData humidifierData) {
         LOGGER.info(humidifierData.toString());
         airHumidifierService.addAirHumidifierMeasurements(humidifierData);
@@ -34,7 +34,7 @@ public class AirHumidifierController {
     }
 
     @GetMapping("/lastAirHumidifierMeasurement")
-    public ResponseEntity<?> getLastAirHumidifierMeasurement(String sensorSerialNumber) {
+    public ResponseEntity<?> getLastAirHumidifierMeasurement(@RequestParam String sensorSerialNumber) {
         if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.AIR_HUMIDITY)) {
             return ResponseEntity.ok(airHumidifierService.getLastAirHumidifierMeasurement(sensorSerialNumber));
         } else {

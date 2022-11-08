@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class DataEmitter {
     private final Logger logger = LoggerFactory.getLogger(DataEmitter.class);
-    private final String URL = "http://localhost:8081/api/data/filter";
+    private final String URL = "http://localhost:8081/api/data/air-quality";
     private final Sensor sensor;
 
     public DataEmitter(Sensor sensor) {

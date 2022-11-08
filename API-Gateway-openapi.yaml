@@ -1,0 +1,390 @@
+openapi: "3.0.3"
+info:
+  title: "SmartHome API Gateway"
+  description: "There are /data endpoints and /control endpoints.<br>For local enviroments the URLs are: <br>https://localhost:8081/api/data<br>https://localhost:8080/api/control"
+  version: "0.1.0"
+
+paths:
+  /allAirConditionerMeasurements:
+    servers:
+      - url: https://localhost:8081/api/data
+    get:
+      tags:
+        - Temperature Sensor (/api/data)
+      summary: "All Measurements"
+      operationId: "getAllAirConditionerMeasurements"
+      parameters:
+        - name: "sensorSerialNumber"
+          in: "query"
+          required: true
+          example: HIBWCDUIYHWASDAE
+          schema:
+            type: "string"
+        - name: "page"
+          in: "query"
+          required: true
+          description: Pagination option; Page number, starts from 0
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "size"
+          in: "query"
+          required: true
+          description: Pagination option; Page size, number of elements on page
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temperature'
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: Incompatible sensor
+
+
+  /lastAirConditionerMeasurement:
+    servers:
+      - url: https://localhost:8081/api/data
+    get:
+      tags:
+        - Temperature Sensor (/api/data)
+      summary: "Last Measurement"
+      operationId: "getLastAirConditionerMeasurement"
+      parameters:
+        - name: "sensorSerialNumber"
+          in: "query"
+          required: true
+          example: HIBWCDUIYHWASDAE
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temperature'
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: Incompatible sensor
+
+
+  /allAirFilterMeasurements:
+    servers:
+      - url: https://localhost:8081/api/data
+    get:
+      tags:
+        - Air Quality Sensor (/api/data)
+      summary: "All Measurements"
+      operationId: "getAllAirFilterMeasurements"
+      parameters:
+        - name: "sensorSerialNumber"
+          in: "query"
+          required: true
+          example: HIBWCDUIYHWASDAD
+          schema:
+            type: "string"
+        - name: "page"
+          in: "query"
+          required: true
+          description: Pagination option; Page number, starts from 0
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "size"
+          in: "query"
+          required: true
+          description: Pagination option; Page size, number of elements on page
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AirQuality'
+                example:
+                  - id: 1
+                    type: IAI
+                    value: 5
+                    createdAt: "2022-11-08 21:07:44"
+                    "sensorId": 1
+                  - id: 2
+                    type: PM25
+                    value: 12
+                    createdAt: "2022-11-08 21:07:44"
+                    sensorId": 1
+                  - id: 3
+                    type: GAS
+                    value: 12
+                    createdAt: "2022-11-08 21:07:44"
+                    "sensorId": 1
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: Incompatible sensor
+
+  /lastAirFilterMeasurements:
+    servers:
+      - url: https://localhost:8081/api/data
+    get:
+      tags:
+        - Air Quality Sensor (/api/data)
+      summary: "Last Measurement"
+      operationId: "getLastAirFilterMeasurements"
+      parameters:
+        - name: "sensorSerialNumber"
+          in: "query"
+          required: true
+          example: HIBWCDUIYHWASDAD
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AirQuality'
+                example:
+                  - id: 1
+                    type: IAI
+                    value: 5
+                    createdAt: "2022-11-08 21:07:44"
+                    "sensorId": 1
+                  - id: 2
+                    type: PM25
+                    value: 12
+                    createdAt: "2022-11-08 21:07:44"
+                    sensorId": 1
+                  - id: 3
+                    type: GAS
+                    value: 12
+                    createdAt: "2022-11-08 21:07:44"
+                    "sensorId": 1
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: Incompatible sensor
+
+  /allAirHumidifierMeasurements:
+    servers:
+      - url: https://localhost:8081/api/data
+    get:
+      tags:
+        - Humidity Sensor (/api/data)
+      summary: "All Measurements"
+      operationId: "getAllAirHumidifierMeasurements"
+      parameters:
+        - name: "sensorSerialNumber"
+          in: "query"
+          required: true
+          example: HIBWCDUIYHWASDAF
+          schema:
+            type: "string"
+        - name: "page"
+          in: "query"
+          required: true
+          description: Pagination option; Page number, starts from 0
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "size"
+          in: "query"
+          required: true
+          description: Pagination option; Page size, number of elements on page
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Humidity'
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: Incompatible sensor
+
+  /lastAirHumidifierMeasurement:
+    servers:
+      - url: https://localhost:8081/api/data
+    get:
+      tags:
+        - Humidity Sensor (/api/data)
+      summary: "Last Measurement"
+      operationId: "getLastAirHumidifierMeasurement"
+      parameters:
+        - name: "sensorSerialNumber"
+          in: "query"
+          required: true
+          example: HIBWCDUIYHWASDAF
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Humidity'
+        "400":
+          description: "Bad Request"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: Incompatible sensor
+
+  /air-quality:
+    servers:
+      - url: https://localhost:8080/api/control
+    post:
+      tags:
+        - Actions (/api/control)
+      summary: "Set target Air Quality"
+      operationId: "setTargetAirQuality"
+      parameters:
+        - name: "targetAirQuality"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+
+  /humidity:
+    servers:
+      - url: https://localhost:8080/api/control
+    post:
+      tags:
+        - Actions (/api/control)
+      summary: "Set target humidity"
+      operationId: "setTargetHumidity"
+      parameters:
+        - name: "targetHumidity"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /temperature:
+    servers:
+      - url: https://localhost:8080/api/control
+    post:
+      tags:
+        - Actions (/api/control)
+      summary: "Set target temperature"
+      operationId: "setTargetTemperature"
+      parameters:
+        - name: "targetTemperature"
+          in: "query"
+          required: true
+          schema:
+            type: "number"
+            format: "double"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+
+components:
+  schemas:
+    Temperature:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        value:
+          type: number
+        createdAt:
+          type: string
+        sensorId:
+          type: integer
+      example:
+        id: 1
+        type: CELSIUS
+        value: 24.0
+        createdAt: "2022-11-08 21:07:44"
+        "sensorId": 2
+    AirQuality:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [IAI, PM25, GAS]
+        value:
+          type: number
+        createdAt:
+          type: string
+        sensorId:
+          type: integer
+
+    Humidity:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        value:
+          type: number
+        createdAt:
+          type: string
+        sensorId:
+          type: integer
+      example:
+        id: 1
+        type: HUMIDITY
+        value: 56
+        createdAt: "2022-11-08 21:07:44"
+        "sensorId": 3
