@@ -5,3 +5,6 @@ INSERT INTO FUNCTIONAL_DEVICE (id, type, name, manufacturer, serial_number, cons
 
 INSERT INTO SENSOR (id, type, name, manufacturer, serial_number, created_at, home_id) VALUES (2, 'TEMPERATURE', 'Klimatyzator ścienny ECO KEX', 'KAISAI', 'HIBWCDUIYHWASDAE', '2022-11-05', 1);
 INSERT INTO FUNCTIONAL_DEVICE (id, type, name, manufacturer, serial_number, consumed_electricity, created_at, home_id) VALUES (2, 'AIR_CONDITIONER', 'Klimatyzator ścienny ECO KEX', 'PHILIPS', 'HIBWCDUIYHWASDAE', '3500', '2022-11-05', 1);
+
+INSERT INTO SENSOR (id, type, name, manufacturer, serial_number, created_at, home_id) VALUES (3, 'AIR_HUMIDITY', 'Nawilżacz powietrza HU4801/01', 'PHILIPS', 'HIBWCDUIYHWASDAF', '2022-11-05', 1);
+INSERT INTO FUNCTIONAL_DEVICE (id, type, name, manufacturer, serial_number, consumed_electricity, created_at, home_id) VALUES (3, 'AIR_HUMIDIFIER', 'Nawilżacz powietrza HU4801/01', 'PHILIPS', 'HIBWCDUIYHWASDAF', '20', '2022-11-05', 1);

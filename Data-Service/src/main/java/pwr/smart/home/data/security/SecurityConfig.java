@@ -32,6 +32,7 @@ public class SecurityConfig {
         registrationBean.setFilter(sensorAuthenticationFilter);
         registrationBean.addUrlPatterns("/api/data/filter");
         registrationBean.addUrlPatterns("/api/data/temperature");
+        registrationBean.addUrlPatterns("/api/data/humidifier");
         return registrationBean;
     }
 
@@ -44,9 +45,11 @@ public class SecurityConfig {
                 // The filter will check the security, so we permit the endpoint for all
                 .mvcMatchers("/api/data/filter").permitAll()
                 .mvcMatchers("/api/data/temperature").permitAll()
+                .mvcMatchers("/api/data/humidifier").permitAll()
                 // TEMPORARY
                 .mvcMatchers("/api/data/lastAirFilterMeasurements").permitAll()
                 .mvcMatchers("/api/data/lastAirConditionerMeasurement").permitAll()
+                .mvcMatchers("/api/data/lastAirHumidifierMeasurements").permitAll()
                 .mvcMatchers("/api/**").authenticated()
                 .anyRequest().denyAll()
                 .and()
