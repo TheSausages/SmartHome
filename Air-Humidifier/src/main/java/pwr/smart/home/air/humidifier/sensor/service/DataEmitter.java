@@ -1,13 +1,14 @@
-package pwr.smart.home.air.humidifier.sensor;
+package pwr.smart.home.air.humidifier.sensor.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import pwr.smart.home.air.humidifier.sensor.model.AirHumidifierData;
+import pwr.smart.home.air.humidifier.sensor.model.Sensor;
 
 import java.sql.Timestamp;
-import java.util.Random;
 
 public class DataEmitter {
     private final Logger logger = LoggerFactory.getLogger(DataEmitter.class);
@@ -41,8 +42,7 @@ public class DataEmitter {
 
         try {
             restTemplate.exchange(URL, HttpMethod.POST, entity, AirHumidifierData.class);
-        }
-        catch (ResourceAccessException e){
+        } catch (ResourceAccessException e) {
             logger.error(e.getMessage());
         }
     }
@@ -52,16 +52,10 @@ public class DataEmitter {
         data.setSerialNumber(sensor.getSerialNumber());
         data.setTimestamp(getSystemTimestamp());
         data.setType(sensor.getType());
-        data.setHumidity(getHumidity());
+        data.setHumidity((int) Math.round(StatusService.getCurrentHumidity()));
         return data;
     }
 
-    private int getHumidity() {
-        Random random = new Random();
-        int max = 65;
-        int min = 45;
-        return random.nextInt(max - min + 1) + min;
-    }
 
     private Timestamp getSystemTimestamp() {
         return new Timestamp(System.currentTimeMillis());

@@ -1,4 +1,4 @@
-package pwr.smart.home.air.humidifier.sensor;
+package pwr.smart.home.air.humidifier.sensor.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
