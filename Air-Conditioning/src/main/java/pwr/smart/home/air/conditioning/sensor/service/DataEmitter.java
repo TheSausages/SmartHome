@@ -1,12 +1,13 @@
-package pwr.smart.home.air.conditioning.sensor;
+package pwr.smart.home.air.conditioning.sensor.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
+import pwr.smart.home.air.conditioning.sensor.model.Sensor;
+import pwr.smart.home.air.conditioning.sensor.model.TemperatureData;
 
 import java.sql.Timestamp;
-import java.util.Random;
 
 public class DataEmitter {
     private final Logger logger = LoggerFactory.getLogger(DataEmitter.class);
@@ -48,14 +49,10 @@ public class DataEmitter {
         data.setSerialNumber(sensor.getSerialNumber());
         data.setTimestamp(getSystemTimestamp());
         data.setType(sensor.getType());
-        data.setTemperature(getTemperature());
+        data.setTemperature(StatusService.getCurrentTemperature());
         return data;
     }
 
-    private int getTemperature() {
-        Random random = new Random();
-        return random.nextInt(26);
-    }
 
     private Timestamp getSystemTimestamp() {
         return new Timestamp(System.currentTimeMillis());

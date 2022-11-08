@@ -2,9 +2,10 @@ package pwr.smart.home.air.conditioning;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import pwr.smart.home.air.conditioning.sensor.DataEmitter;
-import pwr.smart.home.air.conditioning.sensor.Sensor;
-import pwr.smart.home.air.conditioning.sensor.SensorType;
+import pwr.smart.home.air.conditioning.sensor.model.Sensor;
+import pwr.smart.home.air.conditioning.sensor.model.SensorType;
+import pwr.smart.home.air.conditioning.sensor.service.DataEmitter;
+import pwr.smart.home.air.conditioning.sensor.service.StatusService;
 
 @SpringBootApplication
 public class AirConditioningApplication {
@@ -15,6 +16,8 @@ public class AirConditioningApplication {
 		sensor.setBrand("KAISAI");
 		sensor.setType(SensorType.TEMPERATURE);
 		sensor.setSerialNumber("HIBWCDUIYHWASDAE");
+
+		StatusService.setCurrentTemperature(24.0);
 
 		DataEmitter dataEmitter = new DataEmitter(sensor);
 		while (true) {

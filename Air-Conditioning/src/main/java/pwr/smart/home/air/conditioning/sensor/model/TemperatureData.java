@@ -1,4 +1,4 @@
-package pwr.smart.home.air.conditioning.sensor;
+package pwr.smart.home.air.conditioning.sensor.model;
 
 
 import lombok.Getter;
@@ -14,7 +14,7 @@ public class TemperatureData {
     private String serialNumber;
     private Timestamp timestamp;
     private SensorType type;
-    private int temperature;
+    private double temperature;
 
     @Override
     public String toString() {
