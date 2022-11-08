@@ -1,10 +1,13 @@
-package pwr.smart.home.air.filter.sensor;
+package pwr.smart.home.air.filter.sensor.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import pwr.smart.home.air.filter.sensor.model.AirFilterData;
+import pwr.smart.home.air.filter.sensor.model.Sensor;
+
 
 import java.sql.Timestamp;
 import java.util.Random;
@@ -52,8 +55,8 @@ public class DataEmitter {
         data.setSerialNumber(sensor.getSerialNumber());
         data.setTimestamp(getSystemTimestamp());
         data.setType(sensor.getType());
-        data.setPM25(getIAI());
-        data.setIAI(getIAI());
+        data.setPM25((int) Math.round(StatusService.getCurrentAirQuality()));
+        data.setIAI(StatusService.getIAI());
         data.setGas(getIAI());
         return data;
     }
