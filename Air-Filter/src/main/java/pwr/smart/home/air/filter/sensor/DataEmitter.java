@@ -3,6 +3,7 @@ package pwr.smart.home.air.filter.sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
@@ -26,7 +27,7 @@ public class DataEmitter {
         }
     }
 
-    private boolean sendToServer() {
+    private void sendToServer() {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
@@ -37,10 +38,13 @@ public class DataEmitter {
         logger.info("SENT " + data);
 
         HttpEntity<AirFilterData> entity = new HttpEntity<>(data, headers);
-        ResponseEntity<AirFilterData> response = restTemplate
-                .exchange(URL, HttpMethod.POST, entity, AirFilterData.class);
 
-        return response.getStatusCode() == HttpStatus.OK;
+        try {
+            restTemplate.exchange(URL, HttpMethod.POST, entity, AirFilterData.class);
+        }
+        catch (ResourceAccessException e){
+            logger.error(e.getMessage());
+        }
     }
 
     private AirFilterData getData() {

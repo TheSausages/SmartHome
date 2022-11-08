@@ -48,8 +48,11 @@ public class SecurityConfig {
                 .mvcMatchers("/api/data/humidifier").permitAll()
                 // TEMPORARY
                 .mvcMatchers("/api/data/lastAirFilterMeasurements").permitAll()
+                .mvcMatchers("/api/data/allAirFilterMeasurements").permitAll()
                 .mvcMatchers("/api/data/lastAirConditionerMeasurement").permitAll()
+                .mvcMatchers("/api/data/allAirConditionerMeasurements").permitAll()
                 .mvcMatchers("/api/data/lastAirHumidifierMeasurements").permitAll()
+                .mvcMatchers("/api/data/allAirHumidifierMeasurements").permitAll()
                 .mvcMatchers("/api/**").authenticated()
                 .anyRequest().denyAll()
                 .and()

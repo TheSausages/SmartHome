@@ -1,5 +1,6 @@
 package pwr.smart.home.data.dao;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,8 @@ public class Measurement {
     private Long id;
     private MeasurementType type;
     private int value;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Timestamp createdAt;
     private Long sensorId;
 

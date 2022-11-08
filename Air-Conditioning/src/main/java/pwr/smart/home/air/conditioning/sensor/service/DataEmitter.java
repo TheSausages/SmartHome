@@ -3,6 +3,7 @@ package pwr.smart.home.air.conditioning.sensor.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import pwr.smart.home.air.conditioning.sensor.model.Sensor;
 import pwr.smart.home.air.conditioning.sensor.model.TemperatureData;
@@ -27,7 +28,7 @@ public class DataEmitter {
         }
     }
 
-    private boolean sendToServer() {
+    private void sendToServer() {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
@@ -38,10 +39,12 @@ public class DataEmitter {
         logger.info("SENT " + data);
 
         HttpEntity<TemperatureData> entity = new HttpEntity<>(data, headers);
-        ResponseEntity<TemperatureData> response = restTemplate
-                .exchange(URL, HttpMethod.POST, entity, TemperatureData.class);
-
-        return response.getStatusCode() == HttpStatus.OK;
+        try {
+            restTemplate.exchange(URL, HttpMethod.POST, entity, TemperatureData.class);
+        }
+        catch (ResourceAccessException e){
+            logger.error(e.getMessage());
+        }
     }
 
     private TemperatureData getData() {
