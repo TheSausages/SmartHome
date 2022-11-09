@@ -17,7 +17,7 @@ public class AirHumidifierData extends SensorDataAbstract{
                 "serialNumber='" + getSerialNumber() + '\'' +
                 ", timestamp=" + getTimestamp() +
                 ", type='" + getType() + '\'' +
-                "temperature=" + humidity +
+                "humidity=" + humidity +
                 '}';
     }
 }

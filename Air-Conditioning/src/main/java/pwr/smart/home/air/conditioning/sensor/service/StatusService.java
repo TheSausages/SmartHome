@@ -40,7 +40,7 @@ public class StatusService {
         for (int i = 0; i < iterationsInt; i++) {
             double newValue = currentTemperature + (GRADATION_SPEED * multiplier);
             currentTemperature = Math.round(newValue * 100.0) / 100.0;
-            Thread.sleep(100);
+            Thread.sleep(200);
         }
     }
 
