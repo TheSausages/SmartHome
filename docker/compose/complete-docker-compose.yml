@@ -1,0 +1,137 @@
+version: '3.9'
+
+services:
+  postgres-app:
+    build:
+      context: ../postgres
+      dockerfile: Dockerfile
+    container_name: SmartHome_App_Database
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresApp:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: SmartHomeApp
+      POSTGRES_USER: SmartHomeAdminUser
+      POSTGRES_PASSWORD: SmartHomeAdminPassword1
+      APP_USER_USERNAME: SmartHomeUser
+      APP_USER_PASSWORD: SmartHomePassword
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d SmartHomeApp -U SmartHomeUser" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-keycloak:
+    image: postgres:14.1-alpine
+    container_name: SmartHome_Keycloak_Database
+    restart: always
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgresKeycloak:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloakUser
+      POSTGRES_PASSWORD: keycloakPassword1
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d keycloak -U keycloakUser" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:15.0.0
+    container_name: Keycloak-Server-Instance
+    depends_on:
+      postgres-keycloak:
+        condition: service_healthy
+    ports:
+      - "8180:8180"
+    command:
+      - "-Djboss.socket.binding.port-offset=100"
+      - "-Dkeycloak.profile.feature.upload_scripts=enabled"
+    volumes:
+      - ../keycloak/realm:/opt/jboss/keycloak/imports
+    environment:
+      KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/realm-export.json
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres-keycloak
+      DB_DATABASE: keycloak
+      DB_USER: keycloakUser
+      DB_PASSWORD: keycloakPassword1
+      #During first starting of the volumes, please use:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Password1
+
+  data-service:
+    build:
+      dockerfile: Data-Service/Dockerfile
+      context: ../../
+    container_name: Data-Service
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres-app:
+        condition: service_healthy
+    environment:
+      PORT: 8081
+      KEYCLOAK_URL: keycloak
+      DATABASE_URL: postgres-app
+      API_DEFAULT_PATH: /api/data
+
+  control-service:
+    build:
+      dockerfile: Control-Service/Dockerfile
+      context: ../../
+    container_name: Control-Service
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      KEYCLOAK_URL: keycloak
+      DATABASE_URL: postgres-app
+      API_DEFAULT_PATH: /api/control
+
+  air-humidifier:
+    build:
+      dockerfile: Air-Humidifier/Dockerfile
+      context: ../../
+    container_name: Air-Humidifier
+    ports:
+      - "8082:8082"
+    environment:
+      PORT: 8082
+      DATA_SERVICE_URL: data-service:8081
+      DATA_SERVICE_DEFAULT_PATH: /api/data
+
+  air-filter:
+    build:
+      dockerfile: Air-Filter/Dockerfile
+      context: ../../
+    container_name: Air-Filter
+    ports:
+      - "8084:8084"
+    environment:
+      PORT: 8084
+      DATA_SERVICE_URL: data-service:8081
+      DATA_SERVICE_DEFAULT_PATH: /api/data
+      
+  air-conditioning:
+    build:
+      dockerfile: Air-Conditioning/Dockerfile
+      context: ../../
+    container_name: Air-Conditioning
+    ports:
+      - "8083:8083"
+    environment:
+      PORT: 8083
+      DATA_SERVICE_URL: data-service:8081
+      DATA_SERVICE_DEFAULT_PATH: /api/data
+
+volumes:
+  postgresKeycloak:
+    driver: local
+  postgresApp:
+    driver: local
