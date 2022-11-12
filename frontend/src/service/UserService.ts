@@ -1,6 +1,10 @@
 import Keycloak from "keycloak-js";
 
-const _kc = new Keycloak('/keycloak.json');
+const _kc = new Keycloak({
+    realm: "SmartHome",
+    url: `${window.__RUNTIME_CONFIG__.REACT_APP_KEYCLOAK_URL}/auth/`,
+    clientId: "smarthome"
+});
 
 const initKeycloak = (onAuthenticatedCallback: () => void) => {
     _kc.init({})
@@ -13,10 +17,9 @@ const initKeycloak = (onAuthenticatedCallback: () => void) => {
         .catch(console.error);
 };
 
-const doLogin = _kc.login;
+const doLogin = () => _kc.login({ redirectUri: `${window.__RUNTIME_CONFIG__.REACT_APP_FRONTEND_URL}` });
 
-// TODO Tutaj trzeba dać cały adres, w przyszłości brany ze zmiennych środowiskowych
-const doLogout = () => _kc.logout({ redirectUri: "http://localhost:3000" });
+const doLogout = () => _kc.logout({ redirectUri: `${window.__RUNTIME_CONFIG__.REACT_APP_FRONTEND_URL}` });
 
 const getToken = () => _kc.token;
 

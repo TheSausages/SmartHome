@@ -64,6 +64,11 @@ services:
       #During first starting of the volumes, please use:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: Password1
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://keycloak:8180/auth/" ]
+      interval: 5s
+      timeout: 2s
+      retries: 15
 
 
 volumes:
