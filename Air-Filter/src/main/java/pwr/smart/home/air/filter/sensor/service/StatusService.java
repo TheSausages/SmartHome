@@ -1,5 +1,6 @@
 package pwr.smart.home.air.filter.sensor.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import pwr.smart.home.air.filter.model.State;
@@ -12,6 +13,9 @@ public class StatusService {
     private static State state = State.OFF;
     private static double currentAirQuality;
     private static final double GRADATION_SPEED = 0.1;
+
+    @Value("${new.value.propagation.delay}")
+    private int propagationDelay;
 
     @Async("asyncExecutor")
     public void setAirQualityValue(int targetAirQuality) throws InterruptedException {
@@ -33,7 +37,7 @@ public class StatusService {
         for (int i = 0; i < iterationsInt; i++) {
             double newValue = currentAirQuality - GRADATION_SPEED;
             currentAirQuality = Math.round(newValue * 100.0) / 100.0;
-            Thread.sleep(300);
+            Thread.sleep(propagationDelay);
         }
     }
 

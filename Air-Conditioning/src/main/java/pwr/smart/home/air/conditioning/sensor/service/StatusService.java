@@ -1,5 +1,6 @@
 package pwr.smart.home.air.conditioning.sensor.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import pwr.smart.home.air.conditioning.model.State;
@@ -12,6 +13,9 @@ public class StatusService {
     private static State state = State.OFF;
     private static double currentTemperature;
     private static final double GRADATION_SPEED = 0.1;
+
+    @Value("${new.value.propagation.delay}")
+    private int propagationDelay;
 
     @Async("asyncExecutor")
     public void setTargetTemperature(double targetTemperature) throws InterruptedException {
@@ -40,7 +44,7 @@ public class StatusService {
         for (int i = 0; i < iterationsInt; i++) {
             double newValue = currentTemperature + (GRADATION_SPEED * multiplier);
             currentTemperature = Math.round(newValue * 100.0) / 100.0;
-            Thread.sleep(200);
+            Thread.sleep(propagationDelay);
         }
     }
 
