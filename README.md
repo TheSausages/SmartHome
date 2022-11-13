@@ -46,7 +46,7 @@ For local development:
 - Data Service: 8081
 - App Database: 5432
 
-- Heating Sim: 8082
+- Air Humidifier Sim: 8082
 - Air Conditioning Sim: 8083
 - Air Filter Sim: 8084
 
