@@ -16,7 +16,7 @@ public class AirConditionerData extends SensorDataAbstract {
                 "serialNumber='" + getSerialNumber() + '\'' +
                 ", timestamp=" + getTimestamp() +
                 ", type='" + getType() + '\'' +
-                "temperature=" + temperature +
+                ", temperature=" + temperature +
                 '}';
     }
 }

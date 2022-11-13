@@ -274,8 +274,9 @@ paths:
       summary: "Set target Air Quality"
       operationId: "setTargetAirQuality"
       parameters:
-        - name: "targetAirQuality"
+        - name: "target"
           in: "query"
+          description: "Target air quality PM2,5 [μg/m3]"
           required: true
           schema:
             type: "integer"
@@ -297,8 +298,9 @@ paths:
       summary: "Set target humidity"
       operationId: "setTargetHumidity"
       parameters:
-        - name: "targetHumidity"
+        - name: "target"
           in: "query"
+          description: "Target humidity [%]"
           required: true
           schema:
             type: "integer"
@@ -319,8 +321,9 @@ paths:
       summary: "Set target temperature"
       operationId: "setTargetTemperature"
       parameters:
-        - name: "targetTemperature"
+        - name: "target"
           in: "query"
+          description: "Target temperature 	[°C]"
           required: true
           schema:
             type: "number"

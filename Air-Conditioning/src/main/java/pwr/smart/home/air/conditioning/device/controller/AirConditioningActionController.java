@@ -1,5 +1,7 @@
 package pwr.smart.home.air.conditioning.device.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +13,16 @@ import pwr.smart.home.air.conditioning.sensor.service.StatusService;
 @RestController
 public class AirConditioningActionController {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(AirConditioningActionController.class);
+
     @Autowired
     StatusService statusService;
 
     @PostMapping("/setTarget")
     public ResponseEntity<String> setTargetTemperature(@RequestBody String targetTemperature) {
+
+        LOGGER.info("Received action request. Target temperature: " + targetTemperature);
+
         double targetTemperatureDouble = Double.parseDouble(targetTemperature);
 
         if (targetTemperatureDouble > 40 || targetTemperatureDouble < 5) {

@@ -1,5 +1,7 @@
 package pwr.smart.home.air.humidifier.device.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +13,15 @@ import pwr.smart.home.air.humidifier.sensor.service.StatusService;
 @RestController
 public class AirHumidifierActionController {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(AirHumidifierActionController.class);
+
     @Autowired
     StatusService statusService;
 
     @PostMapping("/setTarget")
     public ResponseEntity<String> setTargetHumidity(@RequestBody String targetHumidity) {
+        LOGGER.info("Received action request. Target humidity: " + targetHumidity);
+
         int targetHumidityInt = Integer.parseInt(targetHumidity);
 
         if (targetHumidityInt < 0 || targetHumidityInt > 100) {
