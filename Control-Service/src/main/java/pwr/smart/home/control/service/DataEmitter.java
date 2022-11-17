@@ -2,7 +2,10 @@ package pwr.smart.home.control.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
@@ -13,7 +16,7 @@ import java.util.Objects;
 
 @Service
 public class DataEmitter {
-    private final Logger logger = LoggerFactory.getLogger(DataEmitter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataEmitter.class);
 
     public String callForAction(String value, Endpoint endpoint) {
         RestTemplate restTemplate = new RestTemplate();
@@ -27,7 +30,7 @@ public class DataEmitter {
             ResponseEntity<?> response = restTemplate.exchange(endpoint.url, HttpMethod.POST, entity, String.class);
             return Objects.requireNonNull(response.getBody()).toString();
         } catch (ResourceAccessException e) {
-            logger.error(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return "";
     }

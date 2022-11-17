@@ -3,7 +3,10 @@ package pwr.smart.home.air.humidifier.sensor.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
@@ -15,7 +18,7 @@ import java.sql.Timestamp;
 
 @Service
 public class DataEmitter {
-    private final Logger logger = LoggerFactory.getLogger(DataEmitter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataEmitter.class);
 
     @Value("${data-service.endpoint-url}")
     private String URL;
@@ -35,14 +38,14 @@ public class DataEmitter {
         headers.set("Serial-Number", sensor.getSerialNumber());
 
         AirHumidifierData data = getData();
-        logger.info("SENT " + data);
+        LOGGER.info("SENT " + data);
 
         HttpEntity<AirHumidifierData> entity = new HttpEntity<>(data, headers);
 
         try {
             restTemplate.exchange(URL, HttpMethod.POST, entity, AirHumidifierData.class);
         } catch (ResourceAccessException e) {
-            logger.error(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
     }
 

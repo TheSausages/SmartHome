@@ -53,6 +53,7 @@ public class SecurityConfig {
                 .mvcMatchers("/api/data/allAirConditionerMeasurements").permitAll()
                 .mvcMatchers("/api/data/lastAirHumidifierMeasurements").permitAll()
                 .mvcMatchers("/api/data/allAirHumidifierMeasurements").permitAll()
+                .mvcMatchers("/api/data/latlong/*").permitAll()
                 .mvcMatchers("/api/**").authenticated()
                 .anyRequest().denyAll()
                 .and()

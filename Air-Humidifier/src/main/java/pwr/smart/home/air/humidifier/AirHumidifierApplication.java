@@ -3,7 +3,6 @@ package pwr.smart.home.air.humidifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import pwr.smart.home.air.humidifier.sensor.service.DataEmitter;
 import pwr.smart.home.air.humidifier.sensor.model.Sensor;
 import pwr.smart.home.air.humidifier.sensor.model.SensorType;
 import pwr.smart.home.air.humidifier.sensor.service.StatusService;

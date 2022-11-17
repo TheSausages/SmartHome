@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import pwr.smart.home.air.filter.sensor.model.Sensor;
 import pwr.smart.home.air.filter.sensor.model.SensorType;
-import pwr.smart.home.air.filter.sensor.service.DataEmitter;
 import pwr.smart.home.air.filter.sensor.service.StatusService;
 
 

@@ -8,9 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
-
 import pwr.smart.home.data.model.AirHumidifierData;
 import pwr.smart.home.data.model.enums.SensorType;
 import pwr.smart.home.data.service.AirHumidifierService;
@@ -18,7 +20,7 @@ import pwr.smart.home.data.service.MeasurementService;
 
 @RestControllerWithBasePath
 public class AirHumidifierController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AirFilterController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AirHumidifierController.class);
 
     @Autowired
     AirHumidifierService airHumidifierService;

@@ -8,7 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
 import pwr.smart.home.data.model.AirConditionerData;
 import pwr.smart.home.data.model.enums.SensorType;
@@ -17,7 +20,7 @@ import pwr.smart.home.data.service.MeasurementService;
 
 @RestControllerWithBasePath
 public class AirConditioningController {
-    private static final Logger logger = LoggerFactory.getLogger(AirConditioningController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AirConditioningController.class);
 
     @Autowired
     private AirConditionerService airConditionerService;
@@ -27,7 +30,7 @@ public class AirConditioningController {
 
     @PostMapping("/temperature")
     public ResponseEntity<?> getAirConditionerMeasurements(@RequestBody AirConditionerData airConditionerData) {
-        logger.info(airConditionerData.toString());
+        LOGGER.info(airConditionerData.toString());
         airConditionerService.addAirConditionerMeasurements(airConditionerData);
         return ResponseEntity.ok().build();
     }
