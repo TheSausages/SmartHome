@@ -1,4 +1,4 @@
-package pwr.smart.home.control.weather.model;
+package pwr.smart.home.control.weather.model.request;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class WeatherRequest {
+    protected final static String pattern = "yyyy-MM-dd";
     private Float latitude;
     private Float longitude;
     private String timezone;

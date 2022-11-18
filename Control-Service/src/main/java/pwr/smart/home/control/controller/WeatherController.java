@@ -12,8 +12,8 @@ import pwr.smart.home.common.controllers.RestControllerWithBasePath;
 import pwr.smart.home.control.model.Endpoint;
 import pwr.smart.home.control.model.Location;
 import pwr.smart.home.control.weather.OpenMeteo;
-import pwr.smart.home.control.weather.model.AirQualityRequest;
-import pwr.smart.home.control.weather.model.ForecastWeatherRequest;
+import pwr.smart.home.control.weather.model.request.AirQualityRequest;
+import pwr.smart.home.control.weather.model.request.ForecastWeatherRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,8 +34,7 @@ public class WeatherController {
             ForecastWeatherRequest forecastWeatherRequest = new ForecastWeatherRequest(
                     location.get().getLatitude(),
                     location.get().getLongitude(),
-                    ForecastWeatherRequest.dailyParameters,
-                    true
+                    ForecastWeatherRequest.dailyParameters
             );
             return ResponseEntity.ok(openMeteo.getTodayAndTomorrowWeather(forecastWeatherRequest));
         }

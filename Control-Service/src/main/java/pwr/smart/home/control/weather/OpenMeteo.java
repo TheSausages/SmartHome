@@ -10,9 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import pwr.smart.home.control.weather.model.AirQualityRequest;
-import pwr.smart.home.control.weather.model.AirQualityResponse;
-import pwr.smart.home.control.weather.model.ForecastWeatherRequest;
+import pwr.smart.home.control.weather.model.request.AirQualityRequest;
+import pwr.smart.home.control.weather.model.response.AirQualityResponse;
+import pwr.smart.home.control.weather.model.request.ForecastWeatherRequest;
+import pwr.smart.home.control.weather.model.response.ForecastWeatherResponse;
 
 import java.net.URI;
 import java.util.Objects;
@@ -27,7 +28,7 @@ public class OpenMeteo {
     private final static String AIR_QUALITY_PATH = "/v1/air-quality";
 
 
-    public String getTodayAndTomorrowWeather(ForecastWeatherRequest value) {
+    public ForecastWeatherResponse getTodayAndTomorrowWeather(ForecastWeatherRequest value) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
@@ -35,14 +36,14 @@ public class OpenMeteo {
             HttpEntity<String> entity = new HttpEntity<>(headers);
             URI uri = UriComponentsBuilder.fromUriString(WEATHER_URL + FORECAST_PATH + value.toString()).build().encode().toUri();
 
-            ResponseEntity<?> response = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
-            String returned = Objects.requireNonNull(response.getBody()).toString();
-            LOGGER.info(returned);
+            ResponseEntity<ForecastWeatherResponse> response = restTemplate.exchange(uri, HttpMethod.GET, entity, ForecastWeatherResponse.class);
+            ForecastWeatherResponse returned = Objects.requireNonNull(response.getBody());
+            LOGGER.info(String.valueOf(returned));
             return returned;
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());
         }
-        return "";
+        return null;
     }
 
     public AirQualityResponse getCurrentAirCondition(AirQualityRequest airQualityRequest) {

@@ -1,4 +1,4 @@
-package pwr.smart.home.control.weather.model;
+package pwr.smart.home.control.weather.model.request;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,7 +16,6 @@ public class AirQualityRequest extends WeatherRequest {
     public AirQualityRequest(float latitude, float longitude) {
         super(latitude, longitude);
         this.setHourly(hourlyParameters);
-        String pattern = "yyyy-MM-dd";
         String dateInString = new SimpleDateFormat(pattern).format(new Date());
         this.setStartDate(dateInString);
         this.setEndDate(dateInString);
