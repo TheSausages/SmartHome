@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
+import pwr.smart.home.common.error.ErrorDTO;
 import pwr.smart.home.data.dao.User;
 import pwr.smart.home.data.model.Location;
 import pwr.smart.home.data.service.UserService;
@@ -24,7 +25,7 @@ public class HomeController {
         if (user.isPresent()) {
             return ResponseEntity.ok(new Location(user.get().getHome().getLatitude(), user.get().getHome().getLongitude()));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong house");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Wrong house").status(HttpStatus.BAD_REQUEST).build());
         }
     }
 }

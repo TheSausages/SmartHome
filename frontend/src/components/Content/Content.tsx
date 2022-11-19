@@ -8,6 +8,7 @@ import {add_device_path, add_sensor_path, help_path, history_path, settings_path
 import {DeviceDestiny} from '../../common/DeviceType';
 import Settings from './subcomponents/Settings';
 import DeviceAdder from './subcomponents/DeviceAdder';
+import PrivateRoute from "../PrivateRoute/PrivateRoute";
 
 export interface ContentProps
 {
@@ -17,12 +18,15 @@ export default function Content(props: ContentProps) {
     return (
         <main>
             <Routes>
-                <Route path={history_path} element={<History/>} />
+                {/*Public Routes*/}
                 <Route path={help_path} element={<Help/>} />
-                <Route path={settings_path} element={<Settings/>} />
-                <Route path={add_device_path} element={<DeviceAdder deviceDestiny={DeviceDestiny.FunctionalDevice}/>} />
-                <Route path={add_sensor_path} element={<DeviceAdder deviceDestiny={DeviceDestiny.Sensor}/>} />
-                <Route path="/" element={<Home/>} />
+
+                {/*Private Routes*/}
+                <Route path={history_path} element={<PrivateRoute><History/></PrivateRoute>} />
+                <Route path={settings_path} element={<PrivateRoute><Settings/></PrivateRoute>} />
+                <Route path={add_device_path} element={<PrivateRoute><DeviceAdder deviceDestiny={DeviceDestiny.FunctionalDevice}/></PrivateRoute>} />
+                <Route path={add_sensor_path} element={<PrivateRoute><DeviceAdder deviceDestiny={DeviceDestiny.Sensor}/></PrivateRoute>} />
+                <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
             </Routes>
         </main>
     )

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
+import pwr.smart.home.common.error.ErrorDTO;
 import pwr.smart.home.data.model.AirConditionerData;
 import pwr.smart.home.data.model.enums.SensorType;
 import pwr.smart.home.data.service.AirConditionerService;
@@ -40,7 +41,7 @@ public class AirConditioningController {
         if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.TEMPERATURE)) {
             return ResponseEntity.ok(airConditionerService.getLastAirConditionerMeasurement(sensorSerialNumber));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incompatible sensor");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Incompatible sensor").status(HttpStatus.BAD_REQUEST).build());
         }
     }
 
@@ -54,7 +55,7 @@ public class AirConditioningController {
         if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.TEMPERATURE)) {
             return ResponseEntity.ok(measurementService.getAllMeasurements(sensorSerialNumber, pageableSetting));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incompatible sensor");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Incompatible sensor").status(HttpStatus.BAD_REQUEST).build());
         }
 
     }
