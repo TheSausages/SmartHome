@@ -11,6 +11,7 @@ import pwr.smart.home.data.model.Location;
 import pwr.smart.home.data.service.UserService;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RestControllerWithBasePath
 public class HomeController {
@@ -18,7 +19,7 @@ public class HomeController {
     private UserService userHomeService;
 
     @GetMapping("/latlong/{userId}")
-    public ResponseEntity<?> getHouseLocation(@PathVariable String userId) {
+    public ResponseEntity<?> getHouseLocation(@PathVariable UUID userId) {
         Optional<User> user = userHomeService.findHomeByUserId(userId);
         if (user.isPresent()) {
             return ResponseEntity.ok(new Location(user.get().getHome().getLatitude(), user.get().getHome().getLongitude()));
