@@ -4,15 +4,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
+@Table(name = "home")
 public class Home {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,4 +23,7 @@ public class Home {
     private String country;
     private float longitude;
     private float latitude;
+    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Set<User> users;
 }
