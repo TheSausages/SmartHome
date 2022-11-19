@@ -11,8 +11,8 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pwr.smart.home.control.weather.model.request.AirQualityRequest;
-import pwr.smart.home.control.weather.model.response.AirQualityResponse;
 import pwr.smart.home.control.weather.model.request.ForecastWeatherRequest;
+import pwr.smart.home.control.weather.model.response.AirQualityResponse;
 import pwr.smart.home.control.weather.model.response.ForecastWeatherResponse;
 
 import java.net.URI;
