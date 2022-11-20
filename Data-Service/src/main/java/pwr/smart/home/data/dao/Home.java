@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -26,4 +27,17 @@ public class Home {
     @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private Set<User> users;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Home)) return false;
+        Home home = (Home) o;
+        return Objects.equals(id, home.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
