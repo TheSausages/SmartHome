@@ -1,8 +1,0 @@
-{
-  "realm": "SmartHome",
-  "auth-server-url": "http://localhost:8180/auth/",
-  "ssl-required": "external",
-  "resource": "smarthome",
-  "public-client": true,
-  "confidential-port": 0
-}

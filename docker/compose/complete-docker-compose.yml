@@ -156,6 +156,8 @@ services:
       # the host, not on the docker network
       REACT_APP_KEYCLOAK_URL: 'http://localhost:8180'
       REACT_APP_FRONTEND_URL: 'http://localhost:3000'
+      DATA_API_PATH: data-service/api/data
+      CONTROL_API_PATH: control-service/api/control
 
 volumes:
   postgresKeycloak:

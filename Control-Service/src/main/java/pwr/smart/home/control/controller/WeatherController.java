@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
+import pwr.smart.home.common.error.ErrorDTO;
 import pwr.smart.home.control.model.Endpoint;
 import pwr.smart.home.control.model.Location;
 import pwr.smart.home.control.weather.OpenMeteo;
@@ -39,7 +40,7 @@ public class WeatherController {
             );
             return ResponseEntity.ok(openMeteo.getTodayAndTomorrowWeather(forecastWeatherRequest));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong location");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Wrong location").status(HttpStatus.BAD_REQUEST).build());
     }
 
     @GetMapping("/air")
@@ -52,7 +53,7 @@ public class WeatherController {
             );
             return ResponseEntity.ok(openMeteo.getCurrentAirCondition(airQualityRequest));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong location");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Wrong location").status(HttpStatus.BAD_REQUEST).build());
     }
 
     private Optional<Location> getLongLat(String userId) {

@@ -2,17 +2,17 @@ export enum DeviceType {
     AirConditioner,
     Heater,
     AirFilter
-};
+}
 
 export enum SensorType {
     AirConditionSensor,
     Thermometer
-};
+}
 
 export enum DeviceDestiny {
     Sensor,
     FunctionalDevice
-};
+}
 
 export const sensorTypeMapper = (enumValue: SensorType) => {
     if(enumValue === SensorType.AirConditionSensor)

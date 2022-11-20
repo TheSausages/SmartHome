@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
     Box,
@@ -22,6 +22,10 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import BloodtypeIcon from '@mui/icons-material/Bloodtype';
 import {deviceNameMapper, DeviceType} from '../../../common/DeviceType';
+import {getHouseLocation, getWeatherInfo} from "../../../common/RequestHelper/RequestHelper";
+import UserService from "../../../service/UserService";
+import {useQueries} from "react-query";
+import {ForecastWeather} from "../../../data/Weather";
 
 export interface HomeProps
 {
@@ -38,6 +42,36 @@ export default function Home(props: HomeProps) {
     const [ requestedAirHumadity, setRequestedAirHumadity ] = useState<number>(40);
     const [ activeDevice, setActiveDevice ] = useState<DeviceType>(DeviceType.AirConditioner);
     const [ deviceParameters, setDeviceParameters ] = useState<DeviceParameter[]>([{name: 'PM 2.5', value: 5}, {name: 'PM 10', value: 23}]);
+    // const { isLoading, isError, data, error, refetch } = useQuery<Location, ApiError>(
+    //     ['GetHomeLocation'],
+    //     () => getHouseLocation(UserService.getUserId()),
+    //     {
+    //         onSuccess: (data) => {
+    //             console.log(data)
+    //         },
+    //     }
+    // )
+    const [homeLocationQuery, forecastWeatherQuery] = useQueries([
+            {
+                queryKey: ['GetHomeLocation'],
+                queryFn: () => getHouseLocation(UserService.getUserId()),
+                onSuccess: (data: Location) => {
+                    console.log(data)
+                }
+            },
+            {
+                queryKey: ['GetWeatherInfo'],
+                queryFn: (() => getWeatherInfo()),
+                onSuccess: (data: ForecastWeather) => {
+                    console.log(data)
+                }
+            }
+    ])
+
+    useEffect(() => {
+        homeLocationQuery.refetch();
+        forecastWeatherQuery.refetch();
+    }, [homeLocationQuery.refetch, forecastWeatherQuery.refetch])
 
     var hoursArray:number[] = [];
     var availableTemperatures:number[] = [];
@@ -98,7 +132,6 @@ export default function Home(props: HomeProps) {
     const airHumadityOptions = availableAirHumadityLevels.map((item, index) => (
         <MenuItem value={item} key={index}>{item}%</MenuItem>
     ))
-
 
     return (
         <Grid container spacing={2} sx={{marginTop: '20px'}}>

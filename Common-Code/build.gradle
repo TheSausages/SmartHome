@@ -16,6 +16,12 @@ dependencies {
     implementation "org.springframework.security:spring-security-oauth2-jose:${springJoseVersion}"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${springVersion}"
 
+    // lombok
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+
+    // Annotation Processors
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
     // Testing
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"

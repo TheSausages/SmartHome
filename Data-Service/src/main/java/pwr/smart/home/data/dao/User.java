@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -14,7 +15,7 @@ import javax.persistence.*;
 public class User {
     @Id
     @Column(name = "user_id")
-    private String userId;
+    private UUID userId;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "home_id", nullable = false)
     private Home home;

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
 import pwr.smart.home.data.dao.User;
+import pwr.smart.home.common.error.ErrorDTO;
 import pwr.smart.home.data.model.AirHumidifierData;
 import pwr.smart.home.data.model.enums.SensorType;
 import pwr.smart.home.data.service.AirHumidifierService;
@@ -55,7 +56,7 @@ public class AirHumidifierController {
         if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.AIR_HUMIDITY)) {
             return ResponseEntity.ok(airHumidifierService.getLastAirHumidifierMeasurement(sensorSerialNumber));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incompatible sensor");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Incompatible sensor").status(HttpStatus.BAD_REQUEST).build());
         }
     }
 
@@ -75,7 +76,7 @@ public class AirHumidifierController {
         if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.AIR_HUMIDITY)) {
             return ResponseEntity.ok(measurementService.getAllMeasurements(sensorSerialNumber, pageableSetting));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incompatible sensor");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Incompatible sensor").status(HttpStatus.BAD_REQUEST).build());
         }
     }
 }
