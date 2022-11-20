@@ -9,6 +9,8 @@ import pwr.smart.home.data.model.enums.SensorType;
 import pwr.smart.home.data.repository.MeasurementRepository;
 import pwr.smart.home.data.repository.SensorRepository;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +34,14 @@ public class MeasurementService {
         if (sensor.isPresent()) {
             Long sensorId = sensor.get().getId();
             return measurementRepository.findAllBySensorId(sensorId, pageableSetting);
-        } else return null;
+        } else return new ArrayList<>();
+    }
+
+    public List<Measurement> getMeasurementsBetweenDates(String sensorSerialNumber, Timestamp from, Timestamp to) {
+        Optional<Sensor> sensor = sensorRepository.findBySerialNumber(sensorSerialNumber);
+        if (sensor.isPresent()) {
+            return measurementRepository.findAllBySensorIdAndCreatedAtIsBetween(sensor.get().getId(), from, to);
+        }
+        return new ArrayList<>();
     }
 }

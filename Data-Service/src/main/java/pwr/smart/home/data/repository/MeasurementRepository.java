@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import pwr.smart.home.data.dao.Measurement;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface MeasurementRepository extends JpaRepository<Measurement, Long> {
@@ -11,4 +12,5 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
     Measurement findTopBySensorIdOrderByCreatedAtDesc(Long sensorId);
 
     List<Measurement> findAllBySensorId(Long id, Pageable pageable);
+    List<Measurement> findAllBySensorIdAndCreatedAtIsBetween(Long id, Timestamp from, Timestamp to);
 }

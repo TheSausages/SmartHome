@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
-import pwr.smart.home.data.dao.User;
 import pwr.smart.home.common.error.ErrorDTO;
+import pwr.smart.home.data.dao.User;
 import pwr.smart.home.data.model.AirConditionerData;
 import pwr.smart.home.data.model.enums.SensorType;
 import pwr.smart.home.data.service.AirConditionerService;
@@ -24,7 +24,6 @@ import pwr.smart.home.data.service.MeasurementService;
 import pwr.smart.home.data.service.SensorService;
 import pwr.smart.home.data.service.UserService;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @RestControllerWithBasePath
@@ -53,8 +52,7 @@ public class AirConditioningController {
     @GetMapping("/lastAirConditionerMeasurement")
     public ResponseEntity<?> getLastAirConditionerMeasurement(@AuthenticationPrincipal Jwt principal,
                                                               @RequestParam String sensorSerialNumber) {
-        if (!sensorService.isSensorInHome(sensorSerialNumber,
-                userService.findHomeByUserId(UUID.fromString(principal.getSubject())).map(User::getHome).orElse(null)))
+        if (!hasAccess(principal, sensorSerialNumber))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorDTO.builder().message("This is not your sensor!").status(HttpStatus.UNAUTHORIZED).build());
         if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.TEMPERATURE)) {
             return ResponseEntity.ok(airConditionerService.getLastAirConditionerMeasurement(sensorSerialNumber));
@@ -72,14 +70,17 @@ public class AirConditioningController {
         if (page != null && size != null) {
             pageableSetting = PageRequest.of(page, size, Sort.by("createdAt"));
         }
-        if (!sensorService.isSensorInHome(sensorSerialNumber,
-                userService.findHomeByUserId(UUID.fromString(principal.getSubject())).map(User::getHome).orElse(null)))
+        if (!hasAccess(principal, sensorSerialNumber))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorDTO.builder().message("This is not your sensor!").status(HttpStatus.UNAUTHORIZED).build());
         if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.TEMPERATURE)) {
             return ResponseEntity.ok(measurementService.getAllMeasurements(sensorSerialNumber, pageableSetting));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Incompatible sensor").status(HttpStatus.BAD_REQUEST).build());
         }
+    }
 
+    private boolean hasAccess(Jwt principal, String sensorSerialNumber) {
+        return sensorService.isSensorInHome(sensorSerialNumber,
+                userService.findHomeByUserId(UUID.fromString(principal.getSubject())).map(User::getHome).orElse(null));
     }
 }

@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .mvcMatchers("/api/data/air-quality").permitAll()
                 .mvcMatchers("/api/data/temperature").permitAll()
                 .mvcMatchers("/api/data/humidity").permitAll()
+                .mvcMatchers("/api/data/measurements").authenticated()
                 .mvcMatchers("/api/data/lastAirFilterMeasurements").authenticated()
                 .mvcMatchers("/api/data/allAirFilterMeasurements").authenticated()
                 .mvcMatchers("/api/data/lastAirConditionerMeasurement").authenticated()
