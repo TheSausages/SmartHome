@@ -24,6 +24,8 @@ import pwr.smart.home.data.service.MeasurementService;
 import pwr.smart.home.data.service.SensorService;
 import pwr.smart.home.data.service.UserService;
 
+import java.util.UUID;
+
 @RestControllerWithBasePath
 public class AirHumidifierController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AirHumidifierController.class);
@@ -51,8 +53,8 @@ public class AirHumidifierController {
     public ResponseEntity<?> getLastAirHumidifierMeasurement(@AuthenticationPrincipal Jwt principal,
                                                              @RequestParam String sensorSerialNumber) {
         if (!sensorService.isSensorInHome(sensorSerialNumber,
-                userService.findHomeByUserId(principal.getSubject()).map(User::getHome).orElse(null)))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("This is not your sensor!");
+                userService.findHomeByUserId(UUID.fromString(principal.getSubject())).map(User::getHome).orElse(null)))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorDTO.builder().message("This is not your sensor!").status(HttpStatus.UNAUTHORIZED).build());
         if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.AIR_HUMIDITY)) {
             return ResponseEntity.ok(airHumidifierService.getLastAirHumidifierMeasurement(sensorSerialNumber));
         } else {
@@ -71,8 +73,8 @@ public class AirHumidifierController {
         }
 
         if (!sensorService.isSensorInHome(sensorSerialNumber,
-                userService.findHomeByUserId(principal.getSubject()).map(User::getHome).orElse(null)))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("This is not your sensor!");
+                userService.findHomeByUserId(UUID.fromString(principal.getSubject())).map(User::getHome).orElse(null)))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorDTO.builder().message("This is not your sensor!").status(HttpStatus.UNAUTHORIZED).build());
         if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.AIR_HUMIDITY)) {
             return ResponseEntity.ok(measurementService.getAllMeasurements(sensorSerialNumber, pageableSetting));
         } else {

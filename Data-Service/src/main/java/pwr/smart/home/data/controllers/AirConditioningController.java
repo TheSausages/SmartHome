@@ -25,6 +25,7 @@ import pwr.smart.home.data.service.SensorService;
 import pwr.smart.home.data.service.UserService;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RestControllerWithBasePath
 public class AirConditioningController {
@@ -53,8 +54,8 @@ public class AirConditioningController {
     public ResponseEntity<?> getLastAirConditionerMeasurement(@AuthenticationPrincipal Jwt principal,
                                                               @RequestParam String sensorSerialNumber) {
         if (!sensorService.isSensorInHome(sensorSerialNumber,
-                userService.findHomeByUserId(principal.getSubject()).map(User::getHome).orElse(null)))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("This is not your sensor!");
+                userService.findHomeByUserId(UUID.fromString(principal.getSubject())).map(User::getHome).orElse(null)))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorDTO.builder().message("This is not your sensor!").status(HttpStatus.UNAUTHORIZED).build());
         if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.TEMPERATURE)) {
             return ResponseEntity.ok(airConditionerService.getLastAirConditionerMeasurement(sensorSerialNumber));
         } else {
@@ -72,8 +73,8 @@ public class AirConditioningController {
             pageableSetting = PageRequest.of(page, size, Sort.by("createdAt"));
         }
         if (!sensorService.isSensorInHome(sensorSerialNumber,
-                userService.findHomeByUserId(principal.getSubject()).map(User::getHome).orElse(null)))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("This is not your sensor!");
+                userService.findHomeByUserId(UUID.fromString(principal.getSubject())).map(User::getHome).orElse(null)))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorDTO.builder().message("This is not your sensor!").status(HttpStatus.UNAUTHORIZED).build());
         if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.TEMPERATURE)) {
             return ResponseEntity.ok(measurementService.getAllMeasurements(sensorSerialNumber, pageableSetting));
         } else {
