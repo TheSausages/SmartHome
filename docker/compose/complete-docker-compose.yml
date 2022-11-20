@@ -103,6 +103,10 @@ services:
       KEYCLOAK_URL: keycloak
       DATABASE_URL: postgres-app
       API_DEFAULT_PATH: /api/control
+      DATA_SERVICE_URL: data-service/api/data
+      AIR_CONDITIONER_URL: air-conditioner
+      AIR_HUMIDIFIER_URL: air-humidifier
+      AIR_FILTER_URL: air-filter
 
   air-humidifier:
     build:

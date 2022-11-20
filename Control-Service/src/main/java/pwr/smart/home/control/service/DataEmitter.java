@@ -18,7 +18,7 @@ import java.util.Objects;
 public class DataEmitter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataEmitter.class);
 
-    public String callForAction(String value, Endpoint endpoint) {
+    public String callForAction(String value, String endpoint) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
@@ -27,12 +27,11 @@ public class DataEmitter {
         HttpEntity<String> entity = new HttpEntity<>(value, headers);
 
         try {
-            ResponseEntity<?> response = restTemplate.exchange(endpoint.url, HttpMethod.POST, entity, String.class);
+            ResponseEntity<?> response = restTemplate.exchange(endpoint, HttpMethod.POST, entity, String.class);
             return Objects.requireNonNull(response.getBody()).toString();
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());
         }
         return "";
     }
-
 }

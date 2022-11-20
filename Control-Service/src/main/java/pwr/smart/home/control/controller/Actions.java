@@ -14,18 +14,21 @@ public class Actions {
     @Autowired
     DataEmitter dataEmitter;
 
+    @Autowired
+    Endpoint endpoint;
+
     @PostMapping("/temperature")
     public ResponseEntity<?> setTargetTemperature(@RequestParam String target) {
-        return ResponseEntity.ok(dataEmitter.callForAction(target, Endpoint.AIR_CONDITIONER_URL));
+        return ResponseEntity.ok(dataEmitter.callForAction(target, endpoint.getAirConditionerUrl()));
     }
 
     @PostMapping("/air-quality")
     public ResponseEntity<?> setTargetAirQuality(@RequestParam String target) {
-        return ResponseEntity.ok(dataEmitter.callForAction(target, Endpoint.AIR_FILTER_URL));
+        return ResponseEntity.ok(dataEmitter.callForAction(target, endpoint.getAirFilterUrl()));
     }
 
     @PostMapping("/humidity")
     public ResponseEntity<?> setTargetHumidity(@RequestParam String target) {
-        return ResponseEntity.ok(dataEmitter.callForAction(target, Endpoint.AIR_HUMIDIFIER_URL));
+        return ResponseEntity.ok(dataEmitter.callForAction(target, endpoint.getAirHumidifierUrl()));
     }
 }

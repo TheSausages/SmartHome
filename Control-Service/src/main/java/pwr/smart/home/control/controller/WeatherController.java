@@ -29,6 +29,9 @@ public class WeatherController {
     @Autowired
     OpenMeteo openMeteo;
 
+    @Autowired
+    Endpoint endpoint;
+
     @GetMapping("/weather")
     public ResponseEntity<?> getTodayAndTomorrowWeather(@AuthenticationPrincipal Jwt principal) {
         Optional<Location> location = getLongLat(principal.getSubject());
@@ -64,7 +67,7 @@ public class WeatherController {
             Map<String, String> params = new HashMap<>();
             params.put("userId", userId);
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<Location> response = restTemplate.exchange(Endpoint.DATA_SERVICE_URL.url + "/latlong/{userId}", HttpMethod.GET, entity, Location.class, params);
+            ResponseEntity<Location> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/latlong/{userId}", HttpMethod.GET, entity, Location.class, params);
             Location returned = Objects.requireNonNull(response.getBody());
             LOGGER.info(returned.getLongitude() + String.valueOf(returned.getLatitude()));
             return Optional.of(returned);
