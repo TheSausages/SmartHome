@@ -48,6 +48,13 @@ paths:
               schema:
                 type: string
               example: Incompatible sensor
+        "401":
+          description: "Unauthorized"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: This is not your sensor!
 
 
   /lastAirConditionerMeasurement:
@@ -79,6 +86,13 @@ paths:
               schema:
                 type: string
               example: Incompatible sensor
+        "401":
+          description: "Unauthorized"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: This is not your sensor!
 
 
   /allAirFilterMeasurements:
@@ -142,6 +156,13 @@ paths:
               schema:
                 type: string
               example: Incompatible sensor
+        "401":
+          description: "Unauthorized"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: This is not your sensor!
 
   /lastAirFilterMeasurements:
     servers:
@@ -190,6 +211,13 @@ paths:
               schema:
                 type: string
               example: Incompatible sensor
+        "401":
+          description: "Unauthorized"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: This is not your sensor!
 
   /allAirHumidifierMeasurements:
     servers:
@@ -234,6 +262,13 @@ paths:
               schema:
                 type: string
               example: Incompatible sensor
+        "401":
+          description: "Unauthorized"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: This is not your sensor!
 
   /lastAirHumidifierMeasurement:
     servers:
@@ -264,6 +299,54 @@ paths:
               schema:
                 type: string
               example: Incompatible sensor
+        "401":
+          description: "Unauthorized"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: This is not your sensor!
+  /measurements:
+    servers:
+      - url: https://localhost:8081/api/data
+    get:
+      tags:
+        - Historical measurements
+      summary: "Measurements between dates"
+      operationId: "getMeasurementsBetweenDates"
+      parameters:
+        - name: "sensorSerialNumber"
+          in: "query"
+          required: true
+          example: HIBWCDUIYHWASDAF
+          schema:
+            type: "string"
+        - name: "fromDate"
+          in: "query"
+          required: true
+          example: 2022-11-20 18:28:49.935
+          schema:
+            type: "timestamp"
+        - name: "toDate"
+          in: "query"
+          required: true
+          example: 2022-11-20 18:29:30.353
+          schema:
+            type: "timestamp"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Measurement'
+        "401":
+          description: "Unauthorized"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: This is not your sensor!
 
   /air-quality:
     servers:
@@ -373,6 +456,26 @@ components:
           type: integer
 
     Humidity:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        value:
+          type: number
+        createdAt:
+          type: string
+        sensorId:
+          type: integer
+      example:
+        id: 1
+        type: HUMIDITY
+        value: 56
+        createdAt: "2022-11-08 21:07:44"
+        "sensorId": 3
+
+    Measurement:
       type: object
       properties:
         id:
