@@ -22,5 +22,7 @@ public class Sensor {
     private String manufacturer;
     private String serialNumber;
     private Date createdAt;
-    private Long homeId;
+    @JoinColumn(name = "home_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Home home;
 }
