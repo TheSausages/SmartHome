@@ -22,26 +22,30 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import BloodtypeIcon from '@mui/icons-material/Bloodtype';
 import {deviceNameMapper, DeviceType} from '../../../common/DeviceType';
-import {getHouseLocation, getWeatherInfo} from "../../../common/RequestHelper/RequestHelper";
+import {getHouseLocation, getLastHumidifierFilterMeasurement, getWeatherInfo, getLastAirFilterMeasurement, getLastAirConditionerMeasurement} from "../../../common/RequestHelper/RequestHelper";
 import UserService from "../../../service/UserService";
-import {useQueries} from "react-query";
+import {useQueries, useQuery} from "react-query";
 import {ForecastWeather} from "../../../data/Weather";
+import { ApiError } from '../../../data/ApiError';
+import { Measurement, MeasurementType } from '../../../data/Sensort';
 
 export interface HomeProps
 {
 }
 
-type DeviceParameter = {
-    name: string,
-    value: number
-};
-
 export default function Home(props: HomeProps) {
-    const [ activityHour, setActivityHour ] = useState<number>(-1);
+    const [ startActivityHour, setStartActivityHour ] = useState<number>(-1);
+    const [ endActivityHour, setEndActivityHour ] = useState<number>(-1);
     const [ requestedTemperature, setRequestedTemperature ] = useState<number>(17);
     const [ requestedAirHumadity, setRequestedAirHumadity ] = useState<number>(40);
     const [ activeDevice, setActiveDevice ] = useState<DeviceType>(DeviceType.AirConditioner);
-    const [ deviceParameters, setDeviceParameters ] = useState<DeviceParameter[]>([{name: 'PM 2.5', value: 5}, {name: 'PM 10', value: 23}]);
+    const [ airConditionParameters, setAirConditionParameters ] = useState<Measurement[]>([]);
+    const [ todayMaxTemperature, setTodayMaxTemperature ] = useState<number>(0);
+    const [ todayMinTemperature, setTodayMinTemperature ] = useState<number>(0);
+    const [ tomorrowMaxTemperature, setTomorrowMaxTemperature ] = useState<number>(0);
+    const [ tomorrowMinTemperature, setTomorrowMinTemperature ] = useState<number>(0);
+    const [ temperature, setTemperature ] = useState<number>(0);
+    const [ humidity, setHumidity ] = useState<number>(0);
     // const { isLoading, isError, data, error, refetch } = useQuery<Location, ApiError>(
     //     ['GetHomeLocation'],
     //     () => getHouseLocation(UserService.getUserId()),
@@ -51,7 +55,7 @@ export default function Home(props: HomeProps) {
     //         },
     //     }
     // )
-    const [homeLocationQuery, forecastWeatherQuery] = useQueries([
+    const [homeLocationQuery, forecastWeatherQuery, airConditionQuery, temperatureQuery, humidityQuery] = useQueries([
             {
                 queryKey: ['GetHomeLocation'],
                 queryFn: () => getHouseLocation(UserService.getUserId()),
@@ -64,6 +68,34 @@ export default function Home(props: HomeProps) {
                 queryFn: (() => getWeatherInfo()),
                 onSuccess: (data: ForecastWeather) => {
                     console.log(data)
+                    setTodayMaxTemperature(data.daily.temperature_2m_max[0])
+                    setTomorrowMaxTemperature(data.daily.temperature_2m_max[1])
+                    setTodayMinTemperature(data.daily.temperature_2m_min[0])
+                    setTomorrowMinTemperature(data.daily.temperature_2m_min[1])
+                }
+            },
+            {
+                queryKey: ['AirConditionQuery'],
+                queryFn: (() => {
+                    return getLastAirFilterMeasurement("HIBWCDUIYHWASDAD")
+                }),
+                onSuccess: (data: Measurement) => {
+                    console.log(data)
+                    setAirConditionParameters(Array.isArray(data) ? data : [data])
+                }
+            },
+            {
+                queryKey: ['TemperatureQuery'],
+                queryFn: (() => getLastAirConditionerMeasurement("HIBWCDUIYHWASDAE")),
+                onSuccess: (data: Measurement) => {
+                    setTemperature(data.value);
+                }
+            },
+            {
+                queryKey: ['AirFilterQuery'],
+                queryFn: (() => getLastHumidifierFilterMeasurement("HIBWCDUIYHWASDAF")),
+                onSuccess: (data: Measurement) => {
+                    setHumidity(data.value);
                 }
             }
     ])
@@ -72,6 +104,12 @@ export default function Home(props: HomeProps) {
         homeLocationQuery.refetch();
         forecastWeatherQuery.refetch();
     }, [homeLocationQuery.refetch, forecastWeatherQuery.refetch])
+
+    useEffect(() => {
+        airConditionQuery.refetch();
+        temperatureQuery.refetch();
+        humidityQuery.refetch();
+    }, [activeDevice])
 
     var hoursArray:number[] = [];
     var availableTemperatures:number[] = [];
@@ -86,13 +124,34 @@ export default function Home(props: HomeProps) {
         availableAirHumadityLevels.push(i);
     }
 
-    const handleActivityHourChange = (value: number) => {
-        if(activityHour === value) {
-            setActivityHour(-1);
+    const handleStartActivityHourChange = (value: number) => {
+        if(startActivityHour === value) {
+            setStartActivityHour(-1);
         } else {
-            setActivityHour(value);
+            setStartActivityHour(value);
         }
     };
+
+    const handleEndActivityHourChange = (value: number) => {
+        if(endActivityHour === value) {
+            setEndActivityHour(-1);
+        } else {
+            setEndActivityHour(value);
+        }
+    }
+
+    const decideWhichHourSet = (value: number) => {
+        if(startActivityHour === -1 && endActivityHour === -1)
+        {
+            handleStartActivityHourChange(value);
+            return;
+        } else if (startActivityHour !== -1 && endActivityHour === -1) {
+            handleEndActivityHourChange(value);
+            return;
+        }
+        handleStartActivityHourChange(value);
+        handleEndActivityHourChange(-1);
+    }
 
     const handleOnTemperatureChange = (e: SelectChangeEvent) => {
         setRequestedTemperature(parseInt(e.target.value));
@@ -106,20 +165,30 @@ export default function Home(props: HomeProps) {
         setActiveDevice(device);
     }
 
-    const deviceParameterRows = deviceParameters.map((item, index) => (
+    const AirConditionRows = airConditionParameters.map((item, index) => (
         <TableRow sx={{backgroundColor: 'green'}} key={index}>
-            <TableCell>{item.name}</TableCell>
+            <TableCell>{item.type}</TableCell>
             <TableCell>{item.value}</TableCell>
         </TableRow>
     ));
+
+    const TemperatureRow = (<TableRow sx={{backgroundColor: 'green'}}>
+    <TableCell>Temperatura</TableCell>
+    <TableCell>{temperature}°C</TableCell>
+    </TableRow>);
+
+    const AirHumidityRow = (<TableRow sx={{backgroundColor: 'green'}}>
+    <TableCell>Wilgotność</TableCell>
+    <TableCell>{humidity}%</TableCell>
+    </TableRow>);
 
     
 
     const hoursList = hoursArray.map((item, index) => (
         <Grid item xs={1} key={index}>
             <Button sx={{border: 1, borderRadius: '5px', borderColor: '#bfbdbd', color:'black'}} 
-                onClick={() => handleActivityHourChange(item)} variant={activityHour === item ? "contained" : "outlined"}
-                color={activityHour === item ? "primary" : "secondary"}>
+                onClick={() => decideWhichHourSet(item)} variant={startActivityHour === item || endActivityHour === item ? "contained" : "outlined"}
+                color={startActivityHour === item || endActivityHour === item ? "primary" : "secondary"}>
                     {item < 10 ? '0'+ item : item}:00
             </Button>
         </Grid>
@@ -136,26 +205,26 @@ export default function Home(props: HomeProps) {
     return (
         <Grid container spacing={2} sx={{marginTop: '20px'}}>
             <Grid item xs={1}>
-                <Box sx={{marginTop: '50px', marginLeft: '10px'}}>
+                <Box sx={{marginTop: '50px', marginLeft: '10px', minWidth:'100px'}}>
                     <h3>Pogoda</h3>
-                    <Box sx={{border: 1, borderRadius: '10px', margin: '20px'}}>
+                    <Box sx={{border: 1, borderRadius: '10px', margin: '20px',  minWidth:'50px'}}>
                         <span>Dziś</span>
                         <br/>
                         <br/>
                         <WbSunnyIcon/>
-                        <p>17°C</p>
+                        <p>{todayMaxTemperature}°C</p>
                         <NightlightIcon/>
-                        <p>9°C</p>
+                        <p>{todayMinTemperature}°C</p>
 
                     </Box>
-                    <Box sx={{border: 1, borderRadius: '10px', margin: '20px'}}>
+                    <Box sx={{border: 1, borderRadius: '10px', margin: '20px', minWidth:'50px'}}>
                         <span>Jutro</span>
                         <br/>
                         <br/>
                         <WbSunnyIcon/>
-                        <p>17°C</p>
+                        <p>{tomorrowMaxTemperature}°C</p>
                         <NightlightIcon/>
-                        <p>9°C</p>
+                        <p>{tomorrowMinTemperature}°C</p>
 
                     </Box>
                 </Box>
@@ -175,11 +244,11 @@ export default function Home(props: HomeProps) {
                     <TableBody>
                         <TableRow>
                             <TableCell>Temperatura</TableCell>
-                            <TableCell>17°C</TableCell>
+                            <TableCell>{temperature}°C</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell>Wilgotność</TableCell>
-                            <TableCell>45%</TableCell>
+                            <TableCell>{humidity}%</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell>Jakość powietrza</TableCell>
@@ -202,13 +271,15 @@ export default function Home(props: HomeProps) {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {deviceParameterRows}
+                                {activeDevice === DeviceType.AirConditioner && TemperatureRow}
+                                {activeDevice === DeviceType.AirFilter && AirConditionRows}
+                                {activeDevice === DeviceType.Humidifier && AirHumidityRow}
                             </TableBody>
                         </Table>
                     </TableContainer>
                     <div>
                         {activeDevice === DeviceType.AirConditioner ? <FiberManualRecordIcon/> : <FiberManualRecordOutlinedIcon onClick={() => changeActiveDevice(DeviceType.AirConditioner)}/>}
-                        {activeDevice === DeviceType.Heater ? <FiberManualRecordIcon/> : <FiberManualRecordOutlinedIcon onClick={() => changeActiveDevice(DeviceType.Heater)}/>}
+                        {activeDevice === DeviceType.Humidifier ? <FiberManualRecordIcon/> : <FiberManualRecordOutlinedIcon onClick={() => changeActiveDevice(DeviceType.Humidifier)}/>}
                         {activeDevice === DeviceType.AirFilter ? <FiberManualRecordIcon/> : <FiberManualRecordOutlinedIcon onClick={() => changeActiveDevice(DeviceType.AirFilter)}/>}
                     </div>
                 </Box>

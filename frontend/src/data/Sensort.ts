@@ -1,9 +1,9 @@
 export enum MeasurementType {
-    CELSIUS,
-    HUMIDITY,
-    IAI,
-    PM25,
-    GAS
+    CELSIUS = "CELSIUS",
+    HUMIDITY = "HUMIDITY",
+    IAI = "IAI",
+    PM25 = "PM25",
+    GAS = "GAS"
 }
 
 export interface Measurement {

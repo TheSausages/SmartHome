@@ -36,8 +36,8 @@ const set_air_humidity_api_path = (target: number) => `/humidity?target=${target
 
 
 export const getHouseLocation = async (userId: string) => {
+    console.log("Jestem")
     addToken();
-
     const response = await request.get<Location>(data_request(house_location_api_path(userId)));
     return response.data;
 }

@@ -1,6 +1,6 @@
 export enum DeviceType {
     AirConditioner,
-    Heater,
+    Humidifier,
     AirFilter
 }
 
@@ -26,8 +26,8 @@ export const sensorTypeMapper = (enumValue: SensorType) => {
 export const deviceNameMapper = (enumValue: DeviceType) => {
     if(enumValue === DeviceType.AirConditioner) {
         return "Klimatyzator"
-    } else if (enumValue === DeviceType.Heater) {
-        return "Piec grzewczy"
+    } else if (enumValue === DeviceType.Humidifier) {
+        return "Nawilżacz powietrza"
     } else {
         return "Filtr powietrza"
     }

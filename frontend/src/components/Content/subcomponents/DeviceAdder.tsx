@@ -56,7 +56,7 @@ export default function DeviceAdder(props: DeviceProps) {
         <Select sx={{width: '250px'}} value={deviceType} onChange={handleOnDeviceTypeChange}>
             <MenuItem value={DeviceType.AirConditioner}>{deviceNameMapper(DeviceType.AirConditioner)}</MenuItem>
             <MenuItem value={DeviceType.AirFilter}>{deviceNameMapper(DeviceType.AirFilter)}</MenuItem>
-            <MenuItem value={DeviceType.Heater}>{deviceNameMapper(DeviceType.Heater)}</MenuItem>
+            <MenuItem value={DeviceType.Humidifier}>{deviceNameMapper(DeviceType.Humidifier)}</MenuItem>
         </Select>
     </>
     );
