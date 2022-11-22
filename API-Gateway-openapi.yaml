@@ -5,58 +5,6 @@ info:
   version: "0.1.0"
 
 paths:
-  /allAirConditionerMeasurements:
-    servers:
-      - url: https://localhost:8081/api/data
-    get:
-      tags:
-        - Temperature Sensor (/api/data)
-      summary: "All Measurements"
-      operationId: "getAllAirConditionerMeasurements"
-      parameters:
-        - name: "sensorSerialNumber"
-          in: "query"
-          required: true
-          example: HIBWCDUIYHWASDAE
-          schema:
-            type: "string"
-        - name: "page"
-          in: "query"
-          required: true
-          description: Pagination option; Page number, starts from 0
-          schema:
-            type: "integer"
-            format: "int32"
-        - name: "size"
-          in: "query"
-          required: true
-          description: Pagination option; Page size, number of elements on page
-          schema:
-            type: "integer"
-            format: "int32"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Temperature'
-        "400":
-          description: "Bad Request"
-          content:
-            text/plain:
-              schema:
-                type: string
-              example: Incompatible sensor
-        "401":
-          description: "Unauthorized"
-          content:
-            text/plain:
-              schema:
-                type: string
-              example: This is not your sensor!
-
-
   /lastAirConditionerMeasurement:
     servers:
       - url: https://localhost:8081/api/data
@@ -94,75 +42,6 @@ paths:
                 type: string
               example: This is not your sensor!
 
-
-  /allAirFilterMeasurements:
-    servers:
-      - url: https://localhost:8081/api/data
-    get:
-      tags:
-        - Air Quality Sensor (/api/data)
-      summary: "All Measurements"
-      operationId: "getAllAirFilterMeasurements"
-      parameters:
-        - name: "sensorSerialNumber"
-          in: "query"
-          required: true
-          example: HIBWCDUIYHWASDAD
-          schema:
-            type: "string"
-        - name: "page"
-          in: "query"
-          required: true
-          description: Pagination option; Page number, starts from 0
-          schema:
-            type: "integer"
-            format: "int32"
-        - name: "size"
-          in: "query"
-          required: true
-          description: Pagination option; Page size, number of elements on page
-          schema:
-            type: "integer"
-            format: "int32"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AirQuality'
-                example:
-                  - id: 1
-                    type: IAI
-                    value: 5
-                    createdAt: "2022-11-08 21:07:44"
-                    "sensorId": 1
-                  - id: 2
-                    type: PM25
-                    value: 12
-                    createdAt: "2022-11-08 21:07:44"
-                    sensorId": 1
-                  - id: 3
-                    type: GAS
-                    value: 12
-                    createdAt: "2022-11-08 21:07:44"
-                    "sensorId": 1
-        "400":
-          description: "Bad Request"
-          content:
-            text/plain:
-              schema:
-                type: string
-              example: Incompatible sensor
-        "401":
-          description: "Unauthorized"
-          content:
-            text/plain:
-              schema:
-                type: string
-              example: This is not your sensor!
 
   /lastAirFilterMeasurements:
     servers:
@@ -219,56 +98,7 @@ paths:
                 type: string
               example: This is not your sensor!
 
-  /allAirHumidifierMeasurements:
-    servers:
-      - url: https://localhost:8081/api/data
-    get:
-      tags:
-        - Humidity Sensor (/api/data)
-      summary: "All Measurements"
-      operationId: "getAllAirHumidifierMeasurements"
-      parameters:
-        - name: "sensorSerialNumber"
-          in: "query"
-          required: true
-          example: HIBWCDUIYHWASDAF
-          schema:
-            type: "string"
-        - name: "page"
-          in: "query"
-          required: true
-          description: Pagination option; Page number, starts from 0
-          schema:
-            type: "integer"
-            format: "int32"
-        - name: "size"
-          in: "query"
-          required: true
-          description: Pagination option; Page size, number of elements on page
-          schema:
-            type: "integer"
-            format: "int32"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Humidity'
-        "400":
-          description: "Bad Request"
-          content:
-            text/plain:
-              schema:
-                type: string
-              example: Incompatible sensor
-        "401":
-          description: "Unauthorized"
-          content:
-            text/plain:
-              schema:
-                type: string
-              example: This is not your sensor!
+
 
   /lastAirHumidifierMeasurement:
     servers:
@@ -326,13 +156,13 @@ paths:
           required: true
           example: 2022-11-20 18:28:49.935
           schema:
-            type: "timestamp"
+            type: "string"
         - name: "toDate"
           in: "query"
           required: true
           example: 2022-11-20 18:29:30.353
           schema:
-            type: "timestamp"
+            type: "string"
       responses:
         "200":
           description: "OK"

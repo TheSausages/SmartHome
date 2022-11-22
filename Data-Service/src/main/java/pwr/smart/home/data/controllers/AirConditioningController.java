@@ -3,9 +3,6 @@ package pwr.smart.home.data.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -61,23 +58,6 @@ public class AirConditioningController {
         }
     }
 
-    @GetMapping("/allAirConditionerMeasurements")
-    public ResponseEntity<?> getAllAirConditionerMeasurements(@AuthenticationPrincipal Jwt principal,
-                                                              @RequestParam String sensorSerialNumber,
-                                                              @RequestParam Integer page,
-                                                              @RequestParam Integer size) {
-        Pageable pageableSetting = Pageable.unpaged();
-        if (page != null && size != null) {
-            pageableSetting = PageRequest.of(page, size, Sort.by("createdAt"));
-        }
-        if (!hasAccess(principal, sensorSerialNumber))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorDTO.builder().message("This is not your sensor!").status(HttpStatus.UNAUTHORIZED).build());
-        if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.TEMPERATURE)) {
-            return ResponseEntity.ok(measurementService.getAllMeasurements(sensorSerialNumber, pageableSetting));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Incompatible sensor").status(HttpStatus.BAD_REQUEST).build());
-        }
-    }
 
     private boolean hasAccess(Jwt principal, String sensorSerialNumber) {
         return sensorService.isSensorInHome(sensorSerialNumber,

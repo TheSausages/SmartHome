@@ -3,9 +3,6 @@ package pwr.smart.home.data.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +21,6 @@ import pwr.smart.home.data.service.MeasurementService;
 import pwr.smart.home.data.service.SensorService;
 import pwr.smart.home.data.service.UserService;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @RestControllerWithBasePath
@@ -57,39 +53,6 @@ public class AirFilterController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorDTO.builder().message("This is not your sensor!").status(HttpStatus.UNAUTHORIZED).build());
         if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.AIR_POLLUTION)) {
             return ResponseEntity.ok(airFilterService.getLastAirFilterMeasurements(sensorSerialNumber));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Incompatible sensor").status(HttpStatus.BAD_REQUEST).build());
-        }
-    }
-
-    @GetMapping("/allAirFilterMeasurements")
-    public ResponseEntity<?> getAllAirFilterMeasurements(@AuthenticationPrincipal Jwt principal,
-                                                         @RequestParam String sensorSerialNumber,
-                                                         @RequestParam Integer page,
-                                                         @RequestParam Integer size) {
-        Pageable pageableSetting = Pageable.unpaged();
-        if (page != null && size != null) {
-            pageableSetting = PageRequest.of(page, size, Sort.by("createdAt"));
-        }
-
-        if (!hasAccess(principal, sensorSerialNumber))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorDTO.builder().message("This is not your sensor!").status(HttpStatus.UNAUTHORIZED).build());
-        if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.AIR_POLLUTION)) {
-            return ResponseEntity.ok(measurementService.getAllMeasurements(sensorSerialNumber, pageableSetting));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Incompatible sensor").status(HttpStatus.BAD_REQUEST).build());
-        }
-    }
-
-    @GetMapping("/airFilterMeasurements")
-    public ResponseEntity<?> getAirConditionerMeasurementsBetweenDates(@AuthenticationPrincipal Jwt principal,
-                                                                       @RequestParam String sensorSerialNumber,
-                                                                       @RequestParam Timestamp fromDate,
-                                                                       @RequestParam Timestamp toDate) {
-        if (!hasAccess(principal, sensorSerialNumber))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorDTO.builder().message("This is not your sensor!").status(HttpStatus.UNAUTHORIZED).build());
-        if (measurementService.isSensorCompatibleType(sensorSerialNumber, SensorType.TEMPERATURE)) {
-            return ResponseEntity.ok(measurementService.getMeasurementsBetweenDates(sensorSerialNumber, fromDate, toDate));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Incompatible sensor").status(HttpStatus.BAD_REQUEST).build());
         }
