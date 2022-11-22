@@ -1,6 +1,7 @@
 import axios from 'axios';
 import UserService from "../../service/UserService";
 import {ApiError} from "../../data/ApiError";
+import { SensorQueryParameters } from '../../data/Sensort';
 
 
 const request = axios.create({
@@ -27,6 +28,7 @@ const air_filter_last_api_path = (sensorSerialNumber: string) => `/lastAirFilter
 const air_filter_all_api_path = (sensorSerialNumber: string, page: number, size: number) => `/allAirFilterMeasurements?sensorSerialNumber=${sensorSerialNumber}&page=${page}&size=${size}`
 const air_humidifier_last_api_path = (sensorSerialNumber: string) => `/lastAirHumidifierMeasurement?sensorSerialNumber=${sensorSerialNumber}`
 const air_humidifier_all_api_path = (sensorSerialNumber: string, page: number, size: number) => `/allAirHumidifierMeasurements?sensorSerialNumber=${sensorSerialNumber}&page=${page}&size=${size}`
+const sensor_measurements_from_date_to_date_api_path = (sensorSerialNumber: string, startDate: string, endDate: string) => `/measurements?sensorSerialNumber=${sensorSerialNumber}&fromDate=${startDate} 00:00:00.000&toDate=${endDate} 23:59:59.999`;
 
 const weather_info_api_path = () => '/weather'
 const air_info_api_path = () => '/air'
@@ -36,7 +38,6 @@ const set_air_humidity_api_path = (target: number) => `/humidity?target=${target
 
 
 export const getHouseLocation = async (userId: string) => {
-    console.log("Jestem")
     addToken();
     const response = await request.get<Location>(data_request(house_location_api_path(userId)));
     return response.data;
@@ -82,6 +83,13 @@ export const getAllHumidifierFilterMeasurement = async (sensorSerialNumber: stri
     const response = await request.get(data_request(air_humidifier_all_api_path(sensorSerialNumber, page, size)));
     return response.data;
 }
+
+export const getSensorMeasurementFromDateToDate = async (parameterObject: SensorQueryParameters) => {
+    addToken();
+
+    const response = await request.get(data_request(sensor_measurements_from_date_to_date_api_path(parameterObject.sensorSerialNumber, parameterObject.startDate, parameterObject.endDate)))
+    return response.data
+}  
 
 export const getWeatherInfo = async () => {
     addToken();

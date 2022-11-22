@@ -6,6 +6,13 @@ export enum MeasurementType {
     GAS = "GAS"
 }
 
+export interface SensorQueryParameters
+{
+    sensorSerialNumber: string,
+    startDate: string,
+    endDate: string
+}
+
 export interface Measurement {
     id: number;
     type: MeasurementType;

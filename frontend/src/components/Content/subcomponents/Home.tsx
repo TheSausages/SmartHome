@@ -75,7 +75,7 @@ export default function Home(props: HomeProps) {
                 }
             },
             {
-                queryKey: ['AirConditionQuery'],
+                queryKey: ['AirFilterQuery'],
                 queryFn: (() => {
                     return getLastAirFilterMeasurement("HIBWCDUIYHWASDAD")
                 }),
