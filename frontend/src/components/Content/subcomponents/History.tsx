@@ -7,14 +7,16 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {deviceNameMapper, DeviceType} from '../../../common/DeviceType';
 import { useMutation } from 'react-query';
 import { getSensorMeasurementFromDateToDate } from '../../../common/RequestHelper/RequestHelper';
-import { Measurement } from '../../../data/Sensort';
+import { Measurement, MeasurementType } from '../../../data/Sensort';
 import { ApiError } from '../../../data/ApiError';
-import { LineChart, XAxis, YAxis, Line } from 'recharts';
+import { LineChart, XAxis, YAxis, Line, Legend, Tooltip } from 'recharts';
+import moment from 'moment';
 
 export interface HistoryProps
 {
 }
 
+const supportedMeasurement: MeasurementType[] = [ MeasurementType.GAS, MeasurementType.IAI, MeasurementType.PM25]
 
 
 export default function History(props: HistoryProps) {
@@ -37,13 +39,16 @@ export default function History(props: HistoryProps) {
         if (device === DeviceType.AirConditioner)
         {
             setActiveSensorId("HIBWCDUIYHWASDAE");
+            setReceivedData([]);
             return;
         } else if (device === DeviceType.AirFilter)
         {
             setActiveSensorId("HIBWCDUIYHWASDAD");
+            setReceivedData([]);
             return;
         }
-        setActiveSensorId("HIBWCDUIYHWASDAF")
+        setActiveSensorId("HIBWCDUIYHWASDAF");
+        setReceivedData([]);
     }
 
     const changeActiveDevice = (device: DeviceType) => {
@@ -60,14 +65,29 @@ export default function History(props: HistoryProps) {
             return;
         }
         parameterQuery.mutate({sensorSerialNumber: activeSensorId, startDate: startDate, endDate: endDate}, {onSuccess: (response: Measurement[]) => {
-            console.log(response);
-            setReceivedData(response);
+            console.log(response.sort((first: Measurement, second:Measurement) => (first.createdAt > second.createdAt ? 1 : -1)));
+            setReceivedData(response.sort((first: Measurement, second:Measurement) => (first.createdAt > second.createdAt ? 1 : -1)));
         }})
     }
 
-    const linearChart = (<LineChart width={500} height={300} data={receivedData}>
-        <XAxis />
-        <YAxis />
+    const linearChart = activeDevice === DeviceType.AirFilter ?
+    (
+    <>
+        {supportedMeasurement.map((item: MeasurementType) => (
+    <LineChart width={700} height={300} key={item}>
+        <Tooltip />
+        <XAxis dataKey="createdAt" tickFormatter={(value: Date) => (value ? moment(value).format('MM-DD-YYYY hh:mm') : value)} minTickGap={15}/>
+        <YAxis dataKey="value"/>
+        <Legend/>
+        <Line name={item} type="monotone" dataKey="value" stroke="#121212" data={receivedData.filter((value: Measurement) => (value.type === item))} />
+    </LineChart>
+        ))}
+    </>
+    ) :
+    (
+    <LineChart width={700} height={300} data={receivedData}>
+        <XAxis dataKey="createdAt" tickFormatter={(value: Date) => (value ? moment(value).format('MM-DD-YYYY hh:mm') : value)} minTickGap={15}/>
+        <YAxis dataKey="value"/>
         <Line type="monotone" dataKey="value" stroke="#8884d8"/>
     </LineChart>);
 
@@ -88,13 +108,9 @@ export default function History(props: HistoryProps) {
                     </form>
                 <br/>
                 <br/>
-                {/* <Box sx={{border: 1, minHeight: '200px', marginLeft: '10px', marginRight: '10px'}}>
-                    <p>Coś tam</p>
-                </Box> */}
-                {linearChart}
-                <Box sx={{border: 1, minHeight: '200px', marginLeft: '10px', marginRight: '10px', marginTop:'10px'}}>
-                    <p>Coś tam</p>
-                </Box>
+                <>
+                {receivedData.length > 0 && linearChart}
+                </>
                 {activeDevice === DeviceType.AirConditioner ? <FiberManualRecordIcon/> : <FiberManualRecordOutlinedIcon onClick={() => changeActiveDevice(DeviceType.AirConditioner)}/>}
                 {activeDevice === DeviceType.Humidifier ? <FiberManualRecordIcon/> : <FiberManualRecordOutlinedIcon onClick={() => changeActiveDevice(DeviceType.Humidifier)}/>}
                 {activeDevice === DeviceType.AirFilter ? <FiberManualRecordIcon/> : <FiberManualRecordOutlinedIcon onClick={() => changeActiveDevice(DeviceType.AirFilter)}/>}
