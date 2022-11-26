@@ -1,11 +1,9 @@
 package pwr.smart.home.data.dao;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pwr.smart.home.data.model.enums.DeviceType;
-import pwr.smart.home.data.model.enums.SensorType;
+import pwr.smart.home.common.model.enums.DeviceType;
 
 import javax.persistence.*;
 import java.sql.Date;

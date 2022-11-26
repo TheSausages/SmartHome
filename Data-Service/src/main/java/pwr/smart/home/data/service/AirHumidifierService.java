@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pwr.smart.home.data.dao.Measurement;
 import pwr.smart.home.data.dao.Sensor;
 import pwr.smart.home.data.model.AirHumidifierData;
-import pwr.smart.home.data.model.enums.MeasurementType;
+import pwr.smart.home.common.model.enums.MeasurementType;
 import pwr.smart.home.data.repository.MeasurementRepository;
 import pwr.smart.home.data.repository.SensorRepository;
 

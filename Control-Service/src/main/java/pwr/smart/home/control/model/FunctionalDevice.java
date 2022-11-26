@@ -1,28 +1,24 @@
-package pwr.smart.home.data.dao;
+package pwr.smart.home.control.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pwr.smart.home.common.model.enums.SensorType;
+import pwr.smart.home.common.model.enums.DeviceType;
 
-import javax.persistence.*;
 import java.sql.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-public class Sensor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class FunctionalDevice {
     private Long id;
-    @Enumerated(value = EnumType.STRING)
-    private SensorType type;
+    private DeviceType type;
     private String name;
     private String manufacturer;
     private String serialNumber;
+    private int consumedElectricity;
     private Date createdAt;
     private boolean isConnected;
-    @Column(name = "home_id")
     private Long homeId;
 }
+

@@ -6,11 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
 import pwr.smart.home.common.error.ErrorDTO;
+import pwr.smart.home.data.model.FunctionalDeviceWithMeasurementsDTO;
 import pwr.smart.home.data.dao.FunctionalDevice;
 import pwr.smart.home.data.dao.User;
 import pwr.smart.home.data.service.FunctionalDeviceService;
+import pwr.smart.home.data.service.HomeService;
 import pwr.smart.home.data.service.UserService;
 
 import java.util.List;
@@ -34,5 +37,12 @@ public class FunctionalDeviceController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ErrorDTO.builder().message("Wrong house").status(HttpStatus.BAD_REQUEST).build());
         }
+    }
+
+    @GetMapping("/homeFunctionalDevices/{homeId}")
+    public ResponseEntity<?> getHomeFunctionalDevicesWithMeasurements(@PathVariable(name = "homeId") long homeId) {
+        return ResponseEntity.ok(functionalDeviceService.getFunctionalDevicesWithMeasurementsForHome(
+                homeId
+        ));
     }
 }

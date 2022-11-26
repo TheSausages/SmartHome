@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pwr.smart.home.data.dao.Measurement;
 import pwr.smart.home.data.dao.Sensor;
-import pwr.smart.home.data.model.enums.SensorType;
+import pwr.smart.home.common.model.enums.SensorType;
 import pwr.smart.home.data.repository.MeasurementRepository;
 import pwr.smart.home.data.repository.SensorRepository;
 

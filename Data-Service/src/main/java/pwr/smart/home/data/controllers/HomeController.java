@@ -17,6 +17,7 @@ import pwr.smart.home.data.model.Location;
 import pwr.smart.home.data.service.HomeService;
 import pwr.smart.home.data.service.UserService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,6 +27,13 @@ public class HomeController {
     private UserService userHomeService;
     @Autowired
     private HomeService homeService;
+
+    @GetMapping("/homes")
+    public ResponseEntity<?> getHomes() {
+        List<Home> homes = homeService.findAllHomesWithActiveFunctionalDevices();
+
+        return ResponseEntity.ok(homes);
+    }
 
     @GetMapping("/latlong/{userId}")
     public ResponseEntity<?> getHouseLocation(@PathVariable UUID userId) {

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pwr.smart.home.data.model.enums.MeasurementType;
+import pwr.smart.home.common.model.enums.MeasurementType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
