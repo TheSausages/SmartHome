@@ -1,3 +1,5 @@
+import { SensorType } from "../common/DeviceType";
+
 export enum MeasurementType {
     CELSIUS = "CELSIUS",
     HUMIDITY = "HUMIDITY",
@@ -19,4 +21,20 @@ export interface Measurement {
     value: number;
     createdAt: Date;
     sensorId: number;
+}
+
+export interface SensorInfo
+{
+    serialNumber: string,
+    type: SensorType,
+    name: string,
+    connected: boolean
+}
+
+export interface SensorAdder
+{
+    serialNumber: string,
+    type: SensorType,
+    name: string,
+    manufacturer: string
 }

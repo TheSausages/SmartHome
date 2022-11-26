@@ -1,7 +1,9 @@
 import axios from 'axios';
 import UserService from "../../service/UserService";
 import {ApiError} from "../../data/ApiError";
-import { SensorQueryParameters } from '../../data/Sensort';
+import { SensorAdder, SensorQueryParameters } from '../../data/Sensort';
+import { HomeInfo } from '../../data/HomeInfo';
+import { FunctionalDeviceAdder } from '../../data/FunctionalDevices';
 
 
 const request = axios.create({
@@ -29,6 +31,12 @@ const air_filter_all_api_path = (sensorSerialNumber: string, page: number, size:
 const air_humidifier_last_api_path = (sensorSerialNumber: string) => `/lastAirHumidifierMeasurement?sensorSerialNumber=${sensorSerialNumber}`
 const air_humidifier_all_api_path = (sensorSerialNumber: string, page: number, size: number) => `/allAirHumidifierMeasurements?sensorSerialNumber=${sensorSerialNumber}&page=${page}&size=${size}`
 const sensor_measurements_from_date_to_date_api_path = (sensorSerialNumber: string, startDate: string, endDate: string) => `/measurements?sensorSerialNumber=${sensorSerialNumber}&fromDate=${startDate} 00:00:00.000&toDate=${endDate} 23:59:59.999`;
+const home_sensors_api_path = () => '/homeSensors';
+const home_functional_device_api_path = () => '/homeFunctionalDevices';
+const home_info_api_path = () => '/home';
+const update_home_info_api_path = () => '/editAddress';
+const add_functional_device_api_path = () => '/addFunctionalDevice';
+const add_sensor_api_path = () => '/addSensor';
 
 const weather_info_api_path = () => '/weather'
 const air_info_api_path = () => '/air'
@@ -42,6 +50,13 @@ export const getHouseLocation = async (userId: string) => {
     const response = await request.get<Location>(data_request(house_location_api_path(userId)));
     return response.data;
 }
+
+export const getHomeInfo = async() => {
+    addToken();
+    const response = await request.get(data_request(home_info_api_path()));
+    return response.data
+}
+
 export const getLastAirConditionerMeasurement = async (sensorSerialNumber: string) => {
     addToken();
 
@@ -123,5 +138,41 @@ export const setAirHumidity = async (target: number) => {
     addToken();
 
     const response =  await request.post(control_request(set_air_humidity_api_path(target)));
+    return response.data;
+}
+
+export const getAllHomeSensors = async () => {
+    addToken();
+
+    const response = await request.get(data_request(home_sensors_api_path()));
+    return response.data;
+}
+
+export const getAllHomeFunctionalDevices = async () => {
+    addToken();
+
+    const response = await request.get(data_request(home_functional_device_api_path()));
+    return response.data;
+};
+
+export const updateHomeInfo = async (parameters: HomeInfo) => {
+    addToken();
+
+    const response = await request.post(data_request(update_home_info_api_path()), {name : parameters.name, street: parameters.street,
+        city: parameters.city, postCode: parameters.postCode, country: parameters.country});
+    return response.data;
+};
+
+export const addNewFunctionalDevice = async (parameters: FunctionalDeviceAdder) => {
+    addToken();
+
+    const response = await request.post(data_request(add_functional_device_api_path()), {type: parameters.type, name: parameters.name, manufacturer: parameters.manufacturer, serialNumber: parameters.serialNumber, consumedElectricity: parameters.averageConsumptionPerHour});
+    return response.data;
+}
+
+export const addNewSensor = async (parameters: SensorAdder) => {
+    addToken();
+
+    const response = await request.post(data_request(add_sensor_api_path()), {type: parameters.type, name: parameters.name, manufacturer: parameters.manufacturer, serialNumber: parameters.serialNumber})
     return response.data;
 }

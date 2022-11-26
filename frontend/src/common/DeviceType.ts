@@ -5,8 +5,9 @@ export enum DeviceType {
 }
 
 export enum SensorType {
-    AirConditionSensor,
-    Thermometer
+    AirConditionSensor = "AIR_POLLUTION",
+    Temperature = "TEMPERATURE",
+    AirHumidity = "AIR_HUMIDITY"
 }
 
 export enum DeviceDestiny {
@@ -18,9 +19,10 @@ export const sensorTypeMapper = (enumValue: SensorType) => {
     if(enumValue === SensorType.AirConditionSensor)
     {
         return "Czujnik jakości powietrza";
-    } else {
-        return "Termometr";
+    } else if (enumValue === SensorType.Temperature) {
+        return "Czujnik temperatury";
     }
+    return "Czujnik nawilżenia powietrza"
 }
 
 export const deviceNameMapper = (enumValue: DeviceType) => {

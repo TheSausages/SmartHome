@@ -1,7 +1,9 @@
 import {Button, Input, InputLabel, MenuItem, Select} from '@mui/material';
 import {Box, Stack} from '@mui/system';
 import React, {useState} from 'react';
+import { useMutation } from 'react-query';
 import {DeviceDestiny, deviceNameMapper, DeviceType, SensorType, sensorTypeMapper} from '../../../common/DeviceType';
+import { addNewFunctionalDevice, addNewSensor } from '../../../common/RequestHelper/RequestHelper';
 
 export interface DeviceProps
 {
@@ -16,6 +18,8 @@ export default function DeviceAdder(props: DeviceProps) {
     const [ manufacturer, setManufacturer ] = useState<string>('');
     const [ serialNumber, setSerialNumber ] = useState<string>('');
     const [ averageConsumptionPerHour, setAverageConsumptionPerHour ] = useState<number>(0);
+    const addFunctionalDevice = useMutation(addNewFunctionalDevice);
+    const addSensor = useMutation(addNewSensor);
 
     const handleOnDeviceDestinyChange = (e: any) => setDeviceDestiny(e.target.value);
     const handleOnDeviceTypeChange = (e: any) => setDeviceType(e.target.value);
@@ -37,6 +41,17 @@ export default function DeviceAdder(props: DeviceProps) {
 
     const handleOnSubmit = (e: any) => {
         e.preventDefault();
+        if(deviceDestiny == DeviceDestiny.Sensor)
+        {
+            addSensor.mutate({serialNumber: serialNumber, type: sensorType, name: name, manufacturer: manufacturer}, {onSuccess: (response: any) => {
+                console.log(response);
+            }});
+        } else {
+            addFunctionalDevice.mutate({serialNumber: serialNumber, type: deviceType, name: name, manufacturer: manufacturer, averageConsumptionPerHour:averageConsumptionPerHour}, {onSuccess: (response: any) => {
+                console.log(response);
+            }});
+        }
+
     }
 
     const deviceTypeSelect = deviceDestiny === DeviceDestiny.Sensor ?
@@ -45,7 +60,8 @@ export default function DeviceAdder(props: DeviceProps) {
         <InputLabel sx={{display:'inline-block', width:"10%"}}>Typ czujnika:</InputLabel>
         <Select sx={{width: '250px'}}value={sensorType} onChange={handleOnSensorTypeChange}>
             <MenuItem value={SensorType.AirConditionSensor}>{sensorTypeMapper(SensorType.AirConditionSensor)}</MenuItem>
-            <MenuItem value={SensorType.Thermometer}>{sensorTypeMapper(SensorType.Thermometer)}</MenuItem>
+            <MenuItem value={SensorType.Temperature}>{sensorTypeMapper(SensorType.Temperature)}</MenuItem>
+            <MenuItem value={SensorType.AirHumidity}>{sensorTypeMapper(SensorType.AirHumidity)}</MenuItem>
         </Select>
     </>
     )
