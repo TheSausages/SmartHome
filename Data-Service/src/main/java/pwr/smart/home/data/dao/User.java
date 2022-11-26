@@ -16,7 +16,7 @@ public class User {
     @Id
     @Column(name = "user_id")
     private UUID userId;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "home_id", nullable = false)
     private Home home;
 }

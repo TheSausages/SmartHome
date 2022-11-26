@@ -15,4 +15,8 @@ public class HomeService {
     public Optional<Home> getHomeLocation(Long id) {
         return homeRepository.findById(id);
     }
+
+    public Home saveHome(Home home) {
+        return homeRepository.save(home);
+    }
 }

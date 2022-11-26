@@ -7,7 +7,9 @@ CREATE TABLE HOME (
     post_code VARCHAR(128) NOT NULL,
     country VARCHAR(128) NOT NULL,
     latitude FLOAT NOT NULL,
-    longitude FLOAT NOT NULL
+    longitude FLOAT NOT NULL,
+    preferred_temp INT NOT NULL DEFAULT 21,
+    preferred_hum INT NOT NULL DEFAULT 45
 );
 
 DROP TABLE IF EXISTS USER_HOME CASCADE;
@@ -27,6 +29,7 @@ CREATE TABLE SENSOR (
     manufacturer VARCHAR(128) NOT NULL,
     serial_number VARCHAR(128) NOT NULL,
     created_at DATE,
+    is_connected bool NOT NULL DEFAULT TRUE,
     home_id INT,
     FOREIGN KEY (home_id) REFERENCES HOME(ID)
 );
@@ -54,6 +57,7 @@ CREATE TABLE FUNCTIONAL_DEVICE (
     serial_number VARCHAR(128) NOT NULL,
     consumed_electricity INT NOT NULL,
     created_at DATE,
+    is_connected bool NOT NULL DEFAULT TRUE,
     home_id INT,
     FOREIGN KEY (home_id) REFERENCES HOME(ID)
 );

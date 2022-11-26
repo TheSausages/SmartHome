@@ -170,6 +170,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Measurement'
+              example:
+                "id": 1,
+                "name": "PWR",
+                "street": "STANISŁAWA WYSZYŃSKIEGO 27",
+                "city": "WROCŁAW",
+                "postCode": "50-370",
+                "country": "POLSKA",
+                "longitude": 17.060911,
+                "latitude": 51.10748,
+                "preferredTemp": 21,
+                "preferredHum": 45
         "401":
           description: "Unauthorized"
           content:
@@ -177,6 +188,123 @@ paths:
               schema:
                 type: string
               example: This is not your sensor!
+  /home:
+    servers:
+      - url: https://localhost:8081/api/data
+    get:
+      tags:
+        - Historical measurements
+      summary: "Home info"
+      operationId: "getHome"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Home'
+        "400":
+          description: "Bad request"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: Wrong house
+  /homeSensors:
+    servers:
+      - url: https://localhost:8081/api/data
+    get:
+      tags:
+        - Get all sensors in home
+      summary: "Sensors in home"
+      operationId: "getHomeSensors"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sensor'
+                example:
+                  - "id": 1,
+                    "type": "AIR_POLLUTION",
+                    "name": "Dual Scan AC3858/51",
+                    "manufacturer": "PHILIPS",
+                    "serialNumber": "HIBWCDUIYHWASDAD",
+                    "createdAt": "2022-11-01",
+                    "connected": true,
+                    "homeId": 1
+                  - "id": 2,
+                    "type": "TEMPERATURE",
+                    "name": "Klimatyzator ścienny ECO KEX",
+                    "manufacturer": "KAISAI",
+                    "serialNumber": "HIBWCDUIYHWASDAE",
+                    "connected": true,
+                    "homeId": 1
+                  - "id": 3,
+                    "type": "AIR_HUMIDITY",
+                    "name": "Nawilżacz powietrza HU4801/01",
+                    "manufacturer": "PHILIPS",
+                    "serialNumber": "HIBWCDUIYHWASDAF",
+                    "connected": true,
+                    "homeId": 1
+        "400":
+          description: "Bad request"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: Wrong house
+  /homeFunctionalDevices:
+    servers:
+      - url: https://localhost:8081/api/data
+    get:
+      tags:
+        - Get all functional devices in home
+      summary: "Functional devices in home"
+      operationId: "getHomeFunctionalDevices"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FunctionalDevice'
+                example:
+                  - "id": 1,
+                    "type": "AIR_FILTER",
+                    "name": "Dual Scan AC3858/51",
+                    "manufacturer": "PHILIPS",
+                    "serialNumber": "HIBWCDUIYHWASDAD",
+                    "consumedElectricity": 60,
+                    "createdAt": "2022-11-01",
+                    "connected": true,
+                    "homeId": 1
+                  - "id": 2,
+                    "type": "AIR_CONDITIONER",
+                    "name": "Klimatyzator ścienny ECO KEX",
+                    "manufacturer": "PHILIPS",
+                    "serialNumber": "HIBWCDUIYHWASDAE",
+                    "connected": true,
+                    "homeId": 1
+                  - "id": 3,
+                    "type": "AIR_HUMIDIFIER",
+                    "name": "Nawilżacz powietrza HU4801/01",
+                    "manufacturer": "PHILIPS",
+                    "serialNumber": "HIBWCDUIYHWASDAF",
+                    "connected": true,
+                    "homeId": 1
+        "400":
+          description: "Bad request"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: Wrong house
 
   /air-quality:
     servers:
@@ -201,7 +329,64 @@ paths:
             '*/*':
               schema:
                 type: "object"
-
+  /setHouseTemperature:
+    servers:
+      - url: https://localhost:8081/api/data
+    post:
+      tags:
+        - Set Preferred Temp in House
+      summary: " Set Preferred Temp"
+      operationId: "setHouseTemperature"
+      parameters:
+        - name: "houseTemperature"
+          in: "query"
+          description: "Target humidity [%]"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "404":
+          description: "Temperature must be between 0 and 30 degrees"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /setHouseHumidity:
+    servers:
+      - url: https://localhost:8081/api/data
+    post:
+      tags:
+        - Set Preferred Hum in House
+      summary: " Set Preferred Hum"
+      operationId: "setHouseHumidity"
+      parameters:
+        - name: "houseHumidity"
+          in: "query"
+          description: "Target humidity [%]"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "404":
+          description: "Humidity must be between 30 and 70 percent"
+          content:
+            '*/*':
+              schema:
+                type: "object"
   /humidity:
     servers:
       - url: https://localhost:8080/api/control
@@ -324,3 +509,68 @@ components:
         value: 56
         createdAt: "2022-11-08 21:07:44"
         "sensorId": 3
+    Sensor:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [ AIR_POLLUTION, TEMPERATURE, AIR_HUMIDITY ]
+        name:
+          type: string
+        manufacturer:
+          type: string
+        serialNumber:
+          type: string
+        createdAt:
+          type: string
+        isConnected:
+          type: boolean
+        homeId:
+          type: integer
+    FunctionalDevice:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [ AIR_FILTER, AIR_CONDITIONER, AIR_HUMIDIFIER ]
+        name:
+          type: string
+        manufacturer:
+          type: string
+        serialNumber:
+          type: string
+        consumedElectricity:
+          type: integer
+        connected:
+          type: boolean
+        createdAt:
+          type: string
+        homeId:
+          type: integer
+    Home:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        street:
+          type: string
+        city:
+          type: string
+        postCode:
+          type: string
+        country:
+          type: string
+        longitude:
+          type: number
+        latitude:
+          type: number
+        preferredTemp:
+          type: integer
+        preferredHum:
+          type: integer

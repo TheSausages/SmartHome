@@ -24,9 +24,8 @@ public class Home {
     private String country;
     private float longitude;
     private float latitude;
-    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    private Set<User> users;
+    private int preferredTemp;
+    private int preferredHum;
 
     @Override
     public boolean equals(Object o) {
