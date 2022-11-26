@@ -1,6 +1,5 @@
 package pwr.smart.home.data.dao;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +14,7 @@ import java.sql.Date;
 @Entity
 public class Sensor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Enumerated(value = EnumType.STRING)
     private SensorType type;

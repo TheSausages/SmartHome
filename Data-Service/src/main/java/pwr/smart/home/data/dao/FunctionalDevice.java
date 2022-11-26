@@ -1,11 +1,9 @@
 package pwr.smart.home.data.dao;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pwr.smart.home.data.model.enums.DeviceType;
-import pwr.smart.home.data.model.enums.SensorType;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -17,7 +15,7 @@ import java.sql.Date;
 @Table(name = "functional_device")
 public class FunctionalDevice {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Enumerated(value = EnumType.STRING)
     private DeviceType type;

@@ -58,7 +58,6 @@ public class AirConditioningController {
         }
     }
 
-
     private boolean hasAccess(Jwt principal, String sensorSerialNumber) {
         return sensorService.isSensorInHome(sensorSerialNumber,
                 userService.findHomeByUserId(UUID.fromString(principal.getSubject())).map(User::getHome).orElse(null));

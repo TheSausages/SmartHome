@@ -25,4 +25,8 @@ public class SensorService {
         Optional<List<Sensor>> sensor = sensorRepository.findSensorsByHomeId(home.getId());
         return sensor.orElse(new ArrayList<>());
     }
+
+    public Sensor addNewSensor(Sensor sensor) {
+        return sensorRepository.save(sensor);
+    }
 }

@@ -59,6 +59,8 @@ public class SecurityConfig {
                 .mvcMatchers("/api/data/*").authenticated()
                 .mvcMatchers("/api/data/latlong/*").permitAll()
                 .mvcMatchers("/api/**").authenticated()
+                .mvcMatchers("/api/data/addSensor").authenticated()
+                .mvcMatchers("/api/data/addFunctionalDevice").authenticated()
                 .mvcMatchers("/v2/api-docs",
                                         "/configuration/ui",
                                         "/swagger-resources/**",

@@ -19,4 +19,8 @@ public class FunctionalDeviceService {
         Optional<List<FunctionalDevice>> functionalDevices = functionalDeviceRepository.findFunctionalDevicesByHomeId(home.getId());
         return functionalDevices.orElse(new ArrayList<>());
     }
+
+    public void addNewFunctionalDevice(FunctionalDevice functionalDevice) {
+        functionalDeviceRepository.save(functionalDevice);
+    }
 }

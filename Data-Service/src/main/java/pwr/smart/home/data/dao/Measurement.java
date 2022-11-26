@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 @Entity
 public class Measurement {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private MeasurementType type;
     private int value;
