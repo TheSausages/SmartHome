@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
 import pwr.smart.home.common.error.ErrorDTO;
 import pwr.smart.home.data.dao.Home;
@@ -81,5 +78,18 @@ public class HomeController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ErrorDTO.builder().message("House not found").status(HttpStatus.BAD_REQUEST).build());
         }
+    }
+
+    @PostMapping("/editAddress")
+    public ResponseEntity<?> editAddress(@AuthenticationPrincipal Jwt principal, @RequestBody Home home) {
+        Optional<User> user = userHomeService.findHomeByUserId(UUID.fromString(principal.getSubject()));
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorDTO.builder().message("House not found").status(HttpStatus.BAD_REQUEST).build());
+        }
+        if(homeService.editAddress(user.get().getHome().getId(), home))
+            return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorDTO.builder().message("Wrong location").status(HttpStatus.BAD_REQUEST).build());
     }
 }

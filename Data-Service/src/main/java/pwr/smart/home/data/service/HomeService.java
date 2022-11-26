@@ -3,6 +3,7 @@ package pwr.smart.home.data.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pwr.smart.home.data.dao.Home;
+import pwr.smart.home.data.model.Location;
 import pwr.smart.home.data.repository.HomeRepository;
 
 import java.util.Optional;
@@ -18,5 +19,25 @@ public class HomeService {
 
     public Home saveHome(Home home) {
         return homeRepository.save(home);
+    }
+
+    public boolean editAddress(Long houseId, Home home) {
+        Optional<Home> homeOptEntity = getHomeLocation(houseId);
+        if(homeOptEntity.isEmpty()) {
+            return false;
+        }
+        Home homeEntity = homeOptEntity.get();
+        homeEntity.setCity(home.getCity());
+        homeEntity.setCountry(home.getCountry());
+        homeEntity.setPostCode(home.getPostCode());
+        homeEntity.setName(home.getName());
+        homeEntity.setStreet(home.getStreet());
+        Location location = AddressConverter.convertToLatLong(home.getPostCode());
+        if(location == null)
+            return false;
+        homeEntity.setLatitude(location.getLatitude());
+        homeEntity.setLongitude(location.getLongitude());
+        saveHome(homeEntity);
+        return true;
     }
 }
