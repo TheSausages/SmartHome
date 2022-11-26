@@ -14,7 +14,7 @@ import java.sql.Date;
 @Entity
 public class Sensor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Enumerated(value = EnumType.STRING)
     private SensorType type;

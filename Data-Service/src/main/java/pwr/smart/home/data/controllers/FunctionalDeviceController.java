@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
 import pwr.smart.home.common.error.ErrorDTO;
@@ -16,6 +18,7 @@ import pwr.smart.home.data.service.FunctionalDeviceService;
 import pwr.smart.home.data.service.HomeService;
 import pwr.smart.home.data.service.UserService;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,5 +47,19 @@ public class FunctionalDeviceController {
         return ResponseEntity.ok(functionalDeviceService.getFunctionalDevicesWithMeasurementsForHome(
                 homeId
         ));
+    }
+
+    @PostMapping("/addFunctionalDevice")
+    public ResponseEntity<?> addNewHomeFunctionalDevice(@AuthenticationPrincipal Jwt principal, @RequestBody FunctionalDevice functionalDevice) {
+        Optional<User> user = userHomeService.findHomeByUserId(UUID.fromString(principal.getSubject()));
+        if (user.isPresent()) {
+            functionalDevice.setHomeId(user.get().getHome().getId());
+            functionalDevice.setCreatedAt(new Date(System.currentTimeMillis()));
+            functionalDeviceService.addNewFunctionalDevice(functionalDevice);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ErrorDTO.builder().message("Wrong house").status(HttpStatus.UNAUTHORIZED).build());
+        }
     }
 }

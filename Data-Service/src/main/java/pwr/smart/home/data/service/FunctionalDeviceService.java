@@ -32,6 +32,10 @@ public class FunctionalDeviceService {
         return functionalDevices.orElse(new ArrayList<>());
     }
 
+    public void addNewFunctionalDevice(FunctionalDevice functionalDevice) {
+        functionalDeviceRepository.save(functionalDevice);
+    }
+
     public List<FunctionalDeviceWithMeasurementsDTO> getFunctionalDevicesWithMeasurementsForHome(long homeId) {
          return findAllHomeFunctionalDevices(homeId)
                 .stream()
