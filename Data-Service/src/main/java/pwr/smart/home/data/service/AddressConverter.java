@@ -33,8 +33,7 @@ public class AddressConverter {
             JSONObject jsonObject = new JSONObject(responseString.substring(1, responseString.length() - 1));
             String latitude = jsonObject.getString("lat");
             String longitude = jsonObject.getString("lon");
-            Location location = new Location(Float.parseFloat(latitude), Float.parseFloat(longitude));
-            return location;
+            return new Location(Float.parseFloat(latitude), Float.parseFloat(longitude));
         } catch (ResourceAccessException | JSONException e) {
             LOGGER.error(e.getMessage());
         }
