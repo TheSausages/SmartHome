@@ -12,8 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
-import pwr.smart.home.control.controller.WeatherController;
 import pwr.smart.home.control.model.Endpoint;
+import pwr.smart.home.control.model.FunctionalDeviceWithMeasurementsDTO;
 import pwr.smart.home.control.model.Home;
 import pwr.smart.home.control.model.Location;
 
@@ -50,8 +50,24 @@ public class DataService {
 
         try {
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<HomeListWrapper> response = restTemplate.getForEntity(endpoint.getDataServiceUrl() + "homes", HomeListWrapper.class);
+            ResponseEntity<HomeListWrapper> response = restTemplate.getForEntity(endpoint.getDataServiceUrl() + "/homes", HomeListWrapper.class);
             return Objects.requireNonNull(response.getBody()).getHomes();
+        } catch (ResourceAccessException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return List.of();
+    }
+    
+    public List<FunctionalDeviceWithMeasurementsDTO> getFunctionalDevicesWithMeasurementsForHome(Home home) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("homeId", home.getId().toString());
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            ResponseEntity<DeviceWithMeasurementsListWrapper> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/homeFunctionalDevices/{homeId}", HttpMethod.GET, entity, DeviceWithMeasurementsListWrapper.class, params);
+            return Objects.requireNonNull(response.getBody()).getDevicesWithMeasurements();
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());
         }
@@ -62,5 +78,11 @@ public class DataService {
     @NoArgsConstructor
     private class HomeListWrapper {
         private List<Home> homes;
+    }
+
+    @Data
+    @NoArgsConstructor
+    private class DeviceWithMeasurementsListWrapper {
+        private List<FunctionalDeviceWithMeasurementsDTO> devicesWithMeasurements;
     }
 }

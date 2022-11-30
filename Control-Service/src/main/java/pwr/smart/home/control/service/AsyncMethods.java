@@ -3,11 +3,13 @@ package pwr.smart.home.control.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import pwr.smart.home.control.model.FunctionalDeviceWithMeasurementsDTO;
 import pwr.smart.home.control.model.Home;
 import pwr.smart.home.control.weather.OpenMeteo;
 import pwr.smart.home.control.weather.model.request.ForecastWeatherRequest;
 import pwr.smart.home.control.weather.model.response.ForecastWeatherResponse;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -15,6 +17,9 @@ import java.util.concurrent.Future;
 public class AsyncMethods {
     @Autowired
     OpenMeteo openMeteo;
+
+    @Autowired
+    DataService dataService;
 
     @Async
     public Future<ForecastWeatherResponse> getWeatherForecast(Home home) {
@@ -24,6 +29,17 @@ public class AsyncMethods {
                 ForecastWeatherRequest.dailyParameters
         ));
 
+        System.out.println("2");
+
         return CompletableFuture.completedFuture(forecastWeatherResponse);
+    }
+
+    @Async
+    public Future<List<FunctionalDeviceWithMeasurementsDTO>> getHomeElements(Home home) {
+        List<FunctionalDeviceWithMeasurementsDTO> list = dataService.getFunctionalDevicesWithMeasurementsForHome(home);
+
+        System.out.println("4");
+
+        return CompletableFuture.completedFuture(list);
     }
 }
