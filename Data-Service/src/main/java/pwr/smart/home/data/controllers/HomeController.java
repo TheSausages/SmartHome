@@ -29,6 +29,8 @@ public class HomeController {
     public ResponseEntity<?> getHomes() {
         List<Home> homes = homeService.findAllHomesWithActiveFunctionalDevices();
 
+        System.out.println(homes);
+
         return ResponseEntity.ok(homes);
     }
 

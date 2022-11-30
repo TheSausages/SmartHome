@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -50,8 +51,9 @@ public class DataService {
 
         try {
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<HomeListWrapper> response = restTemplate.getForEntity(endpoint.getDataServiceUrl() + "/homes", HomeListWrapper.class);
-            return Objects.requireNonNull(response.getBody()).getHomes();
+            ResponseEntity<List<Home>> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/homes", HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+            });
+            return Objects.requireNonNull(response.getBody());
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());
         }
@@ -66,23 +68,11 @@ public class DataService {
             Map<String, String> params = new HashMap<>();
             params.put("homeId", home.getId().toString());
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<DeviceWithMeasurementsListWrapper> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/homeFunctionalDevices/{homeId}", HttpMethod.GET, entity, DeviceWithMeasurementsListWrapper.class, params);
-            return Objects.requireNonNull(response.getBody()).getDevicesWithMeasurements();
+            ResponseEntity<List<FunctionalDeviceWithMeasurementsDTO>> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/homeFunctionalDevices/{homeId}", HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}, params);
+            return Objects.requireNonNull(response.getBody());
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());
         }
         return List.of();
-    }
-
-    @Data
-    @NoArgsConstructor
-    private class HomeListWrapper {
-        private List<Home> homes;
-    }
-
-    @Data
-    @NoArgsConstructor
-    private class DeviceWithMeasurementsListWrapper {
-        private List<FunctionalDeviceWithMeasurementsDTO> devicesWithMeasurements;
     }
 }

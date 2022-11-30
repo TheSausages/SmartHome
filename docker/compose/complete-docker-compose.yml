@@ -102,10 +102,10 @@ services:
       PORT: 8080
       KEYCLOAK_URL: keycloak:8180
       API_DEFAULT_PATH: /api/control
-      DATA_SERVICE_URL: 'data-service:8081/api/data'
-      AIR_CONDITIONER_URL: air-conditioning:8083
-      AIR_HUMIDIFIER_URL: air-humidifier:8082
-      AIR_FILTER_URL: air-filter:8084
+      DATA_SERVICE_URL: 'http://data-service:8081/api/data'
+      AIR_CONDITIONER_URL: 'http://air-conditioning:8083'
+      AIR_HUMIDIFIER_URL: 'http://air-humidifier:8082'
+      AIR_FILTER_URL: 'http://air-filter:8084'
 
   air-humidifier:
     build:

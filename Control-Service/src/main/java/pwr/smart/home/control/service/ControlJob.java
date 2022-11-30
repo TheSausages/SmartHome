@@ -27,7 +27,7 @@ public class ControlJob {
     /**
      * This will be ruin every 5 minutes
      */
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "30 * * * * *")
     public void adjustForAllElements() throws ExecutionException, InterruptedException {
         List<Home> homes = dataService.getHomes();
 
@@ -35,12 +35,8 @@ public class ControlJob {
             // Get functional devices info
             Future<List<FunctionalDeviceWithMeasurementsDTO>> info = asyncMethods.getHomeElements(home);
 
-            System.out.println("3");
-
             // Get weather forecast
             Future<ForecastWeatherResponse> weather = asyncMethods.getWeatherForecast(home);
-
-            System.out.println("5");
 
             handleResponse(info, weather);
         }

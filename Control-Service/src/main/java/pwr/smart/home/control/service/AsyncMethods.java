@@ -29,16 +29,12 @@ public class AsyncMethods {
                 ForecastWeatherRequest.dailyParameters
         ));
 
-        System.out.println("2");
-
         return CompletableFuture.completedFuture(forecastWeatherResponse);
     }
 
     @Async
     public Future<List<FunctionalDeviceWithMeasurementsDTO>> getHomeElements(Home home) {
         List<FunctionalDeviceWithMeasurementsDTO> list = dataService.getFunctionalDevicesWithMeasurementsForHome(home);
-
-        System.out.println("4");
 
         return CompletableFuture.completedFuture(list);
     }
