@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Box,
     Button,
@@ -16,6 +16,11 @@ import {
 } from "@mui/material";
 import {add_device_path, add_sensor_path} from '../../../common/Paths';
 import {NavLink} from 'react-router-dom';
+import { useQueries, useMutation } from 'react-query';
+import { getAllHomeFunctionalDevices, getAllHomeSensors, getHomeInfo, updateHomeInfo } from '../../../common/RequestHelper/RequestHelper';
+import { HomeInfo } from '../../../data/HomeInfo';
+import { FunctionalDeviceInfo } from '../../../data/FunctionalDevices';
+import { SensorInfo } from '../../../data/Sensort';
 
 export interface SettingsProps
 {};
@@ -32,12 +37,55 @@ export default function Settings(props: SettingsProps) {
     const [ city, setCity ] = useState<string>('');
     const [ zipCode, setZipCode ] = useState<string>('');
     const [ country, setCountry ] = useState<string>('');
-    const [ devices, setDevices] = useState<DeviceParameters[]>([{serialNumber: 'dwdawda', name:'Filtr Xiaomi', connected: false}, {serialNumber:'dawdadaw', name:'Klimatyzator', connected:true}]);
-    const [ sensores, setSensores] = useState<DeviceParameters[]>([{serialNumber: 'dwdawda', name:'Jakość powietrza', connected: false}, {serialNumber:'dawdadaw', name:'Termometr', connected:true}]);
+    const [ devices, setDevices] = useState<DeviceParameters[]>([]);
+    const [ sensores, setSensores] = useState<DeviceParameters[]>([]);
+
+    const updateHomeInfoMutation = useMutation(updateHomeInfo);
+
+    const [ sensorsQuery, devicesQuery, homeInfoQuery ] = useQueries([
+        {
+            queryKey: ['GetAllSensorsForHome'],
+            queryFn: () => getAllHomeSensors(),
+            onSuccess: (data: SensorInfo[]) => {
+                setSensores(data.map((item: SensorInfo) => ({serialNumber: item.serialNumber, name: item.name, connected: item.connected})))
+                console.log(data);
+            }
+        },
+        {
+            queryKey: ['GetAllFunctionalDevices'],
+            queryFn: () => getAllHomeFunctionalDevices(),
+            onSuccess: (data: FunctionalDeviceInfo[]) => {
+                setDevices(data.map((item: FunctionalDeviceInfo) => ({serialNumber: item.serialNumber, name: item.name, connected: item.connected})))
+                console.log(data);
+            }
+        },
+        {
+            queryKey: ['GetHomeInfo'],
+            queryFn: () => getHomeInfo(),
+            onSuccess: (data: HomeInfo) => {
+                setName(data.name);
+                setStreet(data.street);
+                setCity(data.city);
+                setCountry(data.country);
+                setZipCode(data.postCode);
+            }
+        }
+    ]);
+
+
+
+    useEffect(() => {
+        sensorsQuery.refetch();
+        devicesQuery.refetch();
+        homeInfoQuery.refetch();
+    }, [sensorsQuery.refetch, devicesQuery.refetch, homeInfoQuery.refetch]);
 
 
     const handleOnSubmit = (e: any) => {
         e.preventDefault();
+        updateHomeInfoMutation.mutate({name: name, country: country, city: city, postCode: zipCode, street: street}, {onSuccess: (response: any) => {
+            console.log(response);
+        }});
     } 
     const handleOnNameChange = (e: any) => setName(e.target.value);
     const handleOnStreetChange = (e: any) => setStreet(e.target.value);

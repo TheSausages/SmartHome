@@ -1,5 +1,14 @@
 # SmartHome
 
+## Todo
+- zuzycie pradu
+- godziny aktywnosci i preferencje
+- batch i caly serwis decyzyjny
+- preload odczytow
+- gas
+- walidacja dodawanych sensorow
+
+
 ## How to start
 
 ### Prerequisites

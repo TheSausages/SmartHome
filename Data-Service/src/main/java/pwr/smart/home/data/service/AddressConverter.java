@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import pwr.smart.home.data.model.Location;
 
 import java.net.URI;
 import java.util.Objects;
@@ -19,7 +20,7 @@ public class AddressConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(AddressConverter.class);
     private static final String URL = "https://nominatim.openstreetmap.org/search?";
 
-    public static String convertToLatLong(String postalCode) {
+    public static Location convertToLatLong(String postalCode) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
@@ -32,14 +33,10 @@ public class AddressConverter {
             JSONObject jsonObject = new JSONObject(responseString.substring(1, responseString.length() - 1));
             String latitude = jsonObject.getString("lat");
             String longitude = jsonObject.getString("lon");
-            String latLong = latitude + "," + longitude;
-            LOGGER.info(latLong);
-            return latLong;
-        } catch (ResourceAccessException e) {
+            return new Location(Float.parseFloat(latitude), Float.parseFloat(longitude));
+        } catch (ResourceAccessException | JSONException e) {
             LOGGER.error(e.getMessage());
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
-        return "";
+        return null;
     }
 }

@@ -61,6 +61,7 @@ public class SecurityConfig {
                 .mvcMatchers("/api/**").authenticated()
                 .mvcMatchers("/api/data/addSensor").authenticated()
                 .mvcMatchers("/api/data/addFunctionalDevice").authenticated()
+                .mvcMatchers("/api/data/editAddress").authenticated()
                 .mvcMatchers("/v2/api-docs",
                                         "/configuration/ui",
                                         "/swagger-resources/**",

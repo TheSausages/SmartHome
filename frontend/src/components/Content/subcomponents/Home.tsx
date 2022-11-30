@@ -33,6 +33,13 @@ export interface HomeProps
 {
 }
 
+enum AirCondition
+{
+    Bad,
+    Acceptable,
+    Good
+}
+
 export default function Home(props: HomeProps) {
     const [ startActivityHour, setStartActivityHour ] = useState<number>(-1);
     const [ endActivityHour, setEndActivityHour ] = useState<number>(-1);
@@ -92,7 +99,7 @@ export default function Home(props: HomeProps) {
                 }
             },
             {
-                queryKey: ['AirFilterQuery'],
+                queryKey: ['AirHumidityQuery'],
                 queryFn: (() => getLastHumidifierFilterMeasurement("HIBWCDUIYHWASDAF")),
                 onSuccess: (data: Measurement) => {
                     setHumidity(data.value);
@@ -165,8 +172,97 @@ export default function Home(props: HomeProps) {
         setActiveDevice(device);
     }
 
+    const checkIAIMeasurement = (value: number) => 
+    {
+        if( value >= 1 && value <= 6 )
+        {
+            return AirCondition.Good;
+        } else if ( value > 6 && value <= 9 )
+        {
+            return AirCondition.Acceptable;
+        }
+        else
+        {
+            return AirCondition.Bad;
+        }
+    }
+
+    const checkPM25Measurement = (value: number) =>
+    {
+        if( value >= 1 && value <= 120 )
+        {
+            return AirCondition.Good;
+        } else if ( value > 120 && value <= 250)
+        {
+            return AirCondition.Acceptable;
+        }
+        else
+        {
+            return AirCondition.Bad;
+        }
+    }
+
+    const checkGASMeasurement = (value: number) => 
+    {
+        if( value === 1 || value === 2 )
+        {
+            return AirCondition.Good;
+        } else if ( value === 3)
+        {
+            return AirCondition.Acceptable;
+        }
+        else
+        {
+            return AirCondition.Bad;
+        }
+    }
+
+    const checkMeasurements = (type: MeasurementType, value:number) =>
+    {
+        if (type === MeasurementType.IAI)
+        {
+            return checkIAIMeasurement(value);
+        } else if (type === MeasurementType.GAS)
+        {
+            return checkGASMeasurement(value);
+        }
+        return checkPM25Measurement(value);
+    }
+
+    const chooseColor = (airCondition : AirCondition) =>
+    {
+        if (airCondition === AirCondition.Good)
+        {
+            return "green"
+        } else if (airCondition === AirCondition.Acceptable)
+        {
+            return "orange"
+        }
+        return "red"
+    }
+
+    const decideQualityOfAir = () =>
+    {
+        var worstQuality: AirCondition = AirCondition.Good
+        airConditionParameters.forEach(item => {
+            var quality: AirCondition = checkMeasurements(item.type, item.value);
+            if (quality < worstQuality)
+            {
+                worstQuality = quality;
+            }
+        })
+        if (worstQuality === AirCondition.Good)
+        {
+            return "Dobra";
+        } else if (worstQuality === AirCondition.Acceptable)
+        {
+            return "Średnia";
+        }
+        return "Zła";
+    }
+
     const AirConditionRows = airConditionParameters.map((item, index) => (
-        <TableRow sx={{backgroundColor: 'green'}} key={index}>
+        <TableRow sx={{backgroundColor: chooseColor(checkMeasurements(item.type, item.value))}} key={index}>
             <TableCell>{item.type}</TableCell>
             <TableCell>{item.value}</TableCell>
         </TableRow>
@@ -252,7 +348,7 @@ export default function Home(props: HomeProps) {
                         </TableRow>
                         <TableRow>
                             <TableCell>Jakość powietrza</TableCell>
-                            <TableCell>Dobra</TableCell>
+                            <TableCell>{decideQualityOfAir()}</TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
