@@ -19,16 +19,16 @@ public class Actions {
 
     @PostMapping("/temperature")
     public ResponseEntity<?> setTargetTemperature(@RequestParam String target) {
-        return ResponseEntity.ok(dataEmitter.callForAction(target, endpoint.getAirConditionerUrl()));
+        return ResponseEntity.ok(dataEmitter.callForAction(target, endpoint.getAirConditionerUrl("HIBWCDUIYHWASDAE")));
     }
 
     @PostMapping("/air-quality")
     public ResponseEntity<?> setTargetAirQuality(@RequestParam String target) {
-        return ResponseEntity.ok(dataEmitter.callForAction(target, endpoint.getAirFilterUrl()));
+        return ResponseEntity.ok(dataEmitter.callForAction(target, endpoint.getAirFilterUrl("HIBWCDUIYHWASDAD")));
     }
 
     @PostMapping("/humidity")
     public ResponseEntity<?> setTargetHumidity(@RequestParam String target) {
-        return ResponseEntity.ok(dataEmitter.callForAction(target, endpoint.getAirHumidifierUrl()));
+        return ResponseEntity.ok(dataEmitter.callForAction(target, endpoint.getAirHumidifierUrl("HIBWCDUIYHWASDAF")));
     }
 }

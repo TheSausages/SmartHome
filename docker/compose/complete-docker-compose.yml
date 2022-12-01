@@ -118,6 +118,7 @@ services:
       PORT: 8082
       DATA_SERVICE_URL: data-service:8081
       DATA_SERVICE_DEFAULT_PATH: /api/data
+      FUNCTIONAL_DEVICE_SERIAL_NUMBER: HIBWCDUIYHWASDAF
 
   air-filter:
     build:
@@ -130,6 +131,7 @@ services:
       PORT: 8084
       DATA_SERVICE_URL: data-service:8081
       DATA_SERVICE_DEFAULT_PATH: /api/data
+      FUNCTIONAL_DEVICE_SERIAL_NUMBER: HIBWCDUIYHWASDAD
       
   air-conditioning:
     build:
@@ -142,6 +144,7 @@ services:
       PORT: 8083
       DATA_SERVICE_URL: data-service:8081
       DATA_SERVICE_DEFAULT_PATH: /api/data
+      FUNCTIONAL_DEVICE_SERIAL_NUMBER: HIBWCDUIYHWASDAE
 
   frontend:
     build:

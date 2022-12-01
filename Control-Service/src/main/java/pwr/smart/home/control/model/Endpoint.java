@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@Getter
 public class Endpoint {
     @Value("${data-service.url}")
     private String dataServiceUrl;
@@ -19,16 +18,16 @@ public class Endpoint {
     @Value("${air-filter.url}")
     private String airFilterUrl;
 
-    public String getAirConditionerUrl() {
-        return airConditionerUrl + "/setTarget";
+    public String getAirConditionerUrl(String serialNumber) {
+        return airConditionerUrl + "/" + serialNumber + "/setTarget";
     }
 
-    public String getAirFilterUrl() {
-        return  airFilterUrl + "/setTarget";
+    public String getAirFilterUrl(String serialNumber) {
+        return  airFilterUrl + "/" + serialNumber + "/setTarget";
     }
 
-    public String getAirHumidifierUrl() {
-        return airHumidifierUrl + "/setTarget";
+    public String getAirHumidifierUrl(String serialNumber) {
+        return airHumidifierUrl + "/" + serialNumber + "/setTarget";
     }
 
     public String getDataServiceUrl() {

@@ -88,23 +88,65 @@ public class AsyncMethods {
         double prediction = regression.predict(Timestamp.from(Instant.now().plus(12, ChronoUnit.HOURS)).getTime());
 
         if (prediction <= home.getPreferredTemp()) {
-            // For testing purposes add somethign with weather
-            double settingTemp = home.getPreferredTemp() + 1;
+            // For testing purposes add something with weather
+            int settingTemp = home.getPreferredTemp() + 1;
 
-            dataEmitter.callForAction(Double.toString(settingTemp), endpoint.getAirConditionerUrl());
+            dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()));
         } else {
-            // For testing purposes add somethign with weather
-            double settingTemp = home.getPreferredTemp() - 1;
+            // For testing purposes add something with weather
+            int settingTemp = home.getPreferredTemp() - 1;
 
-            dataEmitter.callForAction(Double.toString(settingTemp), endpoint.getAirConditionerUrl());
+            dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()));
         }
     }
 
     private void handleHumidity(FunctionalDeviceWithMeasurementsDTO data, Home home) {
         Future<ForecastWeatherResponse> weather = asyncMethods2.getWeatherForecast(home);
+
+        if (!data.getMeasurements().containsKey(MeasurementType.HUMIDITY)) {
+            throw new RuntimeException("No Celsius measurement for temperature");
+        }
+
+        List<Measurement> temperatureMeasurement = data.getMeasurements().get(MeasurementType.HUMIDITY);
+
+        // For now We use regression to get the prediction for the next
+        SimpleRegression regression = new SimpleRegression();
+
+        temperatureMeasurement.forEach( mes -> regression.addData(mes.getCreatedAt().getTime(), mes.getValue()));
+
+        double prediction = regression.predict(Timestamp.from(Instant.now().plus(12, ChronoUnit.HOURS)).getTime());
+
+        if (prediction <= home.getPreferredTemp()) {
+            // For testing purposes add something with weather
+            int settingTemp = home.getPreferredTemp() + 1;
+
+            dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()));
+        } else {
+            // For testing purposes add something with weather
+            int settingTemp = home.getPreferredTemp() - 1;
+
+            dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()));
+        }
     }
 
     private void handleFilter(FunctionalDeviceWithMeasurementsDTO data, Home home) {
         Future<AirQualityResponse> weather = asyncMethods2.getAirData(home);
+
+        if (data.getMeasurements().containsKey(MeasurementType.GAS)) {
+            // Some operation with Gas
+            List<Measurement> temperatureMeasurement = data.getMeasurements().get(MeasurementType.GAS);
+        }
+
+        if (data.getMeasurements().containsKey(MeasurementType.IAI)) {
+            // Some operations with IAI
+            List<Measurement> temperatureMeasurement = data.getMeasurements().get(MeasurementType.IAI);
+        }
+
+        if (data.getMeasurements().containsKey(MeasurementType.PM25)) {
+            // Some operations with PM25
+            List<Measurement> temperatureMeasurement = data.getMeasurements().get(MeasurementType.PM25);
+        }
+
+        dataEmitter.callForAction(Integer.toString(5), endpoint.getAirFilterUrl(data.getDevice().getSerialNumber()));
     }
 }
