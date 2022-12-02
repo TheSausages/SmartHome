@@ -10,7 +10,6 @@ import pwr.smart.home.control.model.Home;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 @Service
 public class ControlJob {
@@ -20,21 +19,33 @@ public class ControlJob {
     DataService dataService;
 
     @Autowired
-    AsyncMethods asyncMethods;
+    FunDevicesAsyncMethods funDevicesAsyncMethods;
 
     /**
      * This will be ruin every 5 minutes
      */
-//    @Scheduled(cron = "* */5 * * * *")
-    @Scheduled(cron = "30 * * * * *")
+    @Scheduled(cron = "* */5 * * * *")
     public void adjustForAllElements() throws ExecutionException, InterruptedException {
         List<Home> homes = dataService.getHomes();
 
         for (Home home : homes) {
-            // Get functional devices info
-            Future<List<FunctionalDeviceWithMeasurementsDTO>> info = asyncMethods.getHomeElements(home);
+            List<FunctionalDeviceWithMeasurementsDTO> devices = dataService.getFunctionalDevicesWithMeasurementsForHome(home);
 
-            asyncMethods.handleResponse(info, home);
+            devices.forEach(device -> {
+                switch (device.getDevice().getType()) {
+                    case AIR_FILTER:
+                        funDevicesAsyncMethods.handleFilter(device, home);
+                        break;
+                    case AIR_HUMIDIFIER:
+                        funDevicesAsyncMethods.handleHumidity(device, home);
+                        break;
+                    case AIR_CONDITIONER:
+                        funDevicesAsyncMethods.handleTemperature(device, home);
+                        break;
+                    default:
+                        LOGGER.info("Device of unknown type found: {}", device.getDevice().getType());
+                }
+            });
         }
     }
 }

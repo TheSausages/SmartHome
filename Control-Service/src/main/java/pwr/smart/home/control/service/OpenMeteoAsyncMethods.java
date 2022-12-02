@@ -9,13 +9,12 @@ import pwr.smart.home.control.weather.model.request.AirQualityRequest;
 import pwr.smart.home.control.weather.model.request.ForecastWeatherRequest;
 import pwr.smart.home.control.weather.model.response.AirQualityResponse;
 import pwr.smart.home.control.weather.model.response.ForecastWeatherResponse;
-import pwr.smart.home.control.weather.model.response.WeatherApiResponse;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 @Service
-public class AsyncMethods2 {
+public class OpenMeteoAsyncMethods {
     @Autowired
     OpenMeteo openMeteo;
 

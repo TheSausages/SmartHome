@@ -11,30 +11,21 @@ import pwr.smart.home.control.model.Endpoint;
 import pwr.smart.home.control.model.FunctionalDeviceWithMeasurementsDTO;
 import pwr.smart.home.control.model.Home;
 import pwr.smart.home.control.model.Measurement;
-import pwr.smart.home.control.weather.OpenMeteo;
-import pwr.smart.home.control.weather.model.request.AirQualityRequest;
-import pwr.smart.home.control.weather.model.request.ForecastWeatherRequest;
 import pwr.smart.home.control.weather.model.response.AirQualityResponse;
 import pwr.smart.home.control.weather.model.response.ForecastWeatherResponse;
-import pwr.smart.home.control.weather.model.response.WeatherApiResponse;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 @Service
-public class AsyncMethods {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AsyncMethods.class);
+public class FunDevicesAsyncMethods {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FunDevicesAsyncMethods.class);
 
     @Autowired
-    AsyncMethods2 asyncMethods2;
-
-    @Autowired
-    DataService dataService;
+    OpenMeteoAsyncMethods openMeteoAsyncMethods;
 
     @Autowired
     DataEmitter dataEmitter;
@@ -43,36 +34,9 @@ public class AsyncMethods {
     Endpoint endpoint;
 
     @Async
-    public Future<List<FunctionalDeviceWithMeasurementsDTO>> getHomeElements(Home home) {
-        List<FunctionalDeviceWithMeasurementsDTO> list = dataService.getFunctionalDevicesWithMeasurementsForHome(home);
-
-        return CompletableFuture.completedFuture(list);
-    }
-
-    @Async
-    public void handleResponse(Future<List<FunctionalDeviceWithMeasurementsDTO>> info, Home home) throws ExecutionException, InterruptedException {
-        List<FunctionalDeviceWithMeasurementsDTO> devices = info.get();
-
-        devices.forEach(device -> {
-            switch (device.getDevice().getType()) {
-                case AIR_FILTER:
-                    handleFilter(device, home);
-                    break;
-                case AIR_HUMIDIFIER:
-                    handleHumidity(device, home);
-                    break;
-                case AIR_CONDITIONER:
-                    handleTemperature(device, home);
-                    break;
-                default:
-                    LOGGER.info("Device of unknown type found: {}", device.getDevice().getType());
-            }
-        });
-    }
-
-    private void handleTemperature(FunctionalDeviceWithMeasurementsDTO data, Home home) {
+    public void handleTemperature(FunctionalDeviceWithMeasurementsDTO data, Home home) {
         // weather can be used in the future for a better model
-        Future<ForecastWeatherResponse> weather = asyncMethods2.getWeatherForecast(home);
+        Future<ForecastWeatherResponse> weather = openMeteoAsyncMethods.getWeatherForecast(home);
 
         if (!data.getMeasurements().containsKey(MeasurementType.CELSIUS)) {
             throw new RuntimeException("No Celsius measurement for temperature");
@@ -100,8 +64,9 @@ public class AsyncMethods {
         }
     }
 
-    private void handleHumidity(FunctionalDeviceWithMeasurementsDTO data, Home home) {
-        Future<ForecastWeatherResponse> weather = asyncMethods2.getWeatherForecast(home);
+    @Async
+    public void handleHumidity(FunctionalDeviceWithMeasurementsDTO data, Home home) {
+        Future<ForecastWeatherResponse> weather = openMeteoAsyncMethods.getWeatherForecast(home);
 
         if (!data.getMeasurements().containsKey(MeasurementType.HUMIDITY)) {
             throw new RuntimeException("No Celsius measurement for temperature");
@@ -129,8 +94,9 @@ public class AsyncMethods {
         }
     }
 
-    private void handleFilter(FunctionalDeviceWithMeasurementsDTO data, Home home) {
-        Future<AirQualityResponse> weather = asyncMethods2.getAirData(home);
+    @Async
+    public void handleFilter(FunctionalDeviceWithMeasurementsDTO data, Home home) {
+        Future<AirQualityResponse> weather = openMeteoAsyncMethods.getAirData(home);
 
         if (data.getMeasurements().containsKey(MeasurementType.GAS)) {
             // Some operation with Gas
