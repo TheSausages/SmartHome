@@ -50,7 +50,11 @@ public class StatusService {
     }
 
     public static int getIAI(){
-        return IAIService.resolveIAI((int) Math.round(StatusService.getCurrentAirQuality()));
+        return UnitConversionService.resolveIAI((int) Math.round(StatusService.getCurrentAirQuality()));
+    }
+
+    public static int getGas(){
+        return UnitConversionService.resolveGas((int) Math.round(StatusService.getCurrentAirQuality()));
     }
 
     public State getState() {

@@ -15,7 +15,6 @@ import pwr.smart.home.air.filter.sensor.model.AirFilterData;
 import pwr.smart.home.air.filter.sensor.model.Sensor;
 
 import java.sql.Timestamp;
-import java.util.Random;
 
 @Service
 public class DataEmitter {
@@ -58,13 +57,8 @@ public class DataEmitter {
         data.setType(sensor.getType());
         data.setPM25((int) Math.round(StatusService.getCurrentAirQuality()));
         data.setIAI(StatusService.getIAI());
-        data.setGas(getIAI());
+        data.setGas(StatusService.getGas());
         return data;
-    }
-
-    private int getIAI() {
-        Random random = new Random();
-        return random.nextInt(30);
     }
 
     private Timestamp getSystemTimestamp() {
