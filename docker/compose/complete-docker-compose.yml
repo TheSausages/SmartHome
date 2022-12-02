@@ -84,9 +84,13 @@ services:
         condition: service_healthy
     environment:
       PORT: 8081
-      KEYCLOAK_URL: keycloak:8180
-      DATABASE_URL: postgres-app:5432
-      API_DEFAULT_PATH: /api/data
+      KEYCLOAK_URL: 'http://keycloak:8180'
+      KEYCLOAK_REALM: 'SmartHome'
+      DATABASE_URL: 'postgres-app:5432'
+      DATABASE_NAME: 'SmartHomeApp'
+      DATABASE_USERNAME: 'SmartHomeUser'
+      DATABASE_PASSWORD: 'SmartHomePassword'
+      API_DEFAULT_PATH: '/api/data'
 
   control-service:
     build:
@@ -100,12 +104,13 @@ services:
       - "8080:8080"
     environment:
       PORT: 8080
-      KEYCLOAK_URL: keycloak:8180
-      API_DEFAULT_PATH: /api/control
+      KEYCLOAK_URL: 'http://keycloak:8180'
+      KEYCLOAK_REALM: 'SmartHome'
+      API_DEFAULT_PATH: '/api/control'
       DATA_SERVICE_URL: 'data-service:8081/api/data'
-      AIR_CONDITIONER_URL: air-conditioning:8083
-      AIR_HUMIDIFIER_URL: air-humidifier:8082
-      AIR_FILTER_URL: air-filter:8084
+      AIR_CONDITIONER_URL: 'http://air-conditioning:8083'
+      AIR_HUMIDIFIER_URL: 'http://air-humidifier:8082'
+      AIR_FILTER_URL: 'http://air-filter:8084'
 
   air-humidifier:
     build:
@@ -116,8 +121,7 @@ services:
       - "8082:8082"
     environment:
       PORT: 8082
-      DATA_SERVICE_URL: data-service:8081
-      DATA_SERVICE_DEFAULT_PATH: /api/data
+      DATA_SERVICE_URL: 'http://data-service:8081/api/data'
 
   air-filter:
     build:
@@ -128,8 +132,7 @@ services:
       - "8084:8084"
     environment:
       PORT: 8084
-      DATA_SERVICE_URL: data-service:8081
-      DATA_SERVICE_DEFAULT_PATH: /api/data
+      DATA_SERVICE_URL: 'http://data-service:8081/api/data'
       
   air-conditioning:
     build:
@@ -140,8 +143,7 @@ services:
       - "8083:8083"
     environment:
       PORT: 8083
-      DATA_SERVICE_URL: data-service:8081
-      DATA_SERVICE_DEFAULT_PATH: /api/data
+      DATA_SERVICE_URL: 'http://data-service:8081/api/data'
 
   frontend:
     build:
