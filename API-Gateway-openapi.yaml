@@ -141,7 +141,7 @@ paths:
       - url: https://localhost:8081/api/data
     get:
       tags:
-        - Historical measurements
+        - Home
       summary: "Measurements between dates"
       operationId: "getMeasurementsBetweenDates"
       parameters:
@@ -172,14 +172,14 @@ paths:
                 $ref: '#/components/schemas/Measurement'
               example:
                 "id": 1,
-                "name": "PWR",
-                "street": "STANISŁAWA WYSZYŃSKIEGO 27",
-                "city": "WROCŁAW",
-                "postCode": "50-370",
-                "country": "POLSKA",
-                "longitude": 17.060911,
-                "latitude": 51.10748,
-                "preferredTemp": 21,
+                "name": "PWR"
+                "street": "STANISŁAWA WYSZYŃSKIEGO 27"
+                "city": "WROCŁAW"
+                "postCode": "50-370"
+                "country": "POLSKA"
+                "longitude": 17.060911
+                "latitude": 51.10748
+                "preferredTemp": 21
                 "preferredHum": 45
         "401":
           description: "Unauthorized"
@@ -193,7 +193,7 @@ paths:
       - url: https://localhost:8081/api/data
     get:
       tags:
-        - Historical measurements
+        - Home
       summary: "Home info"
       operationId: "getHome"
       responses:
@@ -215,7 +215,7 @@ paths:
       - url: https://localhost:8081/api/data
     get:
       tags:
-        - Get all sensors in home
+        - Home
       summary: "Sensors in home"
       operationId: "getHomeSensors"
       responses:
@@ -229,26 +229,26 @@ paths:
                   $ref: '#/components/schemas/Sensor'
                 example:
                   - "id": 1,
-                    "type": "AIR_POLLUTION",
-                    "name": "Dual Scan AC3858/51",
-                    "manufacturer": "PHILIPS",
-                    "serialNumber": "HIBWCDUIYHWASDAD",
-                    "createdAt": "2022-11-01",
-                    "connected": true,
+                    "type": "AIR_POLLUTION"
+                    "name": "Dual Scan AC3858/51"
+                    "manufacturer": "PHILIPS"
+                    "serialNumber": "HIBWCDUIYHWASDAD"
+                    "createdAt": "2022-11-01"
+                    "connected": true
                     "homeId": 1
                   - "id": 2,
-                    "type": "TEMPERATURE",
-                    "name": "Klimatyzator ścienny ECO KEX",
-                    "manufacturer": "KAISAI",
-                    "serialNumber": "HIBWCDUIYHWASDAE",
-                    "connected": true,
+                    "type": "TEMPERATURE"
+                    "name": "Klimatyzator ścienny ECO KEX"
+                    "manufacturer": "KAISAI"
+                    "serialNumber": "HIBWCDUIYHWASDAE"
+                    "connected": true
                     "homeId": 1
                   - "id": 3,
-                    "type": "AIR_HUMIDITY",
-                    "name": "Nawilżacz powietrza HU4801/01",
-                    "manufacturer": "PHILIPS",
-                    "serialNumber": "HIBWCDUIYHWASDAF",
-                    "connected": true,
+                    "type": "AIR_HUMIDITY"
+                    "name": "Nawilżacz powietrza HU4801/01"
+                    "manufacturer": "PHILIPS"
+                    "serialNumber": "HIBWCDUIYHWASDAF"
+                    "connected": true
                     "homeId": 1
         "400":
           description: "Bad request"
@@ -262,7 +262,7 @@ paths:
       - url: https://localhost:8081/api/data
     get:
       tags:
-        - Get all functional devices in home
+        - Home
       summary: "Functional devices in home"
       operationId: "getHomeFunctionalDevices"
       responses:
@@ -276,27 +276,27 @@ paths:
                   $ref: '#/components/schemas/FunctionalDevice'
                 example:
                   - "id": 1,
-                    "type": "AIR_FILTER",
-                    "name": "Dual Scan AC3858/51",
-                    "manufacturer": "PHILIPS",
-                    "serialNumber": "HIBWCDUIYHWASDAD",
-                    "consumedElectricity": 60,
-                    "createdAt": "2022-11-01",
-                    "connected": true,
+                    "type": "AIR_FILTER"
+                    "name": "Dual Scan AC3858/51"
+                    "manufacturer": "PHILIPS"
+                    "serialNumber": "HIBWCDUIYHWASDAD"
+                    "consumedElectricity": 60
+                    "createdAt": "2022-11-01"
+                    "connected": true
                     "homeId": 1
                   - "id": 2,
-                    "type": "AIR_CONDITIONER",
-                    "name": "Klimatyzator ścienny ECO KEX",
-                    "manufacturer": "PHILIPS",
-                    "serialNumber": "HIBWCDUIYHWASDAE",
-                    "connected": true,
+                    "type": "AIR_CONDITIONER"
+                    "name": "Klimatyzator ścienny ECO KEX"
+                    "manufacturer": "PHILIPS"
+                    "serialNumber": "HIBWCDUIYHWASDAE"
+                    "connected": true
                     "homeId": 1
                   - "id": 3,
-                    "type": "AIR_HUMIDIFIER",
-                    "name": "Nawilżacz powietrza HU4801/01",
-                    "manufacturer": "PHILIPS",
-                    "serialNumber": "HIBWCDUIYHWASDAF",
-                    "connected": true,
+                    "type": "AIR_HUMIDIFIER"
+                    "name": "Nawilżacz powietrza HU4801/01"
+                    "manufacturer": "PHILIPS"
+                    "serialNumber": "HIBWCDUIYHWASDAF"
+                    "connected": true
                     "homeId": 1
         "400":
           description: "Bad request"
@@ -334,8 +334,8 @@ paths:
       - url: https://localhost:8081/api/data
     post:
       tags:
-        - Set Preferred Temp in House
-      summary: " Set Preferred Temp"
+        - Home
+      summary: "Set Preferred Temperature"
       operationId: "setHouseTemperature"
       parameters:
         - name: "houseTemperature"
@@ -363,8 +363,8 @@ paths:
       - url: https://localhost:8081/api/data
     post:
       tags:
-        - Set Preferred Hum in House
-      summary: " Set Preferred Hum"
+        - Home
+      summary: "Set Preferred Humidity"
       operationId: "setHouseHumidity"
       parameters:
         - name: "houseHumidity"
