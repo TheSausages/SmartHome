@@ -1,4 +1,4 @@
-name: Anime App
+name: Data Service
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
         with:
           arguments: build -x test
           build-root-directory: Data-Service
-          gradle-executable: ./gradlew
+          gradle-executable: ../gradlew
 
   test:
     runs-on: ubuntu-latest
@@ -60,7 +60,7 @@ jobs:
         with:
           arguments: test --scan
           build-root-directory: Data-Service
-          gradle-executable: ./gradlew
+          gradle-executable: ../gradlew
 
       - name: Save report if error
         if: ${{ failure() }}
