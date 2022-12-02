@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - "*.gradle"
-      - "Data-Service/**"
+      - "Control-Service/**"
       - "Common-Code/**"
 
 permissions:
@@ -32,7 +32,7 @@ jobs:
       - name: Build the App
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: :Data-Service:build -x test
+          arguments: :Control-Service:build -x test
           build-root-directory: .
           gradle-executable: ./gradlew
 
@@ -58,7 +58,7 @@ jobs:
       - name: Test the App
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: :Data-Service:test --scan
+          arguments: :Control-Service:test --scan
           build-root-directory: .
           gradle-executable: ./gradlew
 
@@ -67,4 +67,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-report
-          path: ./Data-Service/build/reports/tests
+          path: ./Control-Service/build/reports/tests
