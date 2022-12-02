@@ -1,4 +1,4 @@
-name: Data Service
+name: Control Service
 
 on:
   push:
