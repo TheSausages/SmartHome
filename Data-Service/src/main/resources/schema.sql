@@ -40,7 +40,7 @@ DROP TABLE IF EXISTS MEASUREMENT CASCADE;
 CREATE TABLE MEASUREMENT (
     id   SERIAL PRIMARY KEY,
     type varchar(128) NOT NULL,
-    value int NOT NULL,
+    value float NOT NULL,
     created_at TIMESTAMP,
     sensor_id INT,
     FOREIGN KEY (sensor_id) REFERENCES SENSOR(ID)
