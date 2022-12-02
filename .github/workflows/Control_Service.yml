@@ -30,6 +30,9 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
 
+      - name: Get gradlew
+        run: gradle wrapper
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
@@ -37,7 +40,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: :Control-Service:build -x test
-          gradle-executable: ./gradlew
+          gradle-executable: gradlew
 
   test:
     runs-on: ubuntu-latest
@@ -55,6 +58,9 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
 
+      - name: Get gradlew
+        run: gradle wrapper
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
@@ -62,7 +68,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: :Control-Service:test --scan
-          gradle-executable: ./gradlew
+          gradle-executable: gradlew
 
       - name: Save report if error
         if: ${{ failure() }}
