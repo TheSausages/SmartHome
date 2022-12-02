@@ -1,4 +1,4 @@
-package pwr.smart.home.control.integration.tests;
+package pwr.smart.home.air.humidifier.integration.tests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
