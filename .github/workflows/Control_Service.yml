@@ -6,6 +6,10 @@ on:
       - "*.gradle"
       - "Control-Service/**"
       - "Common-Code/**"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Run Manually
 
 permissions:
   contents: read
