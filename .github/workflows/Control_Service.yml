@@ -37,7 +37,6 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: :Control-Service:build -x test
-          build-root-directory: .
           gradle-executable: ./gradlew
 
   test:
@@ -63,7 +62,6 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: :Control-Service:test --scan
-          build-root-directory: .
           gradle-executable: ./gradlew
 
       - name: Save report if error
