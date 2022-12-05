@@ -20,13 +20,13 @@ public class Measurement {
 
     @Enumerated(value = EnumType.STRING)
     private MeasurementType type;
-    private int value;
+    private float value;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Timestamp createdAt;
     private Long sensorId;
 
-    public Measurement(MeasurementType type, int value, Long sensorId, Timestamp createdAt) {
+    public Measurement(MeasurementType type, float value, Long sensorId, Timestamp createdAt) {
         this.type = type;
         this.value = value;
         this.createdAt = createdAt;

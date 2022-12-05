@@ -4,8 +4,6 @@
 - zuzycie pradu
 - godziny aktywnosci i preferencje
 - batch i caly serwis decyzyjny
-- preload odczytow
-- gas
 - walidacja dodawanych sensorow
 
 

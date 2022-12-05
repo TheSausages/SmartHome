@@ -37,6 +37,7 @@ dependencies {
 	// Testing
 	testImplementation "org.springframework.boot:spring-boot-starter-webflux:${springVersion}"
 	testImplementation "org.springframework.boot:spring-boot-starter-test:${springVersion}"
+	testImplementation "org.springframework.security:spring-security-test:${springSecurityTestVersion}"
 }
 
 dependencyManagement {
