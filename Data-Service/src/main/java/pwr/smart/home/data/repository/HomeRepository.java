@@ -12,6 +12,6 @@ public interface HomeRepository extends JpaRepository<Home, Long> {
     @Query(value = "select * from home h where h.id in (select distinct fd.home_id from functional_device fd)", nativeQuery = true)
     List<Home> findAllHomesWithFunctionalDevices();
 
-    @Query(value = "select * from home h where h.id = (select fd.home_id from functional_device fd where fd.serial_number = :serianNumber)", nativeQuery = true)
+    @Query(value = "select * from home h where h.id = (select fd.home_id from functional_device fd where fd.serial_number = :serialNumber)", nativeQuery = true)
     Optional<Home> findHomeBySerialNumberId(@Param("serialNumber") String serialNumber);
 }
