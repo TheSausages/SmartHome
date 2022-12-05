@@ -26,6 +26,10 @@ public class HomeService {
         return homeRepository.findAllHomesWithFunctionalDevices();
     }
 
+    public Optional<Home> findHomeBySerialNumber(String serialNumber) {
+        return homeRepository.findHomeBySerialNumberId(serialNumber);
+    }
+
     public boolean editAddress(Long houseId, Home home) {
         Optional<Home> homeOptEntity = getHomeLocation(houseId);
         if(homeOptEntity.isEmpty()) {

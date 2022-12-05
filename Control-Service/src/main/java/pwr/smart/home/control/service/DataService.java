@@ -59,6 +59,22 @@ public class DataService {
         }
         return List.of();
     }
+
+    public Home getHome(String serialNumber) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("serialNumber", serialNumber);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            ResponseEntity<Home> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/home/{serialNumber}", HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}, params);
+            return Objects.requireNonNull(response.getBody());
+        } catch (ResourceAccessException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return null;
+    }
     
     public List<FunctionalDeviceWithMeasurementsDTO> getFunctionalDevicesWithMeasurementsForHome(Home home) {
         RestTemplate restTemplate = new RestTemplate();

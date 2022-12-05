@@ -7,9 +7,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pwr.smart.home.control.model.FunctionalDeviceWithMeasurementsDTO;
 import pwr.smart.home.control.model.Home;
+import pwr.smart.home.control.weather.model.response.AirQualityResponse;
+import pwr.smart.home.control.weather.model.response.ForecastWeatherResponse;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Service
 public class ControlJob {
@@ -21,6 +25,9 @@ public class ControlJob {
     @Autowired
     FunDevicesAsyncMethods funDevicesAsyncMethods;
 
+    @Autowired
+    OpenMeteoAsyncMethods openMeteoAsyncMethods;
+
     /**
      * This will be ruin every 5 minutes
      */
@@ -29,23 +36,25 @@ public class ControlJob {
         List<Home> homes = dataService.getHomes();
 
         for (Home home : homes) {
-            List<FunctionalDeviceWithMeasurementsDTO> devices = dataService.getFunctionalDevicesWithMeasurementsForHome(home);
+            Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = funDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
+            Future<ForecastWeatherResponse> weather = openMeteoAsyncMethods.getWeatherForecast(home);
+            Future<AirQualityResponse> air = openMeteoAsyncMethods.getAirData(home);
 
-            devices.forEach(device -> {
+            for (FunctionalDeviceWithMeasurementsDTO device : devices.get()) {
                 switch (device.getDevice().getType()) {
                     case AIR_FILTER:
-                        funDevicesAsyncMethods.handleFilter(device, home);
+                        funDevicesAsyncMethods.handleFilter(device, home, air);
                         break;
                     case AIR_HUMIDIFIER:
-                        funDevicesAsyncMethods.handleHumidity(device, home);
+                        funDevicesAsyncMethods.handleHumidity(device, home, weather);
                         break;
                     case AIR_CONDITIONER:
-                        funDevicesAsyncMethods.handleTemperature(device, home);
+                        funDevicesAsyncMethods.handleTemperature(device, home, weather);
                         break;
                     default:
                         LOGGER.info("Device of unknown type found: {}", device.getDevice().getType());
                 }
-            });
+            }
         }
     }
 }
