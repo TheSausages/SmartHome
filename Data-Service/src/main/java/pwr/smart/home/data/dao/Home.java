@@ -26,6 +26,7 @@ public class Home {
     private float latitude;
     private int preferredTemp;
     private int preferredHum;
+    private String hours;
 
     @Override
     public boolean equals(Object o) {

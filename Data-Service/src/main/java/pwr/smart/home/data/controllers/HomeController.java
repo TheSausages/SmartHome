@@ -92,4 +92,42 @@ public class HomeController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorDTO.builder().message("Wrong location").status(HttpStatus.BAD_REQUEST).build());
     }
+
+    @PostMapping("/addHour")
+    public ResponseEntity<?> addHour(@AuthenticationPrincipal Jwt principal, @RequestParam int hour) {
+        Optional<User> user = userHomeService.findHomeByUserId(UUID.fromString(principal.getSubject()));
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorDTO.builder().message("House not found").status(HttpStatus.BAD_REQUEST).build());
+        }
+        if (hour < 0 || hour >= 24)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorDTO.builder().message("Wrong hours").status(HttpStatus.BAD_REQUEST).build());
+        String allHours = homeService.addHour(user.get().getHome().getId(), hour);
+        return ResponseEntity.ok(allHours);
+    }
+
+    @PostMapping("/removeHour")
+    public ResponseEntity<?> removeHour(@AuthenticationPrincipal Jwt principal, @RequestParam int hour) {
+        Optional<User> user = userHomeService.findHomeByUserId(UUID.fromString(principal.getSubject()));
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorDTO.builder().message("House not found").status(HttpStatus.BAD_REQUEST).build());
+        }
+        if (hour < 0 || hour >= 24)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorDTO.builder().message("Wrong hours").status(HttpStatus.BAD_REQUEST).build());
+        String allHours = homeService.removeHour(user.get().getHome().getId(), hour);
+        return ResponseEntity.ok(allHours);
+    }
+
+    @GetMapping("/getHours")
+    public ResponseEntity<?> getHours(@AuthenticationPrincipal Jwt principal) {
+        Optional<User> user = userHomeService.findHomeByUserId(UUID.fromString(principal.getSubject()));
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorDTO.builder().message("House not found").status(HttpStatus.BAD_REQUEST).build());
+        }
+        return ResponseEntity.ok(user.get().getHome().getHours());
+    }
 }

@@ -9,7 +9,8 @@ CREATE TABLE HOME (
     latitude FLOAT NOT NULL,
     longitude FLOAT NOT NULL,
     preferred_temp INT NOT NULL DEFAULT 21,
-    preferred_hum INT NOT NULL DEFAULT 45
+    preferred_hum INT NOT NULL DEFAULT 45,
+    hours VARCHAR(128) NOT NULL DEFAULT ''
 );
 
 DROP TABLE IF EXISTS USER_HOME CASCADE;
