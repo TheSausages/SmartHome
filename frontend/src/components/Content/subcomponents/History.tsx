@@ -103,7 +103,7 @@ export default function History(props: HistoryProps) {
                         <Input type="date" value={startDate} onChange={handleOnStartDateChange} />
                         <p style={{marginLeft: '20px', marginRight: '20px'}}>Do:</p>
                         <Input type="date" value={endDate} onChange={handleOnEndDateChange} />
-                        <Button sx={{marginLeft: '20px', height:'20px'}}color="success" variant="contained" type="submit">Wyświetl</Button>
+                        <Button sx={{marginLeft: '20px', height:'20px', marginTop:'20px', backgroundColor: 'rgba(76, 175, 80, 0.7)'}} variant="contained" type="submit">Wyświetl</Button>
                 </Stack>
                     </form>
                 <br/>

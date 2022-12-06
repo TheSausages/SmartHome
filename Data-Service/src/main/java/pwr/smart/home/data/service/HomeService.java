@@ -8,6 +8,7 @@ import pwr.smart.home.data.repository.HomeRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class HomeService {
@@ -33,7 +34,7 @@ public class HomeService {
     public boolean editAddress(Long houseId, Home home) {
         Optional<Home> homeOptEntity = getHomeLocation(houseId);
         if(homeOptEntity.isEmpty()) {
-            return false;
+            throw new RuntimeException("Home should be in DB");
         }
         Home homeEntity = homeOptEntity.get();
         homeEntity.setCity(home.getCity());
@@ -48,5 +49,36 @@ public class HomeService {
         homeEntity.setLongitude(location.getLongitude());
         saveHome(homeEntity);
         return true;
+    }
+
+    public Set<Integer> addHour(Long houseId, int hour) {
+        Optional<Home> homeOptEntity = getHomeLocation(houseId);
+        if(homeOptEntity.isEmpty()) {
+            throw new RuntimeException("Home should be in DB");
+        }
+        Home homeEntity = homeOptEntity.get();
+        Set<Integer> hoursParsed = homeEntity.getHours();
+        hoursParsed.add(hour);
+        persistNewHoursInHome(hoursParsed, homeEntity);
+        return hoursParsed;
+    }
+
+    public Set<Integer> removeHour(Long houseId, int hour) {
+        Optional<Home> homeOptEntity = getHomeLocation(houseId);
+        if(homeOptEntity.isEmpty()) {
+            throw new RuntimeException("Home should be in DB");
+        }
+        Home homeEntity = homeOptEntity.get();
+        Set<Integer> hoursParsed = homeEntity.getHours();
+        hoursParsed.remove(hour);
+        persistNewHoursInHome(hoursParsed, homeEntity);
+        return hoursParsed;
+    }
+
+    private void persistNewHoursInHome(Set<Integer> hoursParsed, Home homeEntity) {
+        StringBuilder addToDbStringBuilder = new StringBuilder();
+        hoursParsed.forEach(hourInSet -> addToDbStringBuilder.append(hourInSet).append(";"));
+        homeEntity.setHours(addToDbStringBuilder.toString());
+        saveHome(homeEntity);
     }
 }

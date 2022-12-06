@@ -41,8 +41,7 @@ enum AirCondition
 }
 
 export default function Home(props: HomeProps) {
-    const [ startActivityHour, setStartActivityHour ] = useState<number>(-1);
-    const [ endActivityHour, setEndActivityHour ] = useState<number>(-1);
+    const [ activityHours, setActivityHours ] = useState<number[]>([]);
     const [ requestedTemperature, setRequestedTemperature ] = useState<number>(17);
     const [ requestedAirHumadity, setRequestedAirHumadity ] = useState<number>(40);
     const [ activeDevice, setActiveDevice ] = useState<DeviceType>(DeviceType.AirConditioner);
@@ -53,15 +52,7 @@ export default function Home(props: HomeProps) {
     const [ tomorrowMinTemperature, setTomorrowMinTemperature ] = useState<number>(0);
     const [ temperature, setTemperature ] = useState<number>(0);
     const [ humidity, setHumidity ] = useState<number>(0);
-    // const { isLoading, isError, data, error, refetch } = useQuery<Location, ApiError>(
-    //     ['GetHomeLocation'],
-    //     () => getHouseLocation(UserService.getUserId()),
-    //     {
-    //         onSuccess: (data) => {
-    //             console.log(data)
-    //         },
-    //     }
-    // )
+
     const [homeLocationQuery, forecastWeatherQuery, airConditionQuery, temperatureQuery, humidityQuery] = useQueries([
             {
                 queryKey: ['GetHomeLocation'],
@@ -131,33 +122,15 @@ export default function Home(props: HomeProps) {
         availableAirHumadityLevels.push(i);
     }
 
-    const handleStartActivityHourChange = (value: number) => {
-        if(startActivityHour === value) {
-            setStartActivityHour(-1);
-        } else {
-            setStartActivityHour(value);
-        }
-    };
-
-    const handleEndActivityHourChange = (value: number) => {
-        if(endActivityHour === value) {
-            setEndActivityHour(-1);
-        } else {
-            setEndActivityHour(value);
-        }
-    }
-
-    const decideWhichHourSet = (value: number) => {
-        if(startActivityHour === -1 && endActivityHour === -1)
-        {
-            handleStartActivityHourChange(value);
-            return;
-        } else if (startActivityHour !== -1 && endActivityHour === -1) {
-            handleEndActivityHourChange(value);
-            return;
-        }
-        handleStartActivityHourChange(value);
-        handleEndActivityHourChange(-1);
+    const addActivityHour = (clickedHour: number) =>
+    {
+        setActivityHours((prev) => {
+            if(prev.find(element => element === clickedHour) !== undefined)
+            {
+                return prev.filter(element => element !== clickedHour);
+            }
+            return [...prev, clickedHour];
+        });
     }
 
     const handleOnTemperatureChange = (e: SelectChangeEvent) => {
@@ -233,12 +206,12 @@ export default function Home(props: HomeProps) {
     {
         if (airCondition === AirCondition.Good)
         {
-            return "green"
+            return 'rgba(76, 175, 80, 0.7)' // green
         } else if (airCondition === AirCondition.Acceptable)
         {
-            return "orange"
+            return 'rgba(255, 224, 102, 0.7)' // orange
         }
-        return "red"
+        return 'rgba(255, 153, 153, 0.7)' // red
     }
 
     const decideQualityOfAir = () =>
@@ -268,12 +241,12 @@ export default function Home(props: HomeProps) {
         </TableRow>
     ));
 
-    const TemperatureRow = (<TableRow sx={{backgroundColor: 'green'}}>
+    const TemperatureRow = (<TableRow sx={{backgroundColor: 'rgba(76, 175, 80, 0.7)'}}>
     <TableCell>Temperatura</TableCell>
     <TableCell>{temperature}°C</TableCell>
     </TableRow>);
 
-    const AirHumidityRow = (<TableRow sx={{backgroundColor: 'green'}}>
+    const AirHumidityRow = (<TableRow sx={{backgroundColor: 'rgba(76, 175, 80, 0.7)'}}>
     <TableCell>Wilgotność</TableCell>
     <TableCell>{humidity}%</TableCell>
     </TableRow>);
@@ -282,9 +255,9 @@ export default function Home(props: HomeProps) {
 
     const hoursList = hoursArray.map((item, index) => (
         <Grid item xs={1} key={index}>
-            <Button sx={{border: 1, borderRadius: '5px', borderColor: '#bfbdbd', color:'black'}} 
-                onClick={() => decideWhichHourSet(item)} variant={startActivityHour === item || endActivityHour === item ? "contained" : "outlined"}
-                color={startActivityHour === item || endActivityHour === item ? "primary" : "secondary"}>
+            <Button sx={{border: 1, borderRadius: '10px', borderColor: '#bfbdbd', color:'black'}} 
+                onClick={() => addActivityHour(item)} variant={activityHours.find(value => value === item) !== undefined ? "contained" : "outlined"}
+                color="primary">
                     {item < 10 ? '0'+ item : item}:00
             </Button>
         </Grid>
@@ -303,7 +276,7 @@ export default function Home(props: HomeProps) {
             <Grid item xs={1}>
                 <Box sx={{marginTop: '50px', marginLeft: '10px', minWidth:'100px'}}>
                     <h3>Pogoda</h3>
-                    <Box sx={{border: 1, borderRadius: '10px', margin: '20px',  minWidth:'50px'}}>
+                    <Box sx={{border: 1, borderColor: 'grey', borderRadius: '10px', margin: '20px',  minWidth:'50px'}}>
                         <span>Dziś</span>
                         <br/>
                         <br/>
@@ -329,7 +302,7 @@ export default function Home(props: HomeProps) {
                 <Box sx={{border: 1, minHeight: '200px', marginLeft: '10px', marginRight: '10px'}}>
                     <p>Coś tam</p>
                 </Box>
-                <TableContainer component={Paper} sx={{marginTop: '30px'}}>
+                <TableContainer component={Paper} sx={{marginTop: '30px', borderRadius:'10px'}}>
                 <Table sx={{minWidth: 250}} aria-label='simple table'>
                     <TableHead>
                         <TableRow>
@@ -358,7 +331,7 @@ export default function Home(props: HomeProps) {
             <Grid item xs={4} sx={{marginLeft: '30px'}}>
                 <Box sx={{minHeight: '200px', marginLeft: '10px', marginRight: '10px'}}>
                     <p><b>Urządzenia</b></p>
-                    <TableContainer component={Paper} sx={{marginTop: '20px'}}>
+                    <TableContainer component={Paper} sx={{marginTop: '20px', borderRadius: '10px'}}>
                         <Table sx={{minWidth: 100}} aria-label='simple table'>
                             <TableHead>
                                 <TableRow>

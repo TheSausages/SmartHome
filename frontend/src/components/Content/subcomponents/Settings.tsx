@@ -179,8 +179,8 @@ export default function Settings(props: SettingsProps) {
                         <Input value={country} onChange={handleOnCountryChange} type="text"/>
                     </Box>
                     <Box sx={{marginTop: '30px'}}>
-                        <Button color="warning" variant="contained" sx={{marginRight: '10px'}} onClick={resetInputs}>Anuluj</Button>
-                        <Button color="success" variant="contained" type="submit">Zapisz</Button>
+                        <Button variant="contained" sx={{marginRight: '10px', backgroundColor: 'rgba(255, 224, 102, 0.7)'}} onClick={resetInputs}>Anuluj</Button>
+                        <Button sx={{backgroundColor: 'rgba(76, 175, 80, 0.7)'}} variant="contained" type="submit">Zapisz</Button>
                     </Box>
                     </form>
                 </Stack>

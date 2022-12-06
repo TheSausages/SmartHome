@@ -20,7 +20,7 @@ const StyledDiv = styled('div')({
 
 export default function NavBar(props: NavbarProps) {
     return (
-        <AppBar position='static' sx={{backgroundColor: 'black'}}>
+        <AppBar position='static' sx={{backgroundColor: 'rgba(76, 175, 80, 0.7)', borderRadius: '0px 0px 10px 10px'}}>
             <StyledDiv>
                 <div>
                     <IconButton component={NavLink} to="/">
