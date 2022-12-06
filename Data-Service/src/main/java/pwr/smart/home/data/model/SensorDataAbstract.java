@@ -2,7 +2,7 @@ package pwr.smart.home.data.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import pwr.smart.home.data.model.enums.SensorType;
+import pwr.smart.home.common.model.enums.SensorType;
 
 import java.sql.Timestamp;
 

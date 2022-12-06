@@ -36,10 +36,14 @@ dependencies {
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springVersion}"
 	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
+	// other
+	implementation 'org.apache.commons:commons-math3:3.6.1'
+
 	// Testing
 	testImplementation "org.springframework.boot:spring-boot-starter-webflux:${springVersion}"
 	testImplementation "org.springframework.boot:spring-boot-starter-test:${springVersion}"
 	testImplementation "org.springframework.security:spring-security-test:${springSecurityTestVersion}"
+	testImplementation 'org.awaitility:awaitility:4.2.0'
 	testImplementation "org.testcontainers:junit-jupiter:${testcontainersVersion}"
 }
 

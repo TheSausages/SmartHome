@@ -107,7 +107,7 @@ services:
       KEYCLOAK_URL: 'http://keycloak:8180'
       KEYCLOAK_REALM: 'SmartHome'
       API_DEFAULT_PATH: '/api/control'
-      DATA_SERVICE_URL: 'data-service:8081/api/data'
+      DATA_SERVICE_URL: 'http://data-service:8081/api/data'
       AIR_CONDITIONER_URL: 'http://air-conditioning:8083'
       AIR_HUMIDIFIER_URL: 'http://air-humidifier:8082'
       AIR_FILTER_URL: 'http://air-filter:8084'
@@ -122,6 +122,7 @@ services:
     environment:
       PORT: 8082
       DATA_SERVICE_URL: 'http://data-service:8081/api/data'
+      FUNCTIONAL_DEVICE_SERIAL_NUMBER: HIBWCDUIYHWASDAF
 
   air-filter:
     build:
@@ -133,6 +134,7 @@ services:
     environment:
       PORT: 8084
       DATA_SERVICE_URL: 'http://data-service:8081/api/data'
+      FUNCTIONAL_DEVICE_SERIAL_NUMBER: HIBWCDUIYHWASDAD
       
   air-conditioning:
     build:
@@ -144,6 +146,7 @@ services:
     environment:
       PORT: 8083
       DATA_SERVICE_URL: 'http://data-service:8081/api/data'
+      FUNCTIONAL_DEVICE_SERIAL_NUMBER: HIBWCDUIYHWASDAE
 
   frontend:
     build:

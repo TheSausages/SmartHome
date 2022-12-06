@@ -4,8 +4,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import pwr.smart.home.common.model.enums.MeasurementType;
 import pwr.smart.home.data.dao.Measurement;
-import pwr.smart.home.data.model.enums.MeasurementType;
 import pwr.smart.home.data.repository.MeasurementRepository;
 
 import java.io.BufferedReader;

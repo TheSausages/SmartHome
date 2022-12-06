@@ -13,6 +13,7 @@ import pwr.smart.home.common.controllers.RestControllerWithBasePath;
 import pwr.smart.home.common.error.ErrorDTO;
 import pwr.smart.home.control.model.Endpoint;
 import pwr.smart.home.control.model.Location;
+import pwr.smart.home.control.service.DataService;
 import pwr.smart.home.control.weather.OpenMeteo;
 import pwr.smart.home.control.weather.model.request.AirQualityRequest;
 import pwr.smart.home.control.weather.model.request.ForecastWeatherRequest;
@@ -27,14 +28,14 @@ public class WeatherController {
     private static final Logger LOGGER = LoggerFactory.getLogger(WeatherController.class);
 
     @Autowired
-    OpenMeteo openMeteo;
+    private OpenMeteo openMeteo;
 
     @Autowired
-    Endpoint endpoint;
+    private DataService dataService;
 
     @GetMapping("/weather")
     public ResponseEntity<?> getTodayAndTomorrowWeather(@AuthenticationPrincipal Jwt principal) {
-        Optional<Location> location = getLongLat(principal.getSubject());
+        Optional<Location> location = dataService.getLongLat(principal.getSubject());
         if (location.isPresent()) {
             ForecastWeatherRequest forecastWeatherRequest = new ForecastWeatherRequest(
                     location.get().getLatitude(),
@@ -48,7 +49,7 @@ public class WeatherController {
 
     @GetMapping("/air")
     public ResponseEntity<?> getTodaysAirCondition(@AuthenticationPrincipal Jwt principal) {
-        Optional<Location> location = getLongLat(principal.getSubject());
+        Optional<Location> location = dataService.getLongLat(principal.getSubject());
         if (location.isPresent()) {
             AirQualityRequest airQualityRequest = new AirQualityRequest(
                     location.get().getLatitude(),
@@ -59,21 +60,4 @@ public class WeatherController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Wrong location").status(HttpStatus.BAD_REQUEST).build());
     }
 
-    private Optional<Location> getLongLat(String userId) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-
-        try {
-            Map<String, String> params = new HashMap<>();
-            params.put("userId", userId);
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<Location> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/latlong/{userId}", HttpMethod.GET, entity, Location.class, params);
-            Location returned = Objects.requireNonNull(response.getBody());
-            LOGGER.info(returned.getLongitude() + String.valueOf(returned.getLatitude()));
-            return Optional.of(returned);
-        } catch (ResourceAccessException e) {
-            LOGGER.error(e.getMessage());
-        }
-        return Optional.empty();
-    }
 }

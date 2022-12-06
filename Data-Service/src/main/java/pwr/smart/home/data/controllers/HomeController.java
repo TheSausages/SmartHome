@@ -15,6 +15,7 @@ import pwr.smart.home.data.service.HomeService;
 import pwr.smart.home.data.service.UserService;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -36,11 +37,28 @@ public class HomeController {
         }
     }
 
+    @GetMapping("/homes")
+    public ResponseEntity<?> getHomes() {
+        List<Home> homes = homeService.findAllHomesWithActiveFunctionalDevices();
+
+        return ResponseEntity.ok(homes);
+    }
+
     @GetMapping("/home")
     public ResponseEntity<?> getHome(@AuthenticationPrincipal Jwt principal) {
         Optional<User> user = userHomeService.findHomeByUserId(UUID.fromString(principal.getSubject()));
         if (user.isPresent()) {
             return ResponseEntity.ok(user.get().getHome());
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Wrong house").status(HttpStatus.BAD_REQUEST).build());
+        }
+    }
+
+    @GetMapping("/home/{serialNumber}")
+    public ResponseEntity<?> getHomeForFunctionalDevice(@PathVariable String serialNumber) {
+        Optional<Home> home = homeService.findHomeBySerialNumber(serialNumber);
+        if (home.isPresent()) {
+            return ResponseEntity.ok(home.get());
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Wrong house").status(HttpStatus.BAD_REQUEST).build());
         }

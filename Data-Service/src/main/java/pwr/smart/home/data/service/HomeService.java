@@ -6,6 +6,7 @@ import pwr.smart.home.data.dao.Home;
 import pwr.smart.home.data.model.Location;
 import pwr.smart.home.data.repository.HomeRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -20,6 +21,14 @@ public class HomeService {
 
     public Home saveHome(Home home) {
         return homeRepository.save(home);
+    }
+
+    public List<Home> findAllHomesWithActiveFunctionalDevices() {
+        return homeRepository.findAllHomesWithFunctionalDevices();
+    }
+
+    public Optional<Home> findHomeBySerialNumber(String serialNumber) {
+        return homeRepository.findHomeBySerialNumberId(serialNumber);
     }
 
     public boolean editAddress(Long houseId, Home home) {

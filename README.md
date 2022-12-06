@@ -3,7 +3,7 @@
 ## Todo
 - zuzycie pradu
 - godziny aktywnosci i preferencje
-- batch i caly serwis decyzyjny
+- lepszy model dla zmian elementów
 - walidacja dodawanych sensorow
 
 

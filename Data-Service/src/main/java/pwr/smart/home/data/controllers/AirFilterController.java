@@ -15,7 +15,7 @@ import pwr.smart.home.common.controllers.RestControllerWithBasePath;
 import pwr.smart.home.common.error.ErrorDTO;
 import pwr.smart.home.data.dao.User;
 import pwr.smart.home.data.model.AirFilterData;
-import pwr.smart.home.data.model.enums.SensorType;
+import pwr.smart.home.common.model.enums.SensorType;
 import pwr.smart.home.data.service.AirFilterService;
 import pwr.smart.home.data.service.MeasurementService;
 import pwr.smart.home.data.service.SensorService;

@@ -46,6 +46,12 @@ public class SecurityConfig {
                 .mvcMatchers("/api/data/air-quality").permitAll()
                 .mvcMatchers("/api/data/temperature").permitAll()
                 .mvcMatchers("/api/data/humidity").permitAll()
+
+                // Change when adding security between microserwises
+                .mvcMatchers("/api/data/homes").permitAll()
+                .mvcMatchers("/api/data/latlong/*").permitAll()
+                .mvcMatchers("/api/data/homeFunctionalDevices/*").permitAll()
+
                 .mvcMatchers("/api/data/measurements").authenticated()
                 .mvcMatchers("/api/data/lastAirFilterMeasurements").authenticated()
                 .mvcMatchers("/api/data/allAirFilterMeasurements").authenticated()
@@ -57,7 +63,6 @@ public class SecurityConfig {
                 .mvcMatchers("/api/data/setHouseTemperature").authenticated()
                 .mvcMatchers("/api/data/setHouseHumidity").authenticated()
                 .mvcMatchers("/api/data/*").authenticated()
-                .mvcMatchers("/api/data/latlong/*").permitAll()
                 .mvcMatchers("/api/**").authenticated()
                 .mvcMatchers("/api/data/addSensor").authenticated()
                 .mvcMatchers("/api/data/addFunctionalDevice").authenticated()
