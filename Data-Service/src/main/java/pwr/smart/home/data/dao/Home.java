@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -34,6 +34,13 @@ public class Home {
         if (!(o instanceof Home)) return false;
         Home home = (Home) o;
         return Objects.equals(id, home.getId());
+    }
+
+    public Set<Integer> getHours() {
+        List<String> stringList = Arrays.asList(hours.split(";"));
+        if(stringList.size() == 1 && stringList.get(0).isEmpty())
+            return new HashSet<>();
+        return stringList.stream().map(Integer::parseInt).collect(Collectors.toSet());
     }
 
     @Override

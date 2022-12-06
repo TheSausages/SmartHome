@@ -6,11 +6,8 @@ import pwr.smart.home.data.dao.Home;
 import pwr.smart.home.data.model.Location;
 import pwr.smart.home.data.repository.HomeRepository;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class HomeService {
@@ -45,42 +42,34 @@ public class HomeService {
         return true;
     }
 
-    public String addHour(Long houseId, int hour) {
+    public Set<Integer> addHour(Long houseId, int hour) {
         Optional<Home> homeOptEntity = getHomeLocation(houseId);
         if(homeOptEntity.isEmpty()) {
             throw new RuntimeException("Home should be in DB");
         }
         Home homeEntity = homeOptEntity.get();
-        Set<Integer> hoursParsed = extractSetOfHours(homeEntity);
+        Set<Integer> hoursParsed = homeEntity.getHours();
         hoursParsed.add(hour);
-        StringBuilder addToDbStringBuilder = persistNewHoursInHome(hoursParsed, homeEntity);
-        return addToDbStringBuilder.toString();
+        persistNewHoursInHome(hoursParsed, homeEntity);
+        return hoursParsed;
     }
 
-    public String removeHour(Long houseId, int hour) {
+    public Set<Integer> removeHour(Long houseId, int hour) {
         Optional<Home> homeOptEntity = getHomeLocation(houseId);
         if(homeOptEntity.isEmpty()) {
             throw new RuntimeException("Home should be in DB");
         }
         Home homeEntity = homeOptEntity.get();
-        Set<Integer> hoursParsed = extractSetOfHours(homeEntity);
+        Set<Integer> hoursParsed = homeEntity.getHours();
         hoursParsed.remove(hour);
-        StringBuilder addToDbStringBuilder = persistNewHoursInHome(hoursParsed, homeEntity);
-        return addToDbStringBuilder.toString();
+        persistNewHoursInHome(hoursParsed, homeEntity);
+        return hoursParsed;
     }
 
-    private StringBuilder persistNewHoursInHome(Set<Integer> hoursParsed, Home homeEntity) {
+    private void persistNewHoursInHome(Set<Integer> hoursParsed, Home homeEntity) {
         StringBuilder addToDbStringBuilder = new StringBuilder();
         hoursParsed.forEach(hourInSet -> addToDbStringBuilder.append(hourInSet).append(";"));
         homeEntity.setHours(addToDbStringBuilder.toString());
         saveHome(homeEntity);
-        return addToDbStringBuilder;
-    }
-
-    private Set<Integer> extractSetOfHours(Home homeEntity) {
-        String[] hoursString = homeEntity.getHours().split(";");
-        if(hoursString.length == 1 && hoursString[0].isEmpty())
-            return new HashSet<>();
-        return Arrays.stream(hoursString).map(Integer::parseInt).collect(Collectors.toSet());
     }
 }

@@ -14,7 +14,9 @@ import pwr.smart.home.data.model.Location;
 import pwr.smart.home.data.service.HomeService;
 import pwr.smart.home.data.service.UserService;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @RestControllerWithBasePath
@@ -95,30 +97,34 @@ public class HomeController {
 
     @PostMapping("/addHour")
     public ResponseEntity<?> addHour(@AuthenticationPrincipal Jwt principal, @RequestParam int hour) {
+        if (isHourInvalid(hour))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorDTO.builder().message("Wrong hours").status(HttpStatus.BAD_REQUEST).build());
         Optional<User> user = userHomeService.findHomeByUserId(UUID.fromString(principal.getSubject()));
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ErrorDTO.builder().message("House not found").status(HttpStatus.BAD_REQUEST).build());
         }
-        if (hour < 0 || hour >= 24)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(ErrorDTO.builder().message("Wrong hours").status(HttpStatus.BAD_REQUEST).build());
-        String allHours = homeService.addHour(user.get().getHome().getId(), hour);
+        Set<Integer> allHours = homeService.addHour(user.get().getHome().getId(), hour);
         return ResponseEntity.ok(allHours);
     }
 
     @PostMapping("/removeHour")
     public ResponseEntity<?> removeHour(@AuthenticationPrincipal Jwt principal, @RequestParam int hour) {
+        if (isHourInvalid(hour))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorDTO.builder().message("Wrong hours").status(HttpStatus.BAD_REQUEST).build());
         Optional<User> user = userHomeService.findHomeByUserId(UUID.fromString(principal.getSubject()));
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ErrorDTO.builder().message("House not found").status(HttpStatus.BAD_REQUEST).build());
         }
-        if (hour < 0 || hour >= 24)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(ErrorDTO.builder().message("Wrong hours").status(HttpStatus.BAD_REQUEST).build());
-        String allHours = homeService.removeHour(user.get().getHome().getId(), hour);
+        Set<Integer> allHours = homeService.removeHour(user.get().getHome().getId(), hour);
         return ResponseEntity.ok(allHours);
+    }
+
+    private boolean isHourInvalid(int hour) {
+        return hour < 0 || hour >= 24;
     }
 
     @GetMapping("/getHours")
