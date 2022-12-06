@@ -19,38 +19,38 @@ public class ControlJob {
     private static final Logger LOGGER = LoggerFactory.getLogger(ControlJob.class);
 
     @Autowired
-    DataService dataService;
+    private DataService dataService;
 
     @Autowired
-    FunDevicesAsyncMethods funDevicesAsyncMethods;
+    private FunctionalDevicesAsyncMethods functionalDevicesAsyncMethods;
 
     @Autowired
-    OpenMeteoAsyncMethods openMeteoAsyncMethods;
+    private OpenMeteoAsyncMethods openMeteoAsyncMethods;
 
     /**
      * This will be ruin every 5 minutes
      */
-    @Scheduled(cron = "* */5 * * * *")
+    @Scheduled(cron = "*/30 * * * * *")
     public void adjustForAllElements() throws ExecutionException, InterruptedException {
         List<Home> homes = dataService.getHomes();
 
         for (Home home : homes) {
-            Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = funDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
+            Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = functionalDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
             Future<ForecastWeatherResponse> weather = openMeteoAsyncMethods.getWeatherForecast(home);
             Future<AirQualityResponse> air = openMeteoAsyncMethods.getAirData(home);
 
-            LOGGER.info("For home {}", home.getId());
+            LOGGER.info("For home {} (id: {})", home.getName(), home.getId());
 
             for (FunctionalDeviceWithMeasurementsDTO device : devices.get()) {
                 switch (device.getDevice().getType()) {
                     case AIR_FILTER:
-                        funDevicesAsyncMethods.handleFilter(device, null, home, air.get());
+                        functionalDevicesAsyncMethods.handleFilter(device, null, home, air.get());
                         break;
                     case AIR_HUMIDIFIER:
-                        funDevicesAsyncMethods.handleHumidity(device, null, home, weather.get());
+                        functionalDevicesAsyncMethods.handleHumidity(device, null, home, weather.get());
                         break;
                     case AIR_CONDITIONER:
-                        funDevicesAsyncMethods.handleTemperature(device, null, home, weather.get());
+                        functionalDevicesAsyncMethods.handleTemperature(device, null, home, weather.get());
                         break;
                     default:
                         LOGGER.info("Device of unknown type found: {}", device.getDevice().getType());

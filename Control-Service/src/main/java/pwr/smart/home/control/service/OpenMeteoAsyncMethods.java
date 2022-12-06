@@ -16,7 +16,7 @@ import java.util.concurrent.Future;
 @Service
 public class OpenMeteoAsyncMethods {
     @Autowired
-    OpenMeteo openMeteo;
+    private OpenMeteo openMeteo;
 
     @Async
     public Future<ForecastWeatherResponse> getWeatherForecast(Home home) {

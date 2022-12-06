@@ -20,24 +20,24 @@ public class ActionsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionsService.class);
 
     @Autowired
-    DataEmitter dataEmitter;
+    private DataEmitter dataEmitter;
 
     @Autowired
-    DataService dataService;
+    private DataService dataService;
 
     @Autowired
-    Endpoint endpoint;
+    private Endpoint endpoint;
 
     @Autowired
-    OpenMeteoAsyncMethods openMeteoAsyncMethods;
+    private OpenMeteoAsyncMethods openMeteoAsyncMethods;
 
     @Autowired
-    FunDevicesAsyncMethods funDevicesAsyncMethods;
+    private FunctionalDevicesAsyncMethods functionalDevicesAsyncMethods;
 
     public String doActionsForDeviceWithSerialNumber(String target, String serialNumber) throws ExecutionException, InterruptedException {
         Home home = dataService.getHome(serialNumber);
 
-        Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = funDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
+        Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = functionalDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
         Future<ForecastWeatherResponse> weather = openMeteoAsyncMethods.getWeatherForecast(home);
         Future<AirQualityResponse> air = openMeteoAsyncMethods.getAirData(home);
 
@@ -53,11 +53,11 @@ public class ActionsService {
         if (Objects.nonNull(device) && devices.isDone() && weather.isDone() && air.isDone()) {
             switch (device.getDevice().getType()) {
                 case AIR_FILTER:
-                    return funDevicesAsyncMethods.handleFilter(device, target, home, air.get());
+                    return functionalDevicesAsyncMethods.handleFilter(device, target, home, air.get()).get();
                 case AIR_HUMIDIFIER:
-                    return funDevicesAsyncMethods.handleHumidity(device, target, home, weather.get());
+                    return functionalDevicesAsyncMethods.handleHumidity(device, target, home, weather.get()).get();
                 case AIR_CONDITIONER:
-                    return funDevicesAsyncMethods.handleTemperature(device, target, home, weather.get());
+                    return functionalDevicesAsyncMethods.handleTemperature(device, target, home, weather.get()).get();
                 default:
                     LOGGER.info("Device of unknown type found: {}", device.getDevice().getType());
                     return "";

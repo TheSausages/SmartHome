@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutionException;
 public class Actions {
 
     @Autowired
-    ActionsService actionsService;
+    private ActionsService actionsService;
 
     @PostMapping("/temperature")
     public ResponseEntity<?> setTargetTemperature(@RequestParam String target) throws ExecutionException, InterruptedException {

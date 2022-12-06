@@ -28,10 +28,10 @@ public class WeatherController {
     private static final Logger LOGGER = LoggerFactory.getLogger(WeatherController.class);
 
     @Autowired
-    OpenMeteo openMeteo;
+    private OpenMeteo openMeteo;
 
     @Autowired
-    DataService dataService;
+    private DataService dataService;
 
     @GetMapping("/weather")
     public ResponseEntity<?> getTodayAndTomorrowWeather(@AuthenticationPrincipal Jwt principal) {

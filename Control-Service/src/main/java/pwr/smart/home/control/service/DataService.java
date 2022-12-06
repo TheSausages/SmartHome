@@ -25,7 +25,7 @@ public class DataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataService.class);
 
     @Autowired
-    Endpoint endpoint;
+    private Endpoint endpoint;
 
     public Optional<Location> getLongLat(String userId) {
         RestTemplate restTemplate = new RestTemplate();
