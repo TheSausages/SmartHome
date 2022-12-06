@@ -20,18 +20,18 @@ public class Endpoint {
     private String airFilterUrl;
 
     public String getAirConditionerUrl() {
-        return "http://" + airConditionerUrl + "/setTarget";
+        return airConditionerUrl + "/setTarget";
     }
 
     public String getAirFilterUrl() {
-        return "http://" + airFilterUrl + "/setTarget";
+        return airFilterUrl + "/setTarget";
     }
 
     public String getAirHumidifierUrl() {
-        return "http://" + airHumidifierUrl + "/setTarget";
+        return airHumidifierUrl + "/setTarget";
     }
 
     public String getDataServiceUrl() {
-        return "http://" + dataServiceUrl;
+        return dataServiceUrl;
     }
 }

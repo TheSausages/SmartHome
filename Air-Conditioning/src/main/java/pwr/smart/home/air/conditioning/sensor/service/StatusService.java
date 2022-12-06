@@ -1,9 +1,11 @@
 package pwr.smart.home.air.conditioning.sensor.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import pwr.smart.home.air.conditioning.model.State;
+import pwr.smart.home.air.conditioning.device.model.State;
+
 
 import static java.lang.Math.abs;
 
@@ -14,8 +16,14 @@ public class StatusService {
     private static double currentTemperature;
     private static final double GRADATION_SPEED = 0.1;
 
+    @Autowired
+    DataEmitter dataEmitter;
+
     @Value("${new.value.propagation.delay}")
     private int propagationDelay;
+
+    @Value("${device.power.kw}")
+    private int devicePower;
 
     @Async("asyncExecutor")
     public void setTargetTemperature(double targetTemperature) throws InterruptedException {
@@ -46,6 +54,14 @@ public class StatusService {
             currentTemperature = Math.round(newValue * 100.0) / 100.0;
             Thread.sleep(propagationDelay);
         }
+
+        calculateConsumption(temperatureDifference);
+    }
+
+    private void calculateConsumption(double temperatureDifference) {
+        //jeden stopień / godzinę
+        double consumption = temperatureDifference * devicePower; //Wh
+        dataEmitter.reportConsumption(consumption);
     }
 
     public static double getCurrentTemperature() {
