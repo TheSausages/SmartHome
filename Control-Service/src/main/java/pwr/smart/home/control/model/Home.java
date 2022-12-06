@@ -2,7 +2,8 @@ package pwr.smart.home.control.model;
 
 import lombok.*;
 
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -18,4 +19,5 @@ public class Home {
     private float latitude;
     private int preferredTemp;
     private int preferredHum;
+    private Set<Integer> hours;
 }

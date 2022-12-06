@@ -46,9 +46,7 @@ public class FunDevicesAsyncMethods {
     }
 
     @Async
-    public String handleTemperature(FunctionalDeviceWithMeasurementsDTO data, Home home, Future<ForecastWeatherResponse> weatherFuture) throws ExecutionException, InterruptedException {
-        ForecastWeatherResponse weather = weatherFuture.get();
-
+    public String handleTemperature(FunctionalDeviceWithMeasurementsDTO data, String target, Home home, ForecastWeatherResponse weather) throws ExecutionException, InterruptedException {
         if (!data.getMeasurements().containsKey(MeasurementType.CELSIUS)) {
             throw new RuntimeException("No Celsius measurement for temperature");
         }
@@ -66,19 +64,21 @@ public class FunDevicesAsyncMethods {
             // For testing purposes add something with weather
             int settingTemp = home.getPreferredTemp() + 1;
 
+            LOGGER.info("Set Temperature device to {}", settingTemp);
+
             return dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()));
         } else {
             // For testing purposes add something with weather
             int settingTemp = home.getPreferredTemp() - 1;
+
+            LOGGER.info("Set Temperature device to {}", settingTemp);
 
             return dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()));
         }
     }
 
     @Async
-    public String handleHumidity(FunctionalDeviceWithMeasurementsDTO data, Home home, Future<ForecastWeatherResponse> weatherFuture) throws ExecutionException, InterruptedException {
-        ForecastWeatherResponse weather = weatherFuture.get();
-
+    public String handleHumidity(FunctionalDeviceWithMeasurementsDTO data, String target, Home home, ForecastWeatherResponse weather) throws ExecutionException, InterruptedException {
         if (!data.getMeasurements().containsKey(MeasurementType.HUMIDITY)) {
             throw new RuntimeException("No Celsius measurement for temperature");
         }
@@ -96,19 +96,21 @@ public class FunDevicesAsyncMethods {
             // For testing purposes add something with weather
             int settingTemp = home.getPreferredTemp() + 1;
 
+            LOGGER.info("Set Humidity device to {}", settingTemp);
+
             return dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()));
         } else {
             // For testing purposes add something with weather
             int settingTemp = home.getPreferredTemp() - 1;
+
+            LOGGER.info("Set Humidity device to {}", settingTemp);
 
             return dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()));
         }
     }
 
     @Async
-    public String handleFilter(FunctionalDeviceWithMeasurementsDTO data, Home home, Future<AirQualityResponse> airFuture) throws ExecutionException, InterruptedException {
-        AirQualityResponse air = airFuture.get();
-
+    public String handleFilter(FunctionalDeviceWithMeasurementsDTO data, String target, Home home, AirQualityResponse air) throws ExecutionException, InterruptedException {
         if (data.getMeasurements().containsKey(MeasurementType.GAS)) {
             // Some operation with Gas
             List<Measurement> temperatureMeasurement = data.getMeasurements().get(MeasurementType.GAS);
@@ -123,6 +125,8 @@ public class FunDevicesAsyncMethods {
             // Some operations with PM25
             List<Measurement> temperatureMeasurement = data.getMeasurements().get(MeasurementType.PM25);
         }
+
+        LOGGER.info("Set Filter device to {}", 5);
 
         return dataEmitter.callForAction(Integer.toString(5), endpoint.getAirFilterUrl(data.getDevice().getSerialNumber()));
     }

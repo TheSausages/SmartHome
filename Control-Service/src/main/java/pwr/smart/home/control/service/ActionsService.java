@@ -48,14 +48,16 @@ public class ActionsService {
                 .findAny()
                 .orElse(null);
 
-        if (Objects.nonNull(device)) {
+        LOGGER.info("Try to set target {} for device with serial number {}", target, serialNumber);
+
+        if (Objects.nonNull(device) && devices.isDone() && weather.isDone() && air.isDone()) {
             switch (device.getDevice().getType()) {
                 case AIR_FILTER:
-                    return funDevicesAsyncMethods.handleFilter(device, home, air);
+                    return funDevicesAsyncMethods.handleFilter(device, target, home, air.get());
                 case AIR_HUMIDIFIER:
-                    return funDevicesAsyncMethods.handleHumidity(device, home, weather);
+                    return funDevicesAsyncMethods.handleHumidity(device, target, home, weather.get());
                 case AIR_CONDITIONER:
-                    return funDevicesAsyncMethods.handleTemperature(device, home, weather);
+                    return funDevicesAsyncMethods.handleTemperature(device, target, home, weather.get());
                 default:
                     LOGGER.info("Device of unknown type found: {}", device.getDevice().getType());
                     return "";

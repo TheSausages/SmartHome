@@ -50,9 +50,7 @@ public class DataService {
         HttpHeaders headers = new HttpHeaders();
 
         try {
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<List<Home>> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/homes", HttpMethod.GET, null, new ParameterizedTypeReference<>() {
-            });
+            ResponseEntity<List<Home>> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/homes", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
             return Objects.requireNonNull(response.getBody());
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());

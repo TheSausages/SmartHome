@@ -11,7 +11,6 @@ import pwr.smart.home.control.weather.model.response.AirQualityResponse;
 import pwr.smart.home.control.weather.model.response.ForecastWeatherResponse;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -40,16 +39,18 @@ public class ControlJob {
             Future<ForecastWeatherResponse> weather = openMeteoAsyncMethods.getWeatherForecast(home);
             Future<AirQualityResponse> air = openMeteoAsyncMethods.getAirData(home);
 
+            LOGGER.info("For home {}", home.getId());
+
             for (FunctionalDeviceWithMeasurementsDTO device : devices.get()) {
                 switch (device.getDevice().getType()) {
                     case AIR_FILTER:
-                        funDevicesAsyncMethods.handleFilter(device, home, air);
+                        funDevicesAsyncMethods.handleFilter(device, null, home, air.get());
                         break;
                     case AIR_HUMIDIFIER:
-                        funDevicesAsyncMethods.handleHumidity(device, home, weather);
+                        funDevicesAsyncMethods.handleHumidity(device, null, home, weather.get());
                         break;
                     case AIR_CONDITIONER:
-                        funDevicesAsyncMethods.handleTemperature(device, home, weather);
+                        funDevicesAsyncMethods.handleTemperature(device, null, home, weather.get());
                         break;
                     default:
                         LOGGER.info("Device of unknown type found: {}", device.getDevice().getType());
