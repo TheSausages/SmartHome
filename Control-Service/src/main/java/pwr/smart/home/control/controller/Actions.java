@@ -5,9 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
-import pwr.smart.home.control.model.Endpoint;
 import pwr.smart.home.control.service.ActionsService;
-import pwr.smart.home.control.service.DataEmitter;
 
 import java.util.concurrent.ExecutionException;
 

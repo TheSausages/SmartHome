@@ -1,9 +1,10 @@
 package pwr.smart.home.air.filter.sensor.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import pwr.smart.home.air.filter.model.State;
+import pwr.smart.home.air.filter.device.model.State;
 
 import static java.lang.Math.abs;
 
@@ -14,8 +15,14 @@ public class StatusService {
     private static double currentAirQuality;
     private static final double GRADATION_SPEED = 0.1;
 
+    @Autowired
+    private DataEmitter dataEmitter;
+
     @Value("${new.value.propagation.delay}")
     private int propagationDelay;
+
+    @Value("${device.power.kw}")
+    private int devicePower;
 
     @Async("asyncExecutor")
     public void setAirQualityValue(int targetAirQuality) throws InterruptedException {
@@ -39,6 +46,14 @@ public class StatusService {
             currentAirQuality = Math.round(newValue * 100.0) / 100.0;
             Thread.sleep(propagationDelay);
         }
+
+        calculateConsumption(airQualityDifference);
+    }
+
+    private void calculateConsumption(double airQualityDifference) {
+        //40 / godzinę
+        double consumption = (abs(airQualityDifference)/40) * devicePower; //Wh
+        dataEmitter.reportConsumption(consumption);
     }
 
     public static double getCurrentAirQuality() {

@@ -40,7 +40,7 @@ public class AirHumidifierController {
     private SensorService sensorService;
 
     @PostMapping("/humidity")
-    public ResponseEntity<?> getHumidifierMeasurements(@RequestBody AirHumidifierData humidifierData) {
+    public ResponseEntity<?> receiveHumidifierMeasurements(@RequestBody AirHumidifierData humidifierData) {
         LOGGER.info(humidifierData.toString());
         airHumidifierService.addAirHumidifierMeasurements(humidifierData);
         return ResponseEntity.ok().build();

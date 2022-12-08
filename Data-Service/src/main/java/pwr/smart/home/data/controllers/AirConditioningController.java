@@ -40,7 +40,7 @@ public class AirConditioningController {
     private UserService userService;
 
     @PostMapping("/temperature")
-    public ResponseEntity<?> getAirConditionerMeasurements(@RequestBody AirConditionerData airConditionerData) {
+    public ResponseEntity<?> receiveAirConditionerMeasurements(@RequestBody AirConditionerData airConditionerData) {
         LOGGER.info(airConditionerData.toString());
         airConditionerService.addAirConditionerMeasurements(airConditionerData);
         return ResponseEntity.ok().build();

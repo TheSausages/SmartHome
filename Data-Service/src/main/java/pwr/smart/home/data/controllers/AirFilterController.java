@@ -40,7 +40,7 @@ public class AirFilterController {
     private UserService userService;
 
     @PostMapping("/air-quality")
-    public ResponseEntity<?> getFilterMeasurements(@RequestBody AirFilterData filterData) {
+    public ResponseEntity<?> receiveFilterMeasurements(@RequestBody AirFilterData filterData) {
         LOGGER.info(filterData.toString());
         airFilterService.addAirFilterMeasurements(filterData);
         return ResponseEntity.ok().build();
