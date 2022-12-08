@@ -1,9 +1,13 @@
 package pwr.smart.home.air.humidifier.sensor.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import pwr.smart.home.air.humidifier.model.State;
+import pwr.smart.home.air.humidifier.device.model.State;
+
+
+import static java.lang.Math.abs;
 
 @Service
 public class StatusService {
@@ -12,8 +16,14 @@ public class StatusService {
     private static double currentHumidity;
     private static final double GRADATION_SPEED = 0.1;
 
+    @Autowired
+    private DataEmitter dataEmitter;
+
     @Value("${new.value.propagation.delay}")
     private int propagationDelay;
+
+    @Value("${device.power.kw}")
+    private int devicePower;
 
     @Async("asyncExecutor")
     public void setTargetHumidity(int targetHumidity) throws InterruptedException {
@@ -37,6 +47,14 @@ public class StatusService {
             currentHumidity = Math.round(newValue * 100.0) / 100.0;
             Thread.sleep(propagationDelay);
         }
+
+        calculateConsumption(humidityDifference);
+    }
+
+    private void calculateConsumption(double humidityDifference) {
+        //10% / godzinę
+        double consumption = (abs(humidityDifference)/10) * devicePower; //Wh
+        dataEmitter.reportConsumption(consumption);
     }
 
     public static double getCurrentHumidity() {

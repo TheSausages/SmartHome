@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import pwr.smart.home.air.filter.device.model.ConsumptionData;
 import pwr.smart.home.air.filter.sensor.model.AirFilterData;
 import pwr.smart.home.air.filter.sensor.model.Sensor;
 
@@ -22,6 +23,9 @@ public class DataEmitter {
 
     @Value("${data-service.endpoint-url}")
     private String URL;
+
+    @Value("${data-service.consumption-url}")
+    private String consumptionURL;
 
     private final Sensor sensor;
 
@@ -44,6 +48,25 @@ public class DataEmitter {
 
         try {
             restTemplate.exchange(URL, HttpMethod.POST, entity, AirFilterData.class);
+        }
+        catch (ResourceAccessException e){
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    public void reportConsumption(double consumption){
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Serial-Number", sensor.getSerialNumber());
+
+        ConsumptionData data = new ConsumptionData(sensor.getSerialNumber(), consumption, getSystemTimestamp());
+        LOGGER.info("SENT " + data);
+
+        HttpEntity<ConsumptionData> entity = new HttpEntity<>(data, headers);
+        try {
+            restTemplate.exchange(consumptionURL, HttpMethod.POST, entity, ConsumptionData.class);
         }
         catch (ResourceAccessException e){
             LOGGER.error(e.getMessage());

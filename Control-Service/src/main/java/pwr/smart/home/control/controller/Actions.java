@@ -12,10 +12,10 @@ import pwr.smart.home.control.service.DataEmitter;
 public class Actions {
 
     @Autowired
-    DataEmitter dataEmitter;
+    private DataEmitter dataEmitter;
 
     @Autowired
-    Endpoint endpoint;
+    private Endpoint endpoint;
 
     @PostMapping("/temperature")
     public ResponseEntity<?> setTargetTemperature(@RequestParam String target) {

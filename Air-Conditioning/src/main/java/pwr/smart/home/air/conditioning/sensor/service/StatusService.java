@@ -17,7 +17,7 @@ public class StatusService {
     private static final double GRADATION_SPEED = 0.1;
 
     @Autowired
-    DataEmitter dataEmitter;
+    private DataEmitter dataEmitter;
 
     @Value("${new.value.propagation.delay}")
     private int propagationDelay;
@@ -60,7 +60,7 @@ public class StatusService {
 
     private void calculateConsumption(double temperatureDifference) {
         //jeden stopień / godzinę
-        double consumption = temperatureDifference * devicePower; //Wh
+        double consumption = abs(temperatureDifference) * devicePower; //Wh
         dataEmitter.reportConsumption(consumption);
     }
 
