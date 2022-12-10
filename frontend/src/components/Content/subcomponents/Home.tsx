@@ -22,12 +22,10 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import BloodtypeIcon from '@mui/icons-material/Bloodtype';
 import {deviceNameMapper, DeviceType} from '../../../common/DeviceType';
-import {getHouseLocation, getLastHumidifierFilterMeasurement, getWeatherInfo, getLastAirFilterMeasurement, getLastAirConditionerMeasurement} from "../../../common/RequestHelper/RequestHelper";
-import UserService from "../../../service/UserService";
-import {useQueries, useQuery} from "react-query";
-import {ForecastWeather} from "../../../data/Weather";
-import { ApiError } from '../../../data/ApiError';
+import {getLastHumidifierFilterMeasurement, getLastAirFilterMeasurement, getLastAirConditionerMeasurement, setHomeTemperature, setHomeHumidity, addHomeActivityHour, deleteHomeActivityHour, getHomeActivityHours, getWeatherInfo} from "../../../common/RequestHelper/RequestHelper";
+import {useQueries, useMutation} from "react-query";
 import { Measurement, MeasurementType } from '../../../data/Sensort';
+import { ForecastWeather } from '../../../data/Weather';
 
 export interface HomeProps
 {
@@ -53,19 +51,16 @@ export default function Home(props: HomeProps) {
     const [ temperature, setTemperature ] = useState<number>(0);
     const [ humidity, setHumidity ] = useState<number>(0);
 
-    const [homeLocationQuery, forecastWeatherQuery, airConditionQuery, temperatureQuery, humidityQuery] = useQueries([
-            {
-                queryKey: ['GetHomeLocation'],
-                queryFn: () => getHouseLocation(UserService.getUserId()),
-                onSuccess: (data: Location) => {
-                    console.log(data)
-                }
-            },
+    const setHomeTemperatureRequest = useMutation(setHomeTemperature);
+    const setHomeHumidityRequest = useMutation(setHomeHumidity);
+    const addHomeActivityHourRequest = useMutation(addHomeActivityHour);
+    const deleteHomeActivityHourRequest = useMutation(deleteHomeActivityHour);
+
+    const [forecastWeatherQuery, airConditionQuery, temperatureQuery, humidityQuery, getActivityHours] = useQueries([
             {
                 queryKey: ['GetWeatherInfo'],
                 queryFn: (() => getWeatherInfo()),
                 onSuccess: (data: ForecastWeather) => {
-                    console.log(data)
                     setTodayMaxTemperature(data.daily.temperature_2m_max[0])
                     setTomorrowMaxTemperature(data.daily.temperature_2m_max[1])
                     setTodayMinTemperature(data.daily.temperature_2m_min[0])
@@ -95,13 +90,20 @@ export default function Home(props: HomeProps) {
                 onSuccess: (data: Measurement) => {
                     setHumidity(data.value);
                 }
+            },
+            {
+                queryKey: ['GetHourActivityQuery'],
+                queryFn: (getHomeActivityHours),
+                onSuccess: (activityHours: number[]) => {
+                    setActivityHours(activityHours);
+                }
             }
     ])
 
     useEffect(() => {
-        homeLocationQuery.refetch();
+        getActivityHours.refetch();
         forecastWeatherQuery.refetch();
-    }, [homeLocationQuery.refetch, forecastWeatherQuery.refetch])
+    }, [getActivityHours.refetch, forecastWeatherQuery.refetch])
 
     useEffect(() => {
         airConditionQuery.refetch();
@@ -127,18 +129,39 @@ export default function Home(props: HomeProps) {
         setActivityHours((prev) => {
             if(prev.find(element => element === clickedHour) !== undefined)
             {
+                sendDeleteHomeActivityHourRequest(clickedHour);
                 return prev.filter(element => element !== clickedHour);
             }
+            sendAddHomeActivityHourRequest(clickedHour);
             return [...prev, clickedHour];
         });
     }
 
+    const sendAddHomeActivityHourRequest = async (clickedHour: number) => {
+        addHomeActivityHourRequest.mutate(clickedHour, {onSuccess: (response: any) => {
+            console.log(response);
+        }});
+    }
+
+    const sendDeleteHomeActivityHourRequest = async (clickedHour: number) => {
+        deleteHomeActivityHourRequest.mutate(clickedHour, {onSuccess: (response: any) => {
+            console.log(response);
+        }});
+    }
+
     const handleOnTemperatureChange = (e: SelectChangeEvent) => {
         setRequestedTemperature(parseInt(e.target.value));
+        setHomeTemperatureRequest.mutate(parseInt(e.target.value), {onSuccess: (response: any) =>
+        {
+            console.log(response);
+        }})
     };
 
     const handleOnAirHumadityChange = (e: SelectChangeEvent) => {
         setRequestedAirHumadity(parseInt(e.target.value));
+        setHomeHumidityRequest.mutate(parseInt(e.target.value), {onSuccess: (response: any) => {
+            console.log(response);
+        }})
     };
 
     const changeActiveDevice = (device: DeviceType) => {
@@ -299,8 +322,8 @@ export default function Home(props: HomeProps) {
                 </Box>
             </Grid>
             <Grid item xs={6} sx={{marginLeft: '30px'}}>
-                <Box sx={{border: 1, minHeight: '200px', marginLeft: '10px', marginRight: '10px'}}>
-                    <p>Coś tam</p>
+                <Box sx={{ marginLeft: '10px', marginRight: '10px'}}>
+                    <img src="home.jpg" style={{height: '200px', width: '100%', borderRadius:'10px'}}/>
                 </Box>
                 <TableContainer component={Paper} sx={{marginTop: '30px', borderRadius:'10px'}}>
                 <Table sx={{minWidth: 250}} aria-label='simple table'>

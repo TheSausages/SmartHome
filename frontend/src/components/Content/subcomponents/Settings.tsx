@@ -188,7 +188,7 @@ export default function Settings(props: SettingsProps) {
             <Grid item xs={6} sx={{paddingRight: '20px'}}>
                 <h3>Urządzenia</h3>
                 <TableContainer component={Paper} sx={{marginTop: '10px'}}>
-                <Table aria-label='simple table'>
+                <Table aria-label='simple table' sx={{borderRadius: '10px'}}>
                     <TableHead>
                         <TableRow>
                             <TableCell>Nr seryjny</TableCell>
@@ -204,8 +204,8 @@ export default function Settings(props: SettingsProps) {
                 </TableContainer>
 
                 <h3>Czujniki</h3>
-                <TableContainer component={Paper} sx={{marginTop: '10px'}}>
-                <Table aria-label='simple table'>
+                <TableContainer component={Paper} sx={{marginTop: '10px', marginBottom: '30px'}}>
+                <Table aria-label='simple table' sx={{borderRadius: '10px'}}>
                     <TableHead>
                         <TableRow>
                             <TableCell>Nr seryjny</TableCell>

@@ -41,6 +41,11 @@ const add_sensor_api_path = () => '/addSensor';
 const weather_info_api_path = () => '/weather'
 const air_info_api_path = () => '/air'
 const set_temperature_api_path = (target: number) => `/temperature?target=${target}`
+const set_home_temperature_api_path = (temperature: number) => `/setHouseTemperature?houseTemperature=${temperature}`;
+const set_home_humidity_api_path = (humidity: number) => `/setHouseHumidity?houseHumidity=${humidity}`;
+const add_home_activity_hour_path = (activityHour: number) => `/addHour?hour=${activityHour}`;
+const delete_home_activity_hour_path = (activityHour: number) => `/removeHour?hour=${activityHour}`;
+const get_home_activity_hours_path = () => '/getHours';
 const set_air_quality_api_path = (target: number) => `/air-quality?target=${target}`
 const set_air_humidity_api_path = (target: number) => `/humidity?target=${target}`
 
@@ -120,10 +125,38 @@ export const getAirInfo = async () => {
     return response.data;
 }
 
-export const setTemperature = async (target: number) => {
+export const setHomeTemperature = async (temperature: number) => {
     addToken();
 
-    const response =  await request.post(control_request(set_temperature_api_path(target)));
+    const response =  await request.post(data_request(set_home_temperature_api_path(temperature)));
+    return response.data;
+}
+
+export const setHomeHumidity = async (humidity: number) => {
+    addToken();
+
+    const response = await request.post(data_request(set_home_humidity_api_path(humidity)));
+    return response.data;
+}
+
+export const addHomeActivityHour = async (activeHour: number) => {
+    addToken();
+
+    const response = await request.post(data_request(add_home_activity_hour_path(activeHour)));
+    return response.data;
+}
+
+export const deleteHomeActivityHour = async (activeHour: number) => {
+    addToken();
+
+    const response = await request.post(data_request(delete_home_activity_hour_path(activeHour)));
+    return response.data
+}
+
+export const getHomeActivityHours = async () => {
+    addToken();
+
+    const response = await request.get(data_request(get_home_activity_hours_path()));
     return response.data;
 }
 
