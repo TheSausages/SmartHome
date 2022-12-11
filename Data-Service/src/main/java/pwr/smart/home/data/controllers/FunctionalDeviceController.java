@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,6 +53,10 @@ public class FunctionalDeviceController {
     @PostMapping("/addFunctionalDevice")
     public ResponseEntity<?> addNewHomeFunctionalDevice(@AuthenticationPrincipal Jwt principal, @RequestBody FunctionalDevice functionalDevice) {
         Optional<User> user = userHomeService.findHomeByUserId(UUID.fromString(principal.getSubject()));
+        if (!checkIfFieldsAreNotEmpty(functionalDevice)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorDTO.builder().message("Fill the form correctly").status(HttpStatus.BAD_REQUEST).build());
+        }
         if (user.isPresent()) {
             functionalDevice.setHomeId(user.get().getHome().getId());
             functionalDevice.setCreatedAt(new Date(System.currentTimeMillis()));
@@ -61,5 +66,11 @@ public class FunctionalDeviceController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ErrorDTO.builder().message("Wrong house").status(HttpStatus.UNAUTHORIZED).build());
         }
+    }
+
+    private boolean checkIfFieldsAreNotEmpty(FunctionalDevice functionalDevice) {
+        return StringUtils.hasText(functionalDevice.getName()) &&
+                StringUtils.hasText(functionalDevice.getManufacturer()) &&
+                StringUtils.hasText(functionalDevice.getSerialNumber());
     }
 }
