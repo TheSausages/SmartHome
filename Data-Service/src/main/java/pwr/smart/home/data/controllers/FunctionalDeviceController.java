@@ -68,6 +68,13 @@ public class FunctionalDeviceController {
         }
     }
 
+    @GetMapping("/{serialNumber}/inactive")
+    public ResponseEntity<?> markFunctionalDeviceAsInactive(@PathVariable(name = "serialNumber") String serialNumber) {
+        functionalDeviceService.markDeviceAsInactive(serialNumber);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     private boolean checkIfFieldsAreNotEmpty(FunctionalDevice functionalDevice) {
         return StringUtils.hasText(functionalDevice.getName()) &&
                 StringUtils.hasText(functionalDevice.getManufacturer()) &&

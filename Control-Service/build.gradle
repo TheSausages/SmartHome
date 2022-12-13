@@ -28,6 +28,7 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-security:${springVersion}"
 	implementation "org.springframework.boot:spring-boot-starter-web:${springVersion}"
 	implementation "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}"
+	implementation 'dev.failsafe:failsafe:3.3.0'
 
 	// lombok
 	compileOnly "org.projectlombok:lombok:${lombokVersion}"

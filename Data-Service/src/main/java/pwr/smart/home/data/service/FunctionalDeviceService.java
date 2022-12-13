@@ -36,6 +36,17 @@ public class FunctionalDeviceService {
         functionalDeviceRepository.save(functionalDevice);
     }
 
+    public void markDeviceAsInactive(String serialNumber) {
+        Optional<FunctionalDevice> device = functionalDeviceRepository.findBySerialNumber(serialNumber);
+
+        if (device.isPresent()) {
+            FunctionalDevice device1 = device.get();
+            device1.setConnected(false);
+
+            functionalDeviceRepository.save(device1);
+        }
+    }
+
     public List<FunctionalDeviceWithMeasurementsDTO> getFunctionalDevicesWithMeasurementsForHome(long homeId) {
          return findAllHomeFunctionalDevices(homeId)
                 .stream()

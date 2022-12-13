@@ -18,7 +18,7 @@ public class OpenMeteoAsyncMethods {
     @Autowired
     private OpenMeteo openMeteo;
 
-    @Async
+    @Async(value = "threadPoolTaskExecutor")
     public Future<ForecastWeatherResponse> getWeatherForecast(Home home) {
         ForecastWeatherResponse forecastWeatherResponse = openMeteo.getTodayAndTomorrowWeather(new ForecastWeatherRequest(
                 home.getLatitude(),
@@ -29,7 +29,7 @@ public class OpenMeteoAsyncMethods {
         return CompletableFuture.completedFuture(forecastWeatherResponse);
     }
 
-    @Async
+    @Async(value = "threadPoolTaskExecutor")
     public Future<AirQualityResponse> getAirData(Home home) {
         AirQualityResponse forecastWeatherResponse = openMeteo.getCurrentAirCondition(new AirQualityRequest(
                 home.getLatitude(),

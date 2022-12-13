@@ -28,16 +28,16 @@ public class ControlJob {
     private OpenMeteoAsyncMethods openMeteoAsyncMethods;
 
     /**
-     * This will be ruin every 5 minutes
+     * This will be run every 5 minutes
      */
-    @Scheduled(cron = "* */5 * * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void adjustForAllElements() throws ExecutionException, InterruptedException {
         List<Home> homes = dataService.getHomes();
 
         for (Home home : homes) {
-            Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = functionalDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
             Future<ForecastWeatherResponse> weather = openMeteoAsyncMethods.getWeatherForecast(home);
             Future<AirQualityResponse> air = openMeteoAsyncMethods.getAirData(home);
+            Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = functionalDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
 
             LOGGER.info("For home {} (id: {})", home.getName(), home.getId());
 

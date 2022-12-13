@@ -1,5 +1,7 @@
 package pwr.smart.home.control.service;
 
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
@@ -18,11 +20,18 @@ import pwr.smart.home.control.model.FunctionalDeviceWithMeasurementsDTO;
 import pwr.smart.home.control.model.Home;
 import pwr.smart.home.control.model.Location;
 
+import java.time.Duration;
 import java.util.*;
 
 @Service
 public class DataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataService.class);
+
+    private final RetryPolicy<Object> retryPolicy = RetryPolicy.builder()
+            .onRetry(e -> LOGGER.info("Try " + e.getAttemptCount() + " to communicate with data service with message: " + e.toString()))
+            .withDelay(Duration.ofSeconds(30))
+            .withMaxRetries(3)
+            .build();
 
     @Autowired
     private Endpoint endpoint;
@@ -35,7 +44,7 @@ public class DataService {
             Map<String, String> params = new HashMap<>();
             params.put("userId", userId);
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<Location> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/latlong/{userId}", HttpMethod.GET, entity, Location.class, params);
+            ResponseEntity<Location> response = Failsafe.with(retryPolicy).get(() -> restTemplate.exchange(endpoint.getDataServiceUrl() + "/latlong/{userId}", HttpMethod.GET, entity, Location.class, params));
             Location returned = Objects.requireNonNull(response.getBody());
             LOGGER.info(returned.getLongitude() + String.valueOf(returned.getLatitude()));
             return Optional.of(returned);
@@ -50,7 +59,8 @@ public class DataService {
         HttpHeaders headers = new HttpHeaders();
 
         try {
-            ResponseEntity<List<Home>> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/homes", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+            // IMPORTANT - the type must be present in the ParameterizedTypeReference - will not compile without it
+            ResponseEntity<List<Home>> response = Failsafe.with(retryPolicy).get(() -> restTemplate.exchange(endpoint.getDataServiceUrl() + "/homes", HttpMethod.GET, null, new ParameterizedTypeReference<List<Home>>() {}));
             return Objects.requireNonNull(response.getBody());
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());
@@ -66,7 +76,8 @@ public class DataService {
             Map<String, String> params = new HashMap<>();
             params.put("serialNumber", serialNumber);
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<Home> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/home/{serialNumber}", HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}, params);
+            // IMPORTANT - the type must be present in the ParameterizedTypeReference - will not compile without it
+            ResponseEntity<Home> response = Failsafe.with(retryPolicy).get(() -> restTemplate.exchange(endpoint.getDataServiceUrl() + "/home/{serialNumber}", HttpMethod.GET, entity, new ParameterizedTypeReference<Home>() {}, params));
             return Objects.requireNonNull(response.getBody());
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());
@@ -82,7 +93,8 @@ public class DataService {
             Map<String, String> params = new HashMap<>();
             params.put("homeId", home.getId().toString());
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<List<FunctionalDeviceWithMeasurementsDTO>> response = restTemplate.exchange(endpoint.getDataServiceUrl() + "/homeFunctionalDevices/{homeId}", HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}, params);
+            // IMPORTANT - the type must be present in the ParameterizedTypeReference - will not compile without it
+            ResponseEntity<List<FunctionalDeviceWithMeasurementsDTO>> response = Failsafe.with(retryPolicy).get(() -> restTemplate.exchange(endpoint.getDataServiceUrl() + "/homeFunctionalDevices/{homeId}", HttpMethod.GET, entity, new ParameterizedTypeReference<List<FunctionalDeviceWithMeasurementsDTO>>() {}, params));
             return Objects.requireNonNull(response.getBody());
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());

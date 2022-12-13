@@ -37,14 +37,14 @@ public class FunctionalDevicesAsyncMethods {
     @Autowired
     private Endpoint endpoint;
 
-    @Async
+    @Async(value = "threadPoolTaskExecutor")
     public CompletableFuture<List<FunctionalDeviceWithMeasurementsDTO>> getFunctionalDevicesWithMeasurementsForHome(Home home) {
         List<FunctionalDeviceWithMeasurementsDTO> devices = dataService.getFunctionalDevicesWithMeasurementsForHome(home);
 
         return CompletableFuture.completedFuture(devices);
     }
 
-    @Async
+    @Async(value = "TemperatureThreadPoolTaskExecutor")
     public Future<String> handleTemperature(FunctionalDeviceWithMeasurementsDTO data, String target, Home home, ForecastWeatherResponse weather) {
         if (!data.getMeasurements().containsKey(MeasurementType.CELSIUS)) {
             throw new RuntimeException("No Celsius measurement for temperature");
@@ -76,7 +76,7 @@ public class FunctionalDevicesAsyncMethods {
         }
     }
 
-    @Async
+    @Async(value = "HumidityThreadPoolTaskExecutor")
     public Future<String> handleHumidity(FunctionalDeviceWithMeasurementsDTO data, String target, Home home, ForecastWeatherResponse weather) {
         if (!data.getMeasurements().containsKey(MeasurementType.HUMIDITY)) {
             throw new RuntimeException("No Celsius measurement for temperature");
@@ -108,7 +108,7 @@ public class FunctionalDevicesAsyncMethods {
         }
     }
 
-    @Async
+    @Async(value = "FilterThreadPoolTaskExecutor")
     public Future<String> handleFilter(FunctionalDeviceWithMeasurementsDTO data, String target, Home home, AirQualityResponse air) {
         if (data.getMeasurements().containsKey(MeasurementType.GAS)) {
             // Some operation with Gas
