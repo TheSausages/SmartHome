@@ -19,7 +19,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 @Service
@@ -66,14 +65,14 @@ public class FunctionalDevicesAsyncMethods {
 
             LOGGER.info("Set Temperature device to {}", settingTemp);
 
-            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber())));
+            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()), data.getDevice().getPowerLevel()));
         } else {
             // For testing purposes add something with weather
             int settingTemp = home.getPreferredTemp() - 1;
 
             LOGGER.info("Set Temperature device to {}", settingTemp);
 
-            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber())));
+            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()), data.getDevice().getPowerLevel()));
         }
     }
 
@@ -98,14 +97,14 @@ public class FunctionalDevicesAsyncMethods {
 
             LOGGER.info("Set Humidity device to {}", settingTemp);
 
-            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber())));
+            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()), data.getDevice().getPowerLevel()));
         } else {
             // For testing purposes add something with weather
             int settingTemp = home.getPreferredTemp() - 1;
 
             LOGGER.info("Set Humidity device to {}", settingTemp);
 
-            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber())));
+            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()), data.getDevice().getPowerLevel()));
         }
     }
 
@@ -128,6 +127,6 @@ public class FunctionalDevicesAsyncMethods {
 
         LOGGER.info("Set Filter device to {}", 5);
 
-        return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(5), endpoint.getAirFilterUrl(data.getDevice().getSerialNumber())));
+        return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(5), endpoint.getAirFilterUrl(data.getDevice().getSerialNumber()), data.getDevice().getPowerLevel()));
     }
 }

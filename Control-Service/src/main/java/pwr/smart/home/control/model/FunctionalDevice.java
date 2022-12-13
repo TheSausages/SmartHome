@@ -20,5 +20,6 @@ public class FunctionalDevice {
     private Date createdAt;
     private boolean isConnected;
     private Long homeId;
+    private int powerLevel;
 }
 

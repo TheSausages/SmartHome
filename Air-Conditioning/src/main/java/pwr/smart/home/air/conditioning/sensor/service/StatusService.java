@@ -22,21 +22,27 @@ public class StatusService {
     @Value("${new.value.propagation.delay}")
     private int propagationDelay;
 
-    @Value("${device.power.kw}")
-    private int devicePower;
+    @Value("${device.power.1.kw}")
+    private int devicePower1;
+
+    @Value("${device.power.2.kw}")
+    private int devicePower2;
+
+    @Value("${device.power.3.kw}")
+    private int devicePower3;
 
     @Async("asyncExecutor")
-    public void setTargetTemperature(double targetTemperature) throws InterruptedException {
+    public void setTargetTemperature(double targetTemperature, int powerLevel) throws InterruptedException {
         double temperatureDifference = targetTemperature - currentTemperature;
 
         if (temperatureDifference != 0) {
-            turnOnDevice(temperatureDifference);
+            turnOnDevice(temperatureDifference, powerLevel);
         } else {
             state = State.OFF;
         }
     }
 
-    private void turnOnDevice(double temperatureDifference) throws InterruptedException {
+    private void turnOnDevice(double temperatureDifference, int powerLevel) throws InterruptedException {
         double multiplier = 1.0;
 
         if (temperatureDifference > 0) {
@@ -61,12 +67,33 @@ public class StatusService {
             Thread.sleep(propagationDelay);
         }
         state = State.OFF;
-        calculateConsumption(temperatureDifference);
+        calculateConsumption(temperatureDifference, powerLevel);
     }
 
-    private void calculateConsumption(double temperatureDifference) {
-        //jeden stopień / godzinę
-        double consumption = abs(temperatureDifference) * devicePower; //Wh
+    private void calculateConsumption(double temperatureDifference, int powerLevel) {
+
+        int devicePower;
+        double divider;
+
+        switch (powerLevel) {
+            case 1:
+                devicePower = devicePower1;
+                divider = 0.5;
+                break;
+            case 2:
+                devicePower = devicePower2;
+                divider = 1;
+                break;
+            default:
+                devicePower = devicePower3;
+                divider = 2;
+        }
+
+        //1:pol stopnia / godzinę
+        //2:jeden stopień / godzinę
+        //3:dwa stopnie / godzinę
+
+        double consumption = (abs(temperatureDifference)/divider)* devicePower; //Wh
         dataEmitter.reportConsumption(consumption);
     }
 

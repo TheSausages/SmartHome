@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
-import pwr.smart.home.control.model.Endpoint;
 
 import java.util.Objects;
 
@@ -18,13 +17,14 @@ import java.util.Objects;
 public class DataEmitter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataEmitter.class);
 
-    public String callForAction(String value, String endpoint) {
+    public String callForAction(String body, String endpoint, int level) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
         headers.set("Authorization", "Basic dXNlcjpwYXNzd29yZA==");
+        headers.set("PowerLevel", String.valueOf(level));
 
-        HttpEntity<String> entity = new HttpEntity<>(value, headers);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
         try {
             ResponseEntity<?> response = restTemplate.exchange(endpoint, HttpMethod.POST, entity, String.class);

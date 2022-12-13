@@ -28,5 +28,7 @@ public class FunctionalDevice {
     private boolean isConnected;
     @Column(name = "home_id")
     private Long homeId;
+    @Column(name = "power_level")
+    private int powerLevel;
 }
 
