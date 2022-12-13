@@ -47,7 +47,7 @@ public class FunctionalDeviceService {
 
     }
 
-    public void addNewFunctionalDevice(FunctionalDevice functionalDevice) {
+    public void saveFunctionalDevice(FunctionalDevice functionalDevice) {
         functionalDeviceRepository.save(functionalDevice);
     }
 
