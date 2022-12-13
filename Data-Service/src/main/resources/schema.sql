@@ -56,7 +56,6 @@ CREATE TABLE FUNCTIONAL_DEVICE (
     name VARCHAR(128) NOT NULL,
     manufacturer VARCHAR(128) NOT NULL,
     serial_number VARCHAR(128) NOT NULL,
-    consumed_electricity INT NOT NULL,
     created_at DATE,
     is_connected bool NOT NULL DEFAULT TRUE,
     home_id INT,

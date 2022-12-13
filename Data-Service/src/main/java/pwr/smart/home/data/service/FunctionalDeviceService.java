@@ -23,13 +23,28 @@ public class FunctionalDeviceService {
     @Autowired
     private MeasurementRepository measurementRepository;
 
+    @Autowired
+    private ConsumptionService consumptionService;
+
     public List<FunctionalDevice> findAllHomeFunctionalDevices(Home home) {
         return findAllHomeFunctionalDevices(home.getId());
     }
 
     public List<FunctionalDevice> findAllHomeFunctionalDevices(long homeId) {
-        Optional<List<FunctionalDevice>> functionalDevices = functionalDeviceRepository.findFunctionalDevicesByHomeId(homeId);
-        return functionalDevices.orElse(new ArrayList<>());
+        Optional<List<FunctionalDevice>> functionalDevicesOptional = functionalDeviceRepository.findFunctionalDevicesByHomeId(homeId);
+
+        if (functionalDevicesOptional.isPresent()) {
+            List<FunctionalDevice> functionalDevices = functionalDevicesOptional.get();
+
+            functionalDevices.forEach(functionalDevice -> {
+                double averageConsumptionFromLast24h = consumptionService.findAverageConsumptionFromLast24h(functionalDevice.getSerialNumber());
+                functionalDevice.setAverageConsumption(averageConsumptionFromLast24h);
+            });
+            return functionalDevices;
+        } else {
+            return new ArrayList<>();
+        }
+
     }
 
     public void addNewFunctionalDevice(FunctionalDevice functionalDevice) {
@@ -37,7 +52,7 @@ public class FunctionalDeviceService {
     }
 
     public List<FunctionalDeviceWithMeasurementsDTO> getFunctionalDevicesWithMeasurementsForHome(long homeId) {
-         return findAllHomeFunctionalDevices(homeId)
+        return findAllHomeFunctionalDevices(homeId)
                 .stream()
                 .map(functionalDevice -> {
                     Map<MeasurementType, List<Measurement>> measurements = MeasurementType

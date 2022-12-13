@@ -8,11 +8,15 @@ import pwr.smart.home.data.model.ConsumptionData;
 import pwr.smart.home.data.repository.ConsumptionRepository;
 import pwr.smart.home.data.repository.FunctionalDeviceRepository;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class ConsumptionService {
-
     @Autowired
     FunctionalDeviceRepository functionalDeviceRepository;
 
@@ -28,12 +32,21 @@ public class ConsumptionService {
 
             consumption.setCreatedAt(consumptionData.getTimestamp());
             consumption.setDeviceType(functionalDevice.get().getType());
-            consumption.setDeviceSerialNumber(consumption.getDeviceSerialNumber());
-            consumption.setConsumption(consumption.getConsumption());
+            consumption.setDeviceSerialNumber(consumptionData.getDeviceSerialNumber());
+            consumption.setConsumption(consumptionData.getConsumption());
 
             consumptionRepository.save(consumption);
         }
+    }
 
+    public double findAverageConsumptionFromLast24h(String serialNumber){
+        Instant instant = Instant.now().minus(24, ChronoUnit.HOURS);
+        Timestamp timestamp = Timestamp.from(instant);
 
+        List<Consumption> consumptions = consumptionRepository.findFromLast24hBySerialNumber(timestamp, serialNumber);
+        AtomicReference<Double> sumOfConsumptions = new AtomicReference<>((double) 0);
+        consumptions.forEach(consumption -> sumOfConsumptions.updateAndGet(v -> new Double((double) (v + consumption.getConsumption()))));
+
+        return sumOfConsumptions.get()/24;
     }
 }

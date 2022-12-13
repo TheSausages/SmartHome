@@ -30,7 +30,7 @@ public class ControlJob {
     /**
      * This will be ruin every 5 minutes
      */
-    @Scheduled(cron = "* */5 * * * *")
+    @Scheduled(cron = "*/30 * * * * *")
     public void adjustForAllElements() throws ExecutionException, InterruptedException {
         List<Home> homes = dataService.getHomes();
 
