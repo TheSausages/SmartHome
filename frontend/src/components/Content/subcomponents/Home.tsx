@@ -321,7 +321,7 @@ export default function Home(props: HomeProps) {
                     </Box>
                 </Box>
             </Grid>
-            <Grid item xs={6} sx={{marginLeft: '30px'}}>
+            <Grid item xs={6} sx={{marginLeft: '30px', minWidth: '500px'}}>
                 <Box sx={{ marginLeft: '10px', marginRight: '10px'}}>
                     <img src="home.jpg" style={{height: '200px', width: '100%', borderRadius:'10px'}}/>
                 </Box>
@@ -351,7 +351,7 @@ export default function Home(props: HomeProps) {
                 </TableContainer>
 
             </Grid>
-            <Grid item xs={4} sx={{marginLeft: '30px'}}>
+            <Grid item xs={4} sx={{marginLeft: '30px', minWidth: '500px'}}>
                 <Box sx={{minHeight: '200px', marginLeft: '10px', marginRight: '10px'}}>
                     <p><b>Urządzenia</b></p>
                     <TableContainer component={Paper} sx={{marginTop: '20px', borderRadius: '10px'}}>

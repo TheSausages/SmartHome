@@ -4,6 +4,8 @@ import React, {useState} from 'react';
 import { useMutation } from 'react-query';
 import {DeviceDestiny, deviceNameMapper, DeviceType, SensorType, sensorTypeMapper} from '../../../common/DeviceType';
 import { addNewFunctionalDevice, addNewSensor } from '../../../common/RequestHelper/RequestHelper';
+import { useNavigate } from 'react-router-dom';
+import { settings_path } from '../../../common/Paths';
 
 export interface DeviceProps
 {
@@ -20,6 +22,7 @@ export default function DeviceAdder(props: DeviceProps) {
     const [ averageConsumptionPerHour, setAverageConsumptionPerHour ] = useState<number>(0);
     const addFunctionalDevice = useMutation(addNewFunctionalDevice);
     const addSensor = useMutation(addNewSensor);
+    const navigator = useNavigate();
 
     const handleOnDeviceDestinyChange = (e: any) => setDeviceDestiny(e.target.value);
     const handleOnDeviceTypeChange = (e: any) => setDeviceType(e.target.value);
@@ -37,6 +40,7 @@ export default function DeviceAdder(props: DeviceProps) {
         setManufacturer('');
         setSerialNumber('');
         setAverageConsumptionPerHour(0);
+        navigator(settings_path);
     };
 
     const handleOnSubmit = (e: any) => {
@@ -45,10 +49,12 @@ export default function DeviceAdder(props: DeviceProps) {
         {
             addSensor.mutate({serialNumber: serialNumber, type: sensorType, name: name, manufacturer: manufacturer}, {onSuccess: (response: any) => {
                 console.log(response);
+                navigator(settings_path);
             }});
         } else {
             addFunctionalDevice.mutate({serialNumber: serialNumber, type: deviceType, name: name, manufacturer: manufacturer, averageConsumptionPerHour:averageConsumptionPerHour}, {onSuccess: (response: any) => {
                 console.log(response);
+                navigator(settings_path);
             }});
         }
 
