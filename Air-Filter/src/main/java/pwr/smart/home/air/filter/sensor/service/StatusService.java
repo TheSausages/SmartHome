@@ -44,9 +44,15 @@ public class StatusService {
         for (int i = 0; i < iterationsInt; i++) {
             double newValue = currentAirQuality - GRADATION_SPEED;
             currentAirQuality = Math.round(newValue * 100.0) / 100.0;
+
+            if (currentAirQuality < 0) {
+                state = State.OFF;
+                return;
+            }
+
             Thread.sleep(propagationDelay);
         }
-
+        state = State.OFF;
         calculateConsumption(airQualityDifference);
     }
 

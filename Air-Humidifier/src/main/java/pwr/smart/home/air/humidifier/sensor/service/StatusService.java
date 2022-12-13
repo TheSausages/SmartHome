@@ -45,9 +45,16 @@ public class StatusService {
         for (int i = 0; i < iterationsInt; i++) {
             double newValue = currentHumidity + GRADATION_SPEED;
             currentHumidity = Math.round(newValue * 100.0) / 100.0;
+
+            if (currentHumidity < 0 || currentHumidity > 100) {
+                state = State.OFF;
+                return;
+            }
+
             Thread.sleep(propagationDelay);
         }
 
+        state = State.OFF;
         calculateConsumption(humidityDifference);
     }
 
