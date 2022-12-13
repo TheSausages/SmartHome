@@ -280,7 +280,7 @@ paths:
                     "name": "Dual Scan AC3858/51"
                     "manufacturer": "PHILIPS"
                     "serialNumber": "HIBWCDUIYHWASDAD"
-                    "consumedElectricity": 60
+                    "averageConsumption": 60.0
                     "createdAt": "2022-11-01"
                     "connected": true
                     "homeId": 1
@@ -289,6 +289,7 @@ paths:
                     "name": "Klimatyzator ścienny ECO KEX"
                     "manufacturer": "PHILIPS"
                     "serialNumber": "HIBWCDUIYHWASDAE"
+                    "averageConsumption": 235.0
                     "connected": true
                     "homeId": 1
                   - "id": 3,
@@ -296,6 +297,7 @@ paths:
                     "name": "Nawilżacz powietrza HU4801/01"
                     "manufacturer": "PHILIPS"
                     "serialNumber": "HIBWCDUIYHWASDAF"
+                    "averageConsumption": 123.0
                     "connected": true
                     "homeId": 1
         "400":
@@ -305,6 +307,98 @@ paths:
               schema:
                 type: string
               example: Wrong house
+
+  /addFunctionalDevice:
+    servers:
+      - url: https://localhost:8081/api/data
+    post:
+      tags:
+        - Home
+      summary: "Add New Home Functional Device"
+      operationId: "addNewHomeFunctionalDevice"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/FunctionalDevice'
+              example:
+                - "type": "AIR_FILTER"
+                  "name": "Dual Scan AC3858/51"
+                  "manufacturer": "PHILIPS"
+                  "serialNumber": "HIBWCDUIYHWASDAD"
+
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FunctionalDevice'
+                example:
+                  - "id": 1,
+                    "type": "AIR_FILTER"
+                    "name": "Dual Scan AC3858/51"
+                    "manufacturer": "PHILIPS"
+                    "serialNumber": "HIBWCDUIYHWASDAD"
+                    "averageConsumption": 60.0
+                    "createdAt": "2022-11-01"
+                    "connected": true
+                    "homeId": 1
+        "400":
+          description: "Bad request"
+
+  /updateFunctionalDevice:
+    servers:
+      - url: https://localhost:8081/api/data
+    post:
+      tags:
+        - Home
+      summary: "Update Home Functional Device"
+      operationId: "addNewHomeFunctionalDevice"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/FunctionalDevice'
+              example:
+                - "id": 1,
+                  "type": "AIR_FILTER"
+                  "name": "Dual Scan AC3858/51"
+                  "manufacturer": "PHILIPS"
+                  "serialNumber": "HIBWCDUIYHWASDAD"
+                  "createdAt": "2022-11-01"
+                  "connected": true
+                  "homeId": 1
+
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FunctionalDevice'
+                example:
+                  - "id": 1,
+                    "type": "AIR_FILTER"
+                    "name": "Dual Scan AC3858/51"
+                    "manufacturer": "PHILIPS"
+                    "serialNumber": "HIBWCDUIYHWASDAD"
+                    "averageConsumption": 60.0
+                    "createdAt": "2022-11-01"
+                    "connected": true
+                    "homeId": 1
+        "400":
+          description: "Bad request"
 
   /air-quality:
     servers:

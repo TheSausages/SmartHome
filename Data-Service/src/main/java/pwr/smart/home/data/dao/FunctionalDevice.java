@@ -22,8 +22,8 @@ public class FunctionalDevice {
     private String name;
     private String manufacturer;
     private String serialNumber;
-    @Column(name = "consumed_electricity")
-    private int consumedElectricity;
+    @Transient
+    private double averageConsumption;
     private Date createdAt;
     private boolean isConnected;
     @Column(name = "home_id")
