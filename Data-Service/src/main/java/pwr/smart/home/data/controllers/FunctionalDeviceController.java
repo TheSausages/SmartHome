@@ -83,7 +83,7 @@ public class FunctionalDeviceController {
         }
     }
 
-    @GetMapping("/{serialNumber}/inactive")
+    @GetMapping("/inactive/{serialNumber}")
     public ResponseEntity<?> markFunctionalDeviceAsInactive(@PathVariable(name = "serialNumber") String serialNumber) {
         functionalDeviceService.markDeviceAsInactive(serialNumber);
 

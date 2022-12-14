@@ -4,12 +4,12 @@ import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
@@ -20,13 +20,16 @@ import java.util.Objects;
 public class DataEmitter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataEmitter.class);
 
+    @Autowired
+    DataService dataService;
+
     private final RetryPolicy<Object> retryPolicy = RetryPolicy.builder()
             .onRetry(e -> LOGGER.info("Try " + e.getAttemptCount() + " to send target with result: " + e.toString()))
             .withDelay(Duration.ofSeconds(30))
             .withMaxRetries(3)
             .build();
 
-    public String callForAction(String body, String endpoint, int level) {
+    public String callForAction(String body, String endpoint, int level, String serialNumber) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
@@ -40,6 +43,8 @@ public class DataEmitter {
 
             return Objects.requireNonNull(response.getBody()).toString();
         } catch (Exception e) {
+            dataService.markDeviceAsInactive(serialNumber);
+
             LOGGER.error(e.getMessage());
         }
         return "";

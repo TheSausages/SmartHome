@@ -1,5 +1,7 @@
 package pwr.smart.home.data.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pwr.smart.home.data.dao.Measurement;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class FunctionalDeviceService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FunctionalDeviceService.class);
+
     @Autowired
     private FunctionalDeviceRepository functionalDeviceRepository;
     @Autowired
@@ -56,9 +60,11 @@ public class FunctionalDeviceService {
 
         if (device.isPresent()) {
             FunctionalDevice device1 = device.get();
-            device1.setConnected(false);
+            device1.setActive(false);
 
             functionalDeviceRepository.save(device1);
+
+            LOGGER.info("Device {} set to inactive", device1.getSerialNumber());
         }
     }
 

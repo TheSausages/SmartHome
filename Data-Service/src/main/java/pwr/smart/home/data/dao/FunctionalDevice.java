@@ -30,5 +30,7 @@ public class FunctionalDevice {
     private Long homeId;
     @Column(name = "power_level")
     private int powerLevel;
+    @Column(name = "active")
+    private boolean active;
 }
 

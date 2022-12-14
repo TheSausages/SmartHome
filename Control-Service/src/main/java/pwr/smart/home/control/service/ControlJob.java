@@ -42,18 +42,22 @@ public class ControlJob {
             LOGGER.info("For home {} (id: {})", home.getName(), home.getId());
 
             for (FunctionalDeviceWithMeasurementsDTO device : devices.get()) {
-                switch (device.getDevice().getType()) {
-                    case AIR_FILTER:
-                        functionalDevicesAsyncMethods.handleFilter(device, null, home, air.get());
-                        break;
-                    case AIR_HUMIDIFIER:
-                        functionalDevicesAsyncMethods.handleHumidity(device, null, home, weather.get());
-                        break;
-                    case AIR_CONDITIONER:
-                        functionalDevicesAsyncMethods.handleTemperature(device, null, home, weather.get());
-                        break;
-                    default:
-                        LOGGER.info("Device of unknown type found: {}", device.getDevice().getType());
+                if (device.getDevice().isActive()) {
+                    switch (device.getDevice().getType()) {
+                        case AIR_FILTER:
+                            functionalDevicesAsyncMethods.handleFilter(device, null, home, air.get());
+                            break;
+                        case AIR_HUMIDIFIER:
+                            functionalDevicesAsyncMethods.handleHumidity(device, null, home, weather.get());
+                            break;
+                        case AIR_CONDITIONER:
+                            functionalDevicesAsyncMethods.handleTemperature(device, null, home, weather.get());
+                            break;
+                        default:
+                            LOGGER.info("Device of unknown type found: {}", device.getDevice().getType());
+                    }
+                } else {
+                    LOGGER.info("Device {} is not active - passing", device.getDevice().getSerialNumber());
                 }
             }
         }

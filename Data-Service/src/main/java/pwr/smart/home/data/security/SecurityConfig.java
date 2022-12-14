@@ -51,8 +51,9 @@ public class SecurityConfig {
                 .mvcMatchers("/api/data/homes").permitAll()
                 .mvcMatchers("/api/data/latlong/*").permitAll()
                 .mvcMatchers("/api/data/homeFunctionalDevices/*").permitAll()
-
+                .mvcMatchers("/api/data/inactive/*").permitAll()
                 .mvcMatchers("/api/data/consumption").permitAll()
+
                 .mvcMatchers("/api/data/measurements").authenticated()
                 .mvcMatchers("/api/data/lastAirFilterMeasurements").authenticated()
                 .mvcMatchers("/api/data/allAirFilterMeasurements").authenticated()
