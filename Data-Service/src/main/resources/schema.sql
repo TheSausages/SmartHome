@@ -60,6 +60,5 @@ CREATE TABLE FUNCTIONAL_DEVICE (
     is_connected bool NOT NULL DEFAULT TRUE,
     home_id INT,
     power_level INT,
-    active BOOLEAN,
     FOREIGN KEY (home_id) REFERENCES HOME(ID)
 );

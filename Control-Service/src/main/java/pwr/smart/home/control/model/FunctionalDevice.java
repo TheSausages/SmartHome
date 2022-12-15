@@ -21,6 +21,5 @@ public class FunctionalDevice {
     private boolean isConnected;
     private Long homeId;
     private int powerLevel;
-    private boolean active;
 }
 

@@ -29,6 +29,8 @@ public class SecurityConfig {
                 .mvcMatchers("/api/control/humidity").permitAll()
                 .mvcMatchers("/api/control/weather").authenticated()
                 .mvcMatchers("/api/control/air").authenticated()
+                .mvcMatchers("/api/control/*/activate").authenticated()
+                .mvcMatchers("/api/control/*/deactivate").authenticated()
                 .mvcMatchers("/api/**").authenticated()
                 .anyRequest().denyAll()
                 .and()

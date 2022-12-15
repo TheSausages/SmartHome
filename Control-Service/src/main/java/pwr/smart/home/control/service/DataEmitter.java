@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import pwr.smart.home.control.model.Endpoint;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -48,5 +49,56 @@ public class DataEmitter {
             LOGGER.error(e.getMessage());
         }
         return "";
+    }
+
+    public Boolean tryToActivate(String serialNumber, String endpoint) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.set("Authorization", "Basic dXNlcjpwYXNzd29yZA==");
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        boolean deviceOk = false;
+        try {
+            ResponseEntity<String> deviceResponse = Failsafe.with(retryPolicy).get(() -> restTemplate.exchange(endpoint  + "/activate", HttpMethod.GET, entity, String.class));
+            deviceOk = true;
+
+            dataService.markDeviceAsActive(serialNumber);
+
+
+            return deviceResponse.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            if (deviceOk) {
+                Failsafe.with(retryPolicy).get(() -> restTemplate.exchange(endpoint + "/deactivate", HttpMethod.GET, entity, String.class));
+            }
+
+            LOGGER.error(e.getMessage());
+        }
+        return false;
+    }
+
+    public Boolean tryToDeactivate(String serialNumber, String endpoint) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.set("Authorization", "Basic dXNlcjpwYXNzd29yZA==");
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        boolean deviceOk = false;
+        try {
+            ResponseEntity<String> deviceResponse = Failsafe.with(retryPolicy).get(() -> restTemplate.exchange(endpoint  + "/deactivate", HttpMethod.GET, entity, String.class));
+            deviceOk = true;
+
+            dataService.markDeviceAsInactive(serialNumber);
+
+            return deviceResponse.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            if (deviceOk) {
+                Failsafe.with(retryPolicy).get(() -> restTemplate.exchange(endpoint + "/activate", HttpMethod.GET, entity, String.class));
+            }
+
+            LOGGER.error(e.getMessage());
+        }
+        return false;
     }
 }

@@ -19,15 +19,15 @@ public class Endpoint {
     private String airFilterUrl;
 
     public String getAirConditionerUrl(String serialNumber) {
-        return airConditionerUrl + "/" + serialNumber + "/setTarget";
+        return airConditionerUrl + "/" + serialNumber;
     }
 
     public String getAirFilterUrl(String serialNumber) {
-        return  airFilterUrl + "/" + serialNumber + "/setTarget";
+        return  airFilterUrl + "/" + serialNumber;
     }
 
     public String getAirHumidifierUrl(String serialNumber) {
-        return airHumidifierUrl + "/" + serialNumber + "/setTarget";
+        return airHumidifierUrl + "/" + serialNumber;
     }
 
     public String getDataServiceUrl() {

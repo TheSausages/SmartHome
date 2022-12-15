@@ -16,8 +16,14 @@ import {
 } from "@mui/material";
 import {add_device_path, add_sensor_path} from '../../../common/Paths';
 import {NavLink} from 'react-router-dom';
-import { useQueries, useMutation } from 'react-query';
-import { getAllHomeFunctionalDevices, getAllHomeSensors, getHomeInfo, updateHomeInfo } from '../../../common/RequestHelper/RequestHelper';
+import {useQueries, useMutation} from 'react-query';
+import {
+    activateFunctionalDevice, deactivateFunctionalDevice,
+    getAllHomeFunctionalDevices,
+    getAllHomeSensors,
+    getHomeInfo,
+    updateHomeInfo
+} from '../../../common/RequestHelper/RequestHelper';
 import { HomeInfo } from '../../../data/HomeInfo';
 import { FunctionalDeviceInfo } from '../../../data/FunctionalDevices';
 import { SensorInfo } from '../../../data/Sensort';
@@ -26,6 +32,14 @@ export interface SettingsProps
 {};
 
 type DeviceParameters = {
+    serialNumber: string,
+    name: string,
+    connected: boolean,
+    powerLevel: number,
+    averageConsumption: number
+}
+
+type SensorParameters = {
     serialNumber: string,
     name: string,
     connected: boolean
@@ -38,7 +52,7 @@ export default function Settings(props: SettingsProps) {
     const [ zipCode, setZipCode ] = useState<string>('');
     const [ country, setCountry ] = useState<string>('');
     const [ devices, setDevices] = useState<DeviceParameters[]>([]);
-    const [ sensores, setSensores] = useState<DeviceParameters[]>([]);
+    const [ sensores, setSensores] = useState<SensorParameters[]>([]);
 
     const updateHomeInfoMutation = useMutation(updateHomeInfo);
 
@@ -55,7 +69,7 @@ export default function Settings(props: SettingsProps) {
             queryKey: ['GetAllFunctionalDevices'],
             queryFn: () => getAllHomeFunctionalDevices(),
             onSuccess: (data: FunctionalDeviceInfo[]) => {
-                setDevices(data.map((item: FunctionalDeviceInfo) => ({serialNumber: item.serialNumber, name: item.name, connected: item.connected})))
+                setDevices(data.map((item: FunctionalDeviceInfo) => ({serialNumber: item.serialNumber, name: item.name, connected: item.connected, powerLevel: item.powerLevel, averageConsumption: item.averageConsumption})))
                 console.log(data);
             }
         },
@@ -71,8 +85,6 @@ export default function Settings(props: SettingsProps) {
             }
         }
     ]);
-
-
 
     useEffect(() => {
         sensorsQuery.refetch();
@@ -102,16 +114,39 @@ export default function Settings(props: SettingsProps) {
     }
 
     const changeDeviceState = (index: number) => {
-        setDevices(prevDevices => {
-            return prevDevices.map((item, arrayNumber) => {
-                if(arrayNumber === index) {
-                    const newItem = item;
-                    newItem.connected = !newItem.connected;
-                    return newItem;
+        const nextDevs = devices.map((item, arrayNumber) => {
+            if (arrayNumber === index) {
+                const newItem = {...item};
+
+                if (item.connected) {
+                    deactivateFunctionalDevice(item.serialNumber)
+                        .then(resp => {
+                            if (resp as boolean) {
+                                newItem.connected = !item.connected;
+                            } else {
+                                console.log(`Did not change state of ${item.serialNumber} correctly`)
+                            }
+                        })
+                } else {
+                    activateFunctionalDevice(item.serialNumber)
+                        .then(resp => {
+                            if (resp as boolean) {
+                                newItem.connected = !item.connected;
+                            } else {
+                                console.log(`Did not change state of ${item.serialNumber} correctly`)
+                            }
+                        })
                 }
-                return item;
-            });
-        });
+
+
+                return newItem
+            }
+            return item;
+        })
+
+        setDevices(nextDevs)
+
+        setTimeout(() => devicesQuery.refetch(), 500)
     };
 
     const changeSensorState = (index: number) => {
@@ -127,29 +162,35 @@ export default function Settings(props: SettingsProps) {
         });
     };
 
-    const devicesMap = devices.map((item, index) => (
-        <TableRow key={index}>
-            <TableCell>{item.serialNumber}</TableCell>
-            <TableCell>{item.name}</TableCell>
-            <TableCell>{item.connected ? "Połączony" : "Rozłączony"}</TableCell>
-            <TableCell>
-                {item.connected ? <Button sx={{width: '100%'}} variant="contained" onClick={() => changeDeviceState(index)}>Rozłącz</Button> :
-                <Button sx={{width: '100%'}} variant="contained" onClick={() => changeDeviceState(index)}>Połącz</Button>}
-            </TableCell>
-        </TableRow>
-    ));
+    const devicesMap = devices
+        .sort((a,b) => a.serialNumber.localeCompare(b.serialNumber))
+        .map((item, index) => (
+            <TableRow key={index}>
+                <TableCell>{item.serialNumber}</TableCell>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.powerLevel}</TableCell>
+                <TableCell>{item.averageConsumption}</TableCell>
+                <TableCell>
+                    <Button sx={{width: '100%'}} variant="contained" onClick={() => changeDeviceState(index)}>{item.connected ? 'Rozłącz': 'Połącz'}</Button>
+                </TableCell>
+            </TableRow>
+        ));
 
-    const sensorMap = sensores.map((item, index) => (
-        <TableRow key={index}>
-            <TableCell>{item.serialNumber}</TableCell>
-            <TableCell>{item.name}</TableCell>
-            <TableCell>{item.connected ? "Połączony" : "Rozłączony"}</TableCell>
-            <TableCell>
-                {item.connected ? <Button sx={{width: '100%'}} variant="contained" onClick={() => changeSensorState(index)}>Rozłącz</Button> :
-                <Button sx={{width: '100%'}} variant="contained" onClick={() => changeSensorState(index)}>Połącz</Button>}
-            </TableCell>
-        </TableRow>
-    ));
+    const sensorMap = sensores
+        .sort((a,b) => a.serialNumber.localeCompare(b.serialNumber))
+        .map((item, index) => (
+            <TableRow key={index}>
+                <TableCell>{item.serialNumber}</TableCell>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.connected ? "Połączony" : "Rozłączony"}</TableCell>
+                <TableCell>
+                    <Button sx={{width: '100%'}} variant="contained" onClick={() => changeSensorState(index)}>{item.connected ? 'Rozłącz': 'Połącz'}</Button>
+                </TableCell>
+            </TableRow>
+        ));
+
+    // console.log("reload")
+    // console.log(devices)
 
     return (
         <Grid container spacing={2} sx={{marginTop: '30px'}}>
@@ -193,7 +234,8 @@ export default function Settings(props: SettingsProps) {
                         <TableRow>
                             <TableCell>Nr seryjny</TableCell>
                             <TableCell>Nazwa</TableCell>
-                            <TableCell>Status</TableCell>
+                            <TableCell>Poziom mocy</TableCell>
+                            <TableCell>Śr. zużycie / 24h</TableCell>
                             <TableCell><Button component={NavLink} to={add_device_path}>+</Button></TableCell>
                         </TableRow>
                     </TableHead>

@@ -67,4 +67,74 @@ public class ActionsService {
         LOGGER.info("Null Device");
         return "";
     }
+
+    public boolean tryToActivate(String serialNumber) throws ExecutionException, InterruptedException {
+        Home home = dataService.getHome(serialNumber);
+
+        Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = functionalDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
+
+        FunctionalDeviceWithMeasurementsDTO device = devices.get().stream()
+                .filter(dev -> serialNumber.equals(dev.getDevice().getSerialNumber()))
+                .findAny()
+                .orElse(null);
+
+        if (Objects.nonNull(device)) {
+            String endpointStr = null;
+            switch (device.getDevice().getType()) {
+                case AIR_FILTER:
+                    endpointStr = endpoint.getAirFilterUrl(serialNumber);
+                    break;
+                case AIR_HUMIDIFIER:
+                    endpointStr = endpoint.getAirHumidifierUrl(serialNumber);
+                    break;
+                case AIR_CONDITIONER:
+                    endpointStr = endpoint.getAirConditionerUrl(serialNumber);
+                    break;
+                default:
+                    LOGGER.info("Device of unknown type found: {} - could not activate", device.getDevice().getType());
+                    return false;
+            }
+
+            if (Objects.nonNull(endpointStr)) {
+                return dataEmitter.tryToActivate(serialNumber, endpointStr);
+            }
+        }
+
+        return false;
+    }
+
+    public boolean tryToDeactivate(String serialNumber) throws ExecutionException, InterruptedException {
+        Home home = dataService.getHome(serialNumber);
+
+        Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = functionalDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
+
+        FunctionalDeviceWithMeasurementsDTO device = devices.get().stream()
+                .filter(dev -> serialNumber.equals(dev.getDevice().getSerialNumber()))
+                .findAny()
+                .orElse(null);
+
+        if (Objects.nonNull(device)) {
+            String endpointStr = null;
+            switch (device.getDevice().getType()) {
+                case AIR_FILTER:
+                    endpointStr = endpoint.getAirFilterUrl(serialNumber);
+                    break;
+                case AIR_HUMIDIFIER:
+                    endpointStr = endpoint.getAirHumidifierUrl(serialNumber);
+                    break;
+                case AIR_CONDITIONER:
+                    endpointStr = endpoint.getAirConditionerUrl(serialNumber);
+                    break;
+                default:
+                    LOGGER.info("Device of unknown type found: {} - could not activate", device.getDevice().getType());
+                    return false;
+            }
+
+            if (Objects.nonNull(endpointStr)) {
+                return dataEmitter.tryToDeactivate(serialNumber, endpointStr);
+            }
+        }
+
+        return false;
+    }
 }

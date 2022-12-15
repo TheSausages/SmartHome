@@ -42,7 +42,7 @@ public class ControlJob {
             LOGGER.info("For home {} (id: {})", home.getName(), home.getId());
 
             for (FunctionalDeviceWithMeasurementsDTO device : devices.get()) {
-                if (device.getDevice().isActive()) {
+                if (device.getDevice().isConnected()) {
                     switch (device.getDevice().getType()) {
                         case AIR_FILTER:
                             functionalDevicesAsyncMethods.handleFilter(device, null, home, air.get());

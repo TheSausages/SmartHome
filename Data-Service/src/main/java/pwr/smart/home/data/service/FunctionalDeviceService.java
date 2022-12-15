@@ -55,12 +55,17 @@ public class FunctionalDeviceService {
         functionalDeviceRepository.save(functionalDevice);
     }
 
-    public void markDeviceAsInactive(String serialNumber) {
+    /**
+     *
+     * @param serialNumber Serial Number
+     * @param activate True for activation, False for deactivation
+     */
+    public void markDeviceAs(String serialNumber, boolean activate) {
         Optional<FunctionalDevice> device = functionalDeviceRepository.findBySerialNumber(serialNumber);
 
         if (device.isPresent()) {
             FunctionalDevice device1 = device.get();
-            device1.setActive(false);
+            device1.setConnected(activate);
 
             functionalDeviceRepository.save(device1);
 

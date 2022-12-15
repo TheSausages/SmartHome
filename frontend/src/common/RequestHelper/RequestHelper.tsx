@@ -37,6 +37,8 @@ const home_info_api_path = () => '/home';
 const update_home_info_api_path = () => '/editAddress';
 const add_functional_device_api_path = () => '/addFunctionalDevice';
 const add_sensor_api_path = () => '/addSensor';
+const activate_functional_device_api_path = (serial: string) => `/${serial}/activate`;
+const deactivate_functional_device_api_path = (serial: string) => `/${serial}/deactivate`;
 
 const weather_info_api_path = () => '/weather'
 const air_info_api_path = () => '/air'
@@ -207,5 +209,19 @@ export const addNewSensor = async (parameters: SensorAdder) => {
     addToken();
 
     const response = await request.post(data_request(add_sensor_api_path()), {type: parameters.type, name: parameters.name, manufacturer: parameters.manufacturer, serialNumber: parameters.serialNumber})
+    return response.data;
+}
+
+export const activateFunctionalDevice = async (serial: string) => {
+    addToken();
+
+    const response = await request.get(control_request(activate_functional_device_api_path(serial)))
+    return response.data;
+}
+
+export const deactivateFunctionalDevice = async (serial: string) => {
+    addToken();
+
+    const response = await request.get(control_request(deactivate_functional_device_api_path(serial)))
     return response.data;
 }

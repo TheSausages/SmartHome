@@ -117,4 +117,20 @@ public class DataService {
             LOGGER.error(e.getMessage());
         }
     }
+
+    public void markDeviceAsActive(String serialNumber) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("serialNumber", serialNumber);
+            ResponseEntity<Void> response = Failsafe.with(retryPolicy).get(() -> restTemplate.getForEntity(endpoint.getDataServiceUrl() + "/active/{serialNumber}", Void.TYPE, params));
+
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new ResourceAccessException("Could not set device " + serialNumber + " as inactive");
+            }
+        } catch (ResourceAccessException e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
 }
