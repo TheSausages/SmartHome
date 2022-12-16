@@ -1,123 +1,112 @@
-import {Button, Input, InputLabel, MenuItem, Select} from '@mui/material';
+import {Button, Dialog, DialogTitle, Input, InputLabel, MenuItem, Select} from '@mui/material';
 import {Box, Stack} from '@mui/system';
-import React, {useState} from 'react';
+import React, {Dispatch, SetStateAction, useState} from 'react';
 import { useMutation } from 'react-query';
 import {DeviceDestiny, deviceNameMapper, DeviceType, SensorType, sensorTypeMapper} from '../../../common/DeviceType';
-import { addNewFunctionalDevice, addNewSensor } from '../../../common/RequestHelper/RequestHelper';
+import {
+    addNewFunctionalDevice,
+    addNewSensor,
+    updateFunctionalDevice
+} from '../../../common/RequestHelper/RequestHelper';
 import { useNavigate } from 'react-router-dom';
 import { settings_path } from '../../../common/Paths';
-import {FunctionalDeviceAdder} from "../../../data/FunctionalDevices";
+import {FunctionalDeviceEditor} from "../../../data/FunctionalDevices";
 
 export interface DeviceProps
 {
-    device: FunctionalDeviceAdder
+    device: FunctionalDeviceEditor,
+    setOpen: Dispatch<SetStateAction<boolean>>,
+    open: boolean,
+    refreshItems: () => void
 }
 
-export default function DeviceAdder(props: DeviceProps) {
+export default function DeviceEditor(props: DeviceProps) {
     const [ deviceType, setDeviceType ] = useState<DeviceType>(props.device.type);
     const [ powerLevel, setPowerLevel ] = useState<number>(props.device.powerLevel);
     const [ name, setName ] = useState<string>(props.device.name);
     const [ manufacturer, setManufacturer ] = useState<string>(props.device.manufacturer);
     const [ serialNumber, setSerialNumber ] = useState<string>(props.device.serialNumber);
-    const addFunctionalDevice = useMutation(addNewFunctionalDevice);
+    const addFunctionalDevice = useMutation(updateFunctionalDevice);
     const navigator = useNavigate();
 
-    const handleOnDeviceTypeChange = (e: any) => setDeviceType(e.target.value);
-    const handleOnNameChange = (e: any) => setName(e.target.value);
-    const handleOnManufacturerChange = (e: any) => setManufacturer(e.target.value);
-    const handleOnSerialNumberChange = (e: any) => setSerialNumber(e.target.value);
-    const handleOnPowerLevelChange = (e: any) => setPowerLevel(parseInt(e.target.value));
+    const handleOnDeviceTypeChange = (e: any) => {
+        e.preventDefault()
 
-    const handleResetButton = () => {
-        setDeviceType(DeviceType.AirConditioner);
-        setName('');
-        setManufacturer('');
-        setSerialNumber('');
-        setPowerLevel(2)
-        navigator(settings_path);
+        setDeviceType(e.target.value)
+    };
+    const handleOnNameChange = (e: any) => {
+        e.preventDefault()
+
+        setName(e.target.value)
+    };
+    const handleOnManufacturerChange = (e: any) => {
+        e.preventDefault()
+
+        setManufacturer(e.target.value)
+    };
+    const handleOnSerialNumberChange = (e: any) => {
+        e.preventDefault()
+
+        setSerialNumber(e.target.value)
+    };
+    const handleOnPowerLevelChange = (e: any) => {
+        e.preventDefault()
+
+        setPowerLevel(parseInt(e.target.value))
     };
 
     const handleOnSubmit = (e: any) => {
         e.preventDefault();
-        if(deviceDestiny == DeviceDestiny.Sensor)
-        {
-            addSensor.mutate({serialNumber: serialNumber, type: sensorType, name: name, manufacturer: manufacturer}, {onSuccess: (response: any) => {
-                console.log(response);
-                navigator(settings_path);
-            }});
-        } else {
-            addFunctionalDevice.mutate({serialNumber: serialNumber, type: deviceType, name: name, manufacturer: manufacturer, powerLevel: powerLevel}, {onSuccess: (response: any) => {
-                console.log(response);
-                navigator(settings_path);
-            }});
-        }
 
+        console.log('submit')
+
+        addFunctionalDevice.mutate({serialNumber: serialNumber, type: deviceType, name: name, manufacturer: manufacturer, powerLevel: powerLevel, id: props.device.id}, {onSuccess: (response: any) => {
+                console.log(response);
+                navigator(settings_path);
+            }});
+
+        props.setOpen(false)
+
+        props.refreshItems()
     }
 
-    const deviceTypeSelect = deviceDestiny === DeviceDestiny.Sensor ?
-    (
-    <>
-        <InputLabel sx={{display:'inline-block', width:"10%"}}>Typ czujnika:</InputLabel>
-        <Select sx={{width: '250px'}}value={sensorType} onChange={handleOnSensorTypeChange}>
-            <MenuItem value={SensorType.AirConditionSensor}>{sensorTypeMapper(SensorType.AirConditionSensor)}</MenuItem>
-            <MenuItem value={SensorType.Temperature}>{sensorTypeMapper(SensorType.Temperature)}</MenuItem>
-            <MenuItem value={SensorType.AirHumidity}>{sensorTypeMapper(SensorType.AirHumidity)}</MenuItem>
-        </Select>
-    </>
-    )
-    :
-    (
-    <>
-        <InputLabel sx={{display:'inline-block', width:"10%"}}>Typ urządzenia:</InputLabel>
-        <Select sx={{width: '250px'}} value={deviceType} onChange={handleOnDeviceTypeChange}>
-            <MenuItem value={DeviceType.AirConditioner}>{deviceNameMapper(DeviceType.AirConditioner)}</MenuItem>
-            <MenuItem value={DeviceType.AirFilter}>{deviceNameMapper(DeviceType.AirFilter)}</MenuItem>
-            <MenuItem value={DeviceType.Humidifier}>{deviceNameMapper(DeviceType.Humidifier)}</MenuItem>
-        </Select>
-    </>
-    );
-
-    const averageConsumption = (deviceDestiny === DeviceDestiny.FunctionalDevice &&
-        <Box sx={{marginTop: '20px'}}>
-            <InputLabel sx={{display:'inline-block', width:"10%"}}>Poziom mocy</InputLabel>
-            <Select sx={{width: '250px'}} value={powerLevel} onChange={handleOnPowerLevelChange}>
-                <MenuItem value={1}>1</MenuItem>
-                <MenuItem value={2}>2</MenuItem>
-                <MenuItem value={3}>3</MenuItem>
-            </Select>
-        </Box>);
-
     return (
-        <Stack direction="column" sx={{marginTop: '50px'}}>
-            <form method="post" onSubmit={handleOnSubmit}>
+        <Dialog open={props.open} fullWidth={true} PaperProps={{sx: {alignItems: "center"}}}>
+            <DialogTitle>Edycja Urządzenia</DialogTitle>
+            <form method="post" onSubmit={handleOnSubmit} style={{width: "80%"}}>
                 <Box>
-                    <InputLabel sx={{display:'inline-block', width:"10%"}}>Typ urządzenia:</InputLabel>
-                    <Select sx={{width:'250px'}}value={deviceDestiny} onChange={handleOnDeviceDestinyChange}>
-                        <MenuItem value={DeviceDestiny.Sensor}>Sensor</MenuItem>
-                        <MenuItem value={DeviceDestiny.FunctionalDevice}>Urządzenie funkcjonalne</MenuItem>
+                    <InputLabel sx={{display:'inline-block', width:"33%"}}>Typ urządzenia:</InputLabel>
+                    <Select sx={{width: '250px'}} value={deviceType} onChange={handleOnDeviceTypeChange}>
+                        <MenuItem value={DeviceType.AirConditioner}>{deviceNameMapper(DeviceType.AirConditioner)}</MenuItem>
+                        <MenuItem value={DeviceType.AirFilter}>{deviceNameMapper(DeviceType.AirFilter)}</MenuItem>
+                        <MenuItem value={DeviceType.Humidifier}>{deviceNameMapper(DeviceType.Humidifier)}</MenuItem>
                     </Select>
                 </Box>
-                <Box>
-                    {deviceTypeSelect}
-                </Box>
                 <Box sx={{marginTop: '20px'}}>
-                    <InputLabel sx={{display:'inline-block', width:"10%"}}>Nazwa:</InputLabel>
+                    <InputLabel sx={{display:'inline-block', width:"33%"}}>Nazwa:</InputLabel>
                     <Input value={name} onChange={handleOnNameChange} type="text"/>
                 </Box>
                 <Box sx={{marginTop: '20px'}}>
-                    <InputLabel sx={{display:'inline-block', width:"10%"}}>Producent:</InputLabel>
+                    <InputLabel sx={{display:'inline-block', width:"33%"}}>Producent:</InputLabel>
                     <Input value={manufacturer} onChange={handleOnManufacturerChange} type="text"/>
                 </Box>
                 <Box sx={{marginTop: '20px'}}>
-                    <InputLabel sx={{display:'inline-block', width:"10%"}}>Numer seryjny:</InputLabel>
+                    <InputLabel sx={{display:'inline-block', width:"33%"}}>Numer seryjny:</InputLabel>
                     <Input value={serialNumber} onChange={handleOnSerialNumberChange} type="text"/>
                 </Box>
-                {averageConsumption}
-                <Box sx={{marginTop: '30px'}}>
-                    <Button color="warning" variant="contained" sx={{marginRight: '10px'}} onClick={handleResetButton}>Anuluj</Button>
-                    <Button color="success" variant="contained" type="submit">Dodaj</Button>
+                <Box sx={{marginTop: '20px'}}>
+                    <InputLabel sx={{display:'inline-block', width:"33%"}}>Poziom mocy</InputLabel>
+                    <Select sx={{width: '250px'}} value={powerLevel} onChange={handleOnPowerLevelChange}>
+                        <MenuItem value={1}>1</MenuItem>
+                        <MenuItem value={2}>2</MenuItem>
+                        <MenuItem value={3}>3</MenuItem>
+                    </Select>
+                </Box>
+                <Box  sx={{marginBlock: '30px', justifyContent: "center", display: "flex"}}>
+                    <Button color="warning" variant="contained" sx={{marginRight: '10px'}} onClick={() => props.setOpen(false)}>Anuluj</Button>
+                    <Button color="success" variant="contained" type="submit">Aktualizuj</Button>
                 </Box>
             </form>
-        </Stack>
+        </Dialog>
     )
 }

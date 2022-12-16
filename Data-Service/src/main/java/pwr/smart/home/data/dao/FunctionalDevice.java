@@ -1,5 +1,6 @@
 package pwr.smart.home.data.dao;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,8 +9,7 @@ import pwr.smart.home.common.model.enums.DeviceType;
 import javax.persistence.*;
 import java.sql.Date;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "functional_device")

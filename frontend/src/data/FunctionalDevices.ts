@@ -7,7 +7,9 @@ export interface FunctionalDeviceInfo
     name: string,
     connected: boolean,
     powerLevel: number,
-    averageConsumption: number
+    averageConsumption: number,
+    manufacturer: string,
+    id: number
 }
 
 export interface FunctionalDeviceAdder
@@ -24,6 +26,7 @@ export interface FunctionalDeviceEditor
     serialNumber: string,
     type: DeviceType,
     name: string,
+    powerLevel: number,
     manufacturer: string,
-    powerLevel: number;
+    id: number
 }

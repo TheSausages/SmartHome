@@ -3,7 +3,7 @@ import UserService from "../../service/UserService";
 import {ApiError} from "../../data/ApiError";
 import { SensorAdder, SensorQueryParameters } from '../../data/Sensort';
 import { HomeInfo } from '../../data/HomeInfo';
-import { FunctionalDeviceAdder } from '../../data/FunctionalDevices';
+import {FunctionalDeviceAdder, FunctionalDeviceEditor} from '../../data/FunctionalDevices';
 
 
 const request = axios.create({
@@ -206,12 +206,12 @@ export const addNewFunctionalDevice = async (parameters: FunctionalDeviceAdder) 
     return response.data;
 }
 
-// export const updateFunctionalDevice = async (parameters: FunctionalDeviceAdder) => {
-//     addToken();
-//
-//     const response = await request.put(data_request(update_functional_device_path()), {type: parameters.type, name: parameters.name, manufacturer: parameters.manufacturer, serialNumber: parameters.serialNumber, consumedElectricity: parameters.averageConsumptionPerHour, powerLevel: parameters.powerLevel});
-//     return response.data;
-// }
+export const updateFunctionalDevice = async (parameters: FunctionalDeviceEditor) => {
+    addToken();
+
+    const response = await request.put(data_request(update_functional_device_path()), {id: parameters.id, type: parameters.type, name: parameters.name, manufacturer: parameters.manufacturer, serialNumber: parameters.serialNumber, powerLevel: parameters.powerLevel});
+    return response.data;
+}
 
 export const addNewSensor = async (parameters: SensorAdder) => {
     addToken();

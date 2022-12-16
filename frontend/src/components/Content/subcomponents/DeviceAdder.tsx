@@ -64,7 +64,7 @@ export default function DeviceAdder(props: DeviceProps) {
     (
     <>
         <InputLabel sx={{display:'inline-block', width:"10%"}}>Typ czujnika:</InputLabel>
-        <Select sx={{width: '250px'}}value={sensorType} onChange={handleOnSensorTypeChange}>
+        <Select sx={{width: '250px'}} value={sensorType} onChange={handleOnSensorTypeChange}>
             <MenuItem value={SensorType.AirConditionSensor}>{sensorTypeMapper(SensorType.AirConditionSensor)}</MenuItem>
             <MenuItem value={SensorType.Temperature}>{sensorTypeMapper(SensorType.Temperature)}</MenuItem>
             <MenuItem value={SensorType.AirHumidity}>{sensorTypeMapper(SensorType.AirHumidity)}</MenuItem>
@@ -83,7 +83,7 @@ export default function DeviceAdder(props: DeviceProps) {
     </>
     );
 
-    const averageConsumption = (deviceDestiny === DeviceDestiny.FunctionalDevice &&
+    const powerLevelBlock = (deviceDestiny === DeviceDestiny.FunctionalDevice &&
         <Box sx={{marginTop: '20px'}}>
             <InputLabel sx={{display:'inline-block', width:"10%"}}>Poziom mocy</InputLabel>
             <Select sx={{width: '250px'}} value={powerLevel} onChange={handleOnPowerLevelChange}>
@@ -98,12 +98,12 @@ export default function DeviceAdder(props: DeviceProps) {
             <form method="post" onSubmit={handleOnSubmit}>
                 <Box>
                     <InputLabel sx={{display:'inline-block', width:"10%"}}>Typ urządzenia:</InputLabel>
-                    <Select sx={{width:'250px'}}value={deviceDestiny} onChange={handleOnDeviceDestinyChange}>
+                    <Select sx={{width:'250px'}} value={deviceDestiny} onChange={handleOnDeviceDestinyChange}>
                         <MenuItem value={DeviceDestiny.Sensor}>Sensor</MenuItem>
                         <MenuItem value={DeviceDestiny.FunctionalDevice}>Urządzenie funkcjonalne</MenuItem>
                     </Select>
                 </Box>
-                <Box>
+                <Box sx={{marginTop: '20px'}}>
                     {deviceTypeSelect}
                 </Box>
                 <Box sx={{marginTop: '20px'}}>
@@ -118,7 +118,7 @@ export default function DeviceAdder(props: DeviceProps) {
                     <InputLabel sx={{display:'inline-block', width:"10%"}}>Numer seryjny:</InputLabel>
                     <Input value={serialNumber} onChange={handleOnSerialNumberChange} type="text"/>
                 </Box>
-                {averageConsumption}
+                {powerLevelBlock}
                 <Box sx={{marginTop: '30px'}}>
                     <Button color="warning" variant="contained" sx={{marginRight: '10px'}} onClick={handleResetButton}>Anuluj</Button>
                     <Button color="success" variant="contained" type="submit">Dodaj</Button>

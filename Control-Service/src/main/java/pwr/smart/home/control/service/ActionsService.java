@@ -73,6 +73,8 @@ public class ActionsService {
         FunctionalDevice device = dataService.getFunctionalDevice(serialNumber);
 
         if (Objects.nonNull(device)) {
+            LOGGER.info(device.toString());
+
             String endpointStr = null;
             switch (device.getType()) {
                 case AIR_FILTER:

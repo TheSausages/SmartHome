@@ -1,5 +1,7 @@
 package pwr.smart.home.data.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+
 @RestControllerWithBasePath
 public class FunctionalDeviceController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FunctionalDeviceController.class);
+
     @Autowired
     private UserService userHomeService;
     @Autowired
@@ -71,7 +76,7 @@ public class FunctionalDeviceController {
                     .body(ErrorDTO.builder().message("Fill the form correctly").status(HttpStatus.BAD_REQUEST).build());
         }
         if (user.isPresent()) {
-            functionalDeviceService.saveFunctionalDevice(functionalDevice);
+            functionalDeviceService.editFunctionalDevice(functionalDevice);
 
             return ResponseEntity.ok(functionalDevice);
         } else {
@@ -85,8 +90,7 @@ public class FunctionalDeviceController {
         Optional<FunctionalDevice> device = functionalDeviceService.getHomeFunctionalDevice(serialNumber);
 
         if (device.isPresent()) {
-
-            return ResponseEntity.ok(device);
+            return ResponseEntity.ok(device.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ErrorDTO.builder().message("Could not find functional device").status(HttpStatus.UNAUTHORIZED).build());

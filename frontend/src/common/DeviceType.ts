@@ -1,7 +1,7 @@
 export enum DeviceType {
-    AirConditioner,
-    Humidifier,
-    AirFilter
+    AirConditioner = "AIR_CONDITIONER",
+    Humidifier = "AIR_HUMIDIFIER",
+    AirFilter = "AIR_FILTER"
 }
 
 export enum SensorType {
