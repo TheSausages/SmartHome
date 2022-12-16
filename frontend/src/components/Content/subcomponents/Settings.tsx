@@ -189,9 +189,6 @@ export default function Settings(props: SettingsProps) {
             </TableRow>
         ));
 
-    // console.log("reload")
-    // console.log(devices)
-
     return (
         <Grid container spacing={2} sx={{marginTop: '30px'}}>
             <Grid item xs={1} />

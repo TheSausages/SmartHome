@@ -16,5 +16,14 @@ export interface FunctionalDeviceAdder
     type: DeviceType,
     name: string,
     manufacturer: string,
-    averageConsumptionPerHour: number
+    powerLevel: number;
+}
+
+export interface FunctionalDeviceEditor
+{
+    serialNumber: string,
+    type: DeviceType,
+    name: string,
+    manufacturer: string,
+    powerLevel: number;
 }

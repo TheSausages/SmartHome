@@ -15,10 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
-import pwr.smart.home.control.model.Endpoint;
-import pwr.smart.home.control.model.FunctionalDeviceWithMeasurementsDTO;
-import pwr.smart.home.control.model.Home;
-import pwr.smart.home.control.model.Location;
+import pwr.smart.home.control.model.*;
 
 import java.time.Duration;
 import java.util.*;
@@ -132,5 +129,21 @@ public class DataService {
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());
         }
+    }
+
+    public FunctionalDevice getFunctionalDevice(String serialNumber) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("serialNumber", serialNumber);
+            ResponseEntity<FunctionalDevice> response = Failsafe.with(retryPolicy).get(() -> restTemplate.getForEntity(endpoint.getDataServiceUrl() + "/homeFunctionalDevice/{serialNumber}", FunctionalDevice.class, params));
+
+            return Objects.requireNonNull(response.getBody());
+        } catch (ResourceAccessException e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return null;
     }
 }

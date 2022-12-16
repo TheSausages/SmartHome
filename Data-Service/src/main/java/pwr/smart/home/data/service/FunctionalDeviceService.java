@@ -92,4 +92,8 @@ public class FunctionalDeviceService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public Optional<FunctionalDevice> getHomeFunctionalDevice(String serialNumber) {
+        return functionalDeviceRepository.findBySerialNumber(serialNumber);
+    }
 }

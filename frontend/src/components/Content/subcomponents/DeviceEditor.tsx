@@ -6,35 +6,29 @@ import {DeviceDestiny, deviceNameMapper, DeviceType, SensorType, sensorTypeMappe
 import { addNewFunctionalDevice, addNewSensor } from '../../../common/RequestHelper/RequestHelper';
 import { useNavigate } from 'react-router-dom';
 import { settings_path } from '../../../common/Paths';
+import {FunctionalDeviceAdder} from "../../../data/FunctionalDevices";
 
 export interface DeviceProps
 {
-    deviceDestiny?: DeviceDestiny
+    device: FunctionalDeviceAdder
 }
 
 export default function DeviceAdder(props: DeviceProps) {
-    const [ deviceDestiny, setDeviceDestiny ] = useState<DeviceDestiny>(props.deviceDestiny != null ? props.deviceDestiny : DeviceDestiny.Sensor);
-    const [ sensorType, setSensorType ] = useState<SensorType>(SensorType.AirConditionSensor);
-    const [ deviceType, setDeviceType ] = useState<DeviceType>(DeviceType.AirConditioner);
-    const [ powerLevel, setPowerLevel ] = useState<number>(2);
-    const [ name, setName ] = useState<string>('');
-    const [ manufacturer, setManufacturer ] = useState<string>('');
-    const [ serialNumber, setSerialNumber ] = useState<string>('');
+    const [ deviceType, setDeviceType ] = useState<DeviceType>(props.device.type);
+    const [ powerLevel, setPowerLevel ] = useState<number>(props.device.powerLevel);
+    const [ name, setName ] = useState<string>(props.device.name);
+    const [ manufacturer, setManufacturer ] = useState<string>(props.device.manufacturer);
+    const [ serialNumber, setSerialNumber ] = useState<string>(props.device.serialNumber);
     const addFunctionalDevice = useMutation(addNewFunctionalDevice);
-    const addSensor = useMutation(addNewSensor);
     const navigator = useNavigate();
 
-    const handleOnDeviceDestinyChange = (e: any) => setDeviceDestiny(e.target.value);
     const handleOnDeviceTypeChange = (e: any) => setDeviceType(e.target.value);
-    const handleOnSensorTypeChange = (e: any) => setSensorType(e.target.value);
     const handleOnNameChange = (e: any) => setName(e.target.value);
     const handleOnManufacturerChange = (e: any) => setManufacturer(e.target.value);
     const handleOnSerialNumberChange = (e: any) => setSerialNumber(e.target.value);
     const handleOnPowerLevelChange = (e: any) => setPowerLevel(parseInt(e.target.value));
 
     const handleResetButton = () => {
-        setDeviceDestiny(DeviceDestiny.Sensor);
-        setSensorType(SensorType.AirConditionSensor);
         setDeviceType(DeviceType.AirConditioner);
         setName('');
         setManufacturer('');

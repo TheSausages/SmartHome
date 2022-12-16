@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pwr.smart.home.control.model.Endpoint;
+import pwr.smart.home.control.model.FunctionalDevice;
 import pwr.smart.home.control.model.FunctionalDeviceWithMeasurementsDTO;
 import pwr.smart.home.control.model.Home;
 import pwr.smart.home.control.weather.model.response.AirQualityResponse;
@@ -69,18 +70,11 @@ public class ActionsService {
     }
 
     public boolean tryToActivate(String serialNumber) throws ExecutionException, InterruptedException {
-        Home home = dataService.getHome(serialNumber);
-
-        Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = functionalDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
-
-        FunctionalDeviceWithMeasurementsDTO device = devices.get().stream()
-                .filter(dev -> serialNumber.equals(dev.getDevice().getSerialNumber()))
-                .findAny()
-                .orElse(null);
+        FunctionalDevice device = dataService.getFunctionalDevice(serialNumber);
 
         if (Objects.nonNull(device)) {
             String endpointStr = null;
-            switch (device.getDevice().getType()) {
+            switch (device.getType()) {
                 case AIR_FILTER:
                     endpointStr = endpoint.getAirFilterUrl(serialNumber);
                     break;
@@ -91,7 +85,7 @@ public class ActionsService {
                     endpointStr = endpoint.getAirConditionerUrl(serialNumber);
                     break;
                 default:
-                    LOGGER.info("Device of unknown type found: {} - could not activate", device.getDevice().getType());
+                    LOGGER.info("Device of unknown type found: {} - could not activate", device.getType());
                     return false;
             }
 
@@ -104,18 +98,11 @@ public class ActionsService {
     }
 
     public boolean tryToDeactivate(String serialNumber) throws ExecutionException, InterruptedException {
-        Home home = dataService.getHome(serialNumber);
-
-        Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = functionalDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
-
-        FunctionalDeviceWithMeasurementsDTO device = devices.get().stream()
-                .filter(dev -> serialNumber.equals(dev.getDevice().getSerialNumber()))
-                .findAny()
-                .orElse(null);
+        FunctionalDevice device = dataService.getFunctionalDevice(serialNumber);
 
         if (Objects.nonNull(device)) {
             String endpointStr = null;
-            switch (device.getDevice().getType()) {
+            switch (device.getType()) {
                 case AIR_FILTER:
                     endpointStr = endpoint.getAirFilterUrl(serialNumber);
                     break;
@@ -126,7 +113,7 @@ public class ActionsService {
                     endpointStr = endpoint.getAirConditionerUrl(serialNumber);
                     break;
                 default:
-                    LOGGER.info("Device of unknown type found: {} - could not activate", device.getDevice().getType());
+                    LOGGER.info("Device of unknown type found: {} - could not activate", device.getType());
                     return false;
             }
 
