@@ -72,10 +72,10 @@ public class FunctionalDevicesAsyncMethods {
 
         int settingTemp;
         if (prediction > home.getPreferredTemp() && isWarmOutside) {
-            settingTemp = (int) Math.round((home.getPreferredTemp() - prediction ) / 2);
+            settingTemp = (int) (home.getPreferredTemp() - Math.round((home.getPreferredTemp() - prediction ) / 2));
         }
         else if (prediction < home.getPreferredTemp()) {
-            settingTemp = (int) Math.round((prediction + home.getPreferredTemp()) / 2);
+            settingTemp = (int) (home.getPreferredTemp() + Math.round((prediction + home.getPreferredTemp()) / 2));
         }
         else {
             return CompletableFuture.completedFuture(dataEmitter.callForAction("", endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber()));
@@ -113,7 +113,7 @@ public class FunctionalDevicesAsyncMethods {
         double prediction = regression.predict(Timestamp.from(Instant.now().plus(nextHour - currentHour, ChronoUnit.HOURS)).getTime());
 
         if (prediction < home.getPreferredHum()) {
-            int settingHum = (int) Math.round((home.getPreferredHum() + prediction) / 2);
+            int settingHum = home.getPreferredHum() + (int) Math.round((home.getPreferredHum() + prediction) / 2);
             LOGGER.info("Set Humidity device to {}", settingHum);
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingHum), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber()));
         }
