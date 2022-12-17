@@ -39,7 +39,7 @@ public class ActionsService {
     @Autowired
     private FunctionalDevicesAsyncMethods functionalDevicesAsyncMethods;
 
-    public String doActionsForDeviceWithSerialNumber(String target, DeviceType deviceType, Jwt jwt) throws ExecutionException, InterruptedException {
+    public String doActionsForDeviceWithType(String target, DeviceType deviceType, Jwt jwt) throws ExecutionException, InterruptedException {
         Home home = dataService.getHome(UUID.fromString(jwt.getSubject()));
 
         Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = functionalDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
@@ -76,7 +76,7 @@ public class ActionsService {
         return "";
     }
 
-    public boolean tryToActivate(String serialNumber) throws ExecutionException, InterruptedException {
+    public boolean tryToActivate(String serialNumber) {
         FunctionalDevice device = dataService.getFunctionalDevice(serialNumber);
 
         if (Objects.nonNull(device)) {
@@ -106,7 +106,7 @@ public class ActionsService {
         return false;
     }
 
-    public boolean tryToDeactivate(String serialNumber) throws ExecutionException, InterruptedException {
+    public boolean tryToDeactivate(String serialNumber) {
         FunctionalDevice device = dataService.getFunctionalDevice(serialNumber);
 
         if (Objects.nonNull(device)) {
