@@ -51,6 +51,8 @@ public class FunctionalDevicesAsyncMethods {
 
     @Async(value = "TemperatureThreadPoolTaskExecutor")
     public Future<String> handleTemperature(FunctionalDeviceWithMeasurementsDTO data, String target, Home home, ForecastWeatherResponse weather) {
+        LOGGER.info("Handle Temperature for {}", data.getDevice().getSerialNumber());
+
         if (!data.getMeasurements().containsKey(MeasurementType.CELSIUS)) {
             throw new RuntimeException("No Celsius measurement for temperature");
         }
@@ -81,6 +83,7 @@ public class FunctionalDevicesAsyncMethods {
             settingTemp = (int) (home.getPreferredTemp() + Math.round((prediction + home.getPreferredTemp()) / 2));
         }
         else {
+            LOGGER.info("No Action required {}", data.getDevice().getSerialNumber());
             return CompletableFuture.completedFuture(dataEmitter.callForAction("", endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber()));
         }
 
@@ -94,6 +97,8 @@ public class FunctionalDevicesAsyncMethods {
 
     @Async(value = "HumidityThreadPoolTaskExecutor")
     public Future<String> handleHumidity(FunctionalDeviceWithMeasurementsDTO data, String target, Home home, ForecastWeatherResponse weather) {
+        LOGGER.info("Handle Humidity for {}", data.getDevice().getSerialNumber());
+
         if (!data.getMeasurements().containsKey(MeasurementType.HUMIDITY)) {
             throw new RuntimeException("No Celsius measurement for temperature");
         }
@@ -120,11 +125,15 @@ public class FunctionalDevicesAsyncMethods {
             LOGGER.info("Set Humidity device to {}", settingHum);
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingHum), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber()));
         }
+
+        LOGGER.info("No Action required {}", data.getDevice().getSerialNumber());
         return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(0), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber()));
     }
 
     @Async(value = "FilterThreadPoolTaskExecutor")
     public Future<String> handleFilter(FunctionalDeviceWithMeasurementsDTO data, String target, Home home, AirQualityResponse air) {
+        LOGGER.info("Handle Filter for {}", data.getDevice());
+
         // For now We use regression to get the prediction for the next
         SimpleRegression gasRegression = new SimpleRegression();
         SimpleRegression iaiRegression = new SimpleRegression();
@@ -166,6 +175,8 @@ public class FunctionalDevicesAsyncMethods {
 
         // If all predict good results, turn off the device
         if (predictedGasCondition == AirCondition.GOOD && predictedIaiCondition == AirCondition.GOOD && predictedPmCondition == AirCondition.GOOD) {
+            LOGGER.info("No Action required {}", data.getDevice().getSerialNumber());
+
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(0), endpoint.getAirFilterUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber()));
         }
 
@@ -174,11 +185,12 @@ public class FunctionalDevicesAsyncMethods {
 
         // If there are 2 good, and 1 acceptable also do nothing
         if (nrOfPredictions.get(AirCondition.GOOD) == 2 && nrOfPredictions.get(AirCondition.ACCEPTABLE) == 1) {
+            LOGGER.info("No Action required {}", data.getDevice().getSerialNumber());
+
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(0), endpoint.getAirFilterUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber()));
         }
 
         // Add something
-
 
         LOGGER.info("Set Filter device to {}", 5);
 

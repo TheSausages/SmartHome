@@ -23,6 +23,7 @@ dependencies {
 
 	// Spring dependencies
 	implementation "org.springframework.boot:spring-boot-starter-validation:${springVersion}"
+	implementation 'org.springframework.security:spring-security-oauth2-client:5.7.5'
 	implementation "org.springframework.security:spring-security-oauth2-jose:${springJoseVersion}"
 	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${springVersion}"
 	implementation "org.springframework.boot:spring-boot-starter-security:${springVersion}"

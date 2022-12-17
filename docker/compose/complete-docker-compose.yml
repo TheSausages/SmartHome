@@ -111,6 +111,8 @@ services:
       AIR_CONDITIONER_URL: 'http://air-conditioning:8083'
       AIR_HUMIDIFIER_URL: 'http://air-humidifier:8082'
       AIR_FILTER_URL: 'http://air-filter:8084'
+      REST_TEMPLATE_CLIENT_ID: 'smarthome-internal'
+      REST_TEMPLATE_CLIENT_SECRET: '5b4832ed-242d-454f-8d8d-474264454c13'
 
   air-humidifier:
     build:

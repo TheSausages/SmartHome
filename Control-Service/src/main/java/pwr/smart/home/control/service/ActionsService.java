@@ -80,8 +80,6 @@ public class ActionsService {
         FunctionalDevice device = dataService.getFunctionalDevice(serialNumber);
 
         if (Objects.nonNull(device)) {
-            LOGGER.info(device.toString());
-
             String endpointStr = null;
             switch (device.getType()) {
                 case AIR_FILTER:
@@ -99,6 +97,8 @@ public class ActionsService {
             }
 
             if (Objects.nonNull(endpointStr)) {
+                LOGGER.info("Try to activate {}", serialNumber);
+
                 return dataEmitter.tryToActivate(serialNumber, endpointStr);
             }
         }
@@ -127,6 +127,8 @@ public class ActionsService {
             }
 
             if (Objects.nonNull(endpointStr)) {
+                LOGGER.info("Try to deactivate {}", serialNumber);
+
                 return dataEmitter.tryToDeactivate(serialNumber, endpointStr);
             }
         }

@@ -16,7 +16,7 @@ public class FunctionalDevice {
     private String name;
     private String manufacturer;
     private String serialNumber;
-    private int consumedElectricity;
+    private int averageConsumption;
     private Date createdAt;
     private boolean isConnected;
     private Long homeId;

@@ -70,4 +70,11 @@ public class AirFilterActionController {
 
         return ResponseEntity.ok(null);
     }
+
+    @PostMapping("/turnOff")
+    public ResponseEntity<Void> turnOffDevice() {
+        statusService.setState(State.OFF);
+        LOGGER.info("Turning off");
+        return ResponseEntity.ok().build();
+    }
 }
