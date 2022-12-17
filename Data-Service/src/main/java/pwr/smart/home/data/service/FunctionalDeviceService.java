@@ -54,6 +54,21 @@ public class FunctionalDeviceService {
         functionalDeviceRepository.save(functionalDevice);
     }
 
+    public void editFunctionalDevice(FunctionalDevice functionalDevice) {
+        Optional<FunctionalDevice> device = functionalDeviceRepository.findById(functionalDevice.getId());
+
+        if (device.isPresent()) {
+            FunctionalDevice toUpdate = device.get();
+            toUpdate.setType(functionalDevice.getType());
+            toUpdate.setName(functionalDevice.getName());
+            toUpdate.setManufacturer(functionalDevice.getManufacturer());
+            toUpdate.setSerialNumber(functionalDevice.getSerialNumber());
+            toUpdate.setPowerLevel(functionalDevice.getPowerLevel());
+
+            functionalDeviceRepository.save(toUpdate);
+        }
+    }
+
     /**
      *
      * @param serialNumber Serial Number
@@ -90,5 +105,9 @@ public class FunctionalDeviceService {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    public Optional<FunctionalDevice> getHomeFunctionalDevice(String serialNumber) {
+        return functionalDeviceRepository.findBySerialNumber(serialNumber);
     }
 }

@@ -1,15 +1,14 @@
 package pwr.smart.home.data.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
 import pwr.smart.home.common.error.ErrorDTO;
 import pwr.smart.home.data.dao.FunctionalDevice;
@@ -22,8 +21,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+
 @RestControllerWithBasePath
 public class FunctionalDeviceController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FunctionalDeviceController.class);
+
     @Autowired
     private UserService userHomeService;
     @Autowired
@@ -66,7 +68,7 @@ public class FunctionalDeviceController {
         }
     }
 
-    @PostMapping("/updateFunctionalDevice")
+    @PutMapping("/updateFunctionalDevice")
     public ResponseEntity<?> updateHomeFunctionalDevice(@AuthenticationPrincipal Jwt principal, @RequestBody FunctionalDevice functionalDevice) {
         Optional<User> user = userHomeService.findHomeByUserId(UUID.fromString(principal.getSubject()));
         if (!checkIfFieldsAreNotEmpty(functionalDevice)) {
@@ -74,12 +76,24 @@ public class FunctionalDeviceController {
                     .body(ErrorDTO.builder().message("Fill the form correctly").status(HttpStatus.BAD_REQUEST).build());
         }
         if (user.isPresent()) {
-            functionalDeviceService.saveFunctionalDevice(functionalDevice);
+            functionalDeviceService.editFunctionalDevice(functionalDevice);
 
             return ResponseEntity.ok(functionalDevice);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ErrorDTO.builder().message("Wrong house").status(HttpStatus.UNAUTHORIZED).build());
+        }
+    }
+
+    @GetMapping("/homeFunctionalDevice/{serialNumber}")
+    public ResponseEntity<?> getHomeFunctionalDevice(@PathVariable(name = "serialNumber") String serialNumber) {
+        Optional<FunctionalDevice> device = functionalDeviceService.getHomeFunctionalDevice(serialNumber);
+
+        if (device.isPresent()) {
+            return ResponseEntity.ok(device.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ErrorDTO.builder().message("Could not find functional device").status(HttpStatus.UNAUTHORIZED).build());
         }
     }
 

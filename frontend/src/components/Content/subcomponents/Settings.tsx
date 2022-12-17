@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {
     Box,
-    Button,
+    Button, Dialog, DialogTitle,
     Grid,
     Input,
     InputLabel,
@@ -25,8 +25,11 @@ import {
     updateHomeInfo
 } from '../../../common/RequestHelper/RequestHelper';
 import { HomeInfo } from '../../../data/HomeInfo';
-import { FunctionalDeviceInfo } from '../../../data/FunctionalDevices';
+import {FunctionalDeviceEditor, FunctionalDeviceInfo} from '../../../data/FunctionalDevices';
 import { SensorInfo } from '../../../data/Sensort';
+import EditIcon from '@mui/icons-material/Edit';
+import DeviceEditor from "./DeviceEditor";
+import {DeviceType} from "../../../common/DeviceType";
 
 export interface SettingsProps
 {};
@@ -36,7 +39,10 @@ type DeviceParameters = {
     name: string,
     connected: boolean,
     powerLevel: number,
-    averageConsumption: number
+    averageConsumption: number,
+    type: DeviceType,
+    manufacturer: string,
+    id: number
 }
 
 type SensorParameters = {
@@ -46,6 +52,7 @@ type SensorParameters = {
 }
 
 export default function Settings(props: SettingsProps) {
+    const [ open, setOpen ] = useState<boolean>(false)
     const [ name, setName ] = useState<string>('');
     const [ street, setStreet ] = useState<string>('');
     const [ city, setCity ] = useState<string>('');
@@ -53,6 +60,7 @@ export default function Settings(props: SettingsProps) {
     const [ country, setCountry ] = useState<string>('');
     const [ devices, setDevices] = useState<DeviceParameters[]>([]);
     const [ sensores, setSensores] = useState<SensorParameters[]>([]);
+    const [ deviceToEdit, setDeviceToEdit] = useState<FunctionalDeviceEditor | null>(null);
 
     const updateHomeInfoMutation = useMutation(updateHomeInfo);
 
@@ -69,7 +77,7 @@ export default function Settings(props: SettingsProps) {
             queryKey: ['GetAllFunctionalDevices'],
             queryFn: () => getAllHomeFunctionalDevices(),
             onSuccess: (data: FunctionalDeviceInfo[]) => {
-                setDevices(data.map((item: FunctionalDeviceInfo) => ({serialNumber: item.serialNumber, name: item.name, connected: item.connected, powerLevel: item.powerLevel, averageConsumption: item.averageConsumption})))
+                setDevices(data.map((item: FunctionalDeviceInfo) => ({serialNumber: item.serialNumber, name: item.name, connected: item.connected, powerLevel: item.powerLevel, averageConsumption: item.averageConsumption, type: item.type, manufacturer: item.manufacturer, id: item.id})))
                 console.log(data);
             }
         },
@@ -169,9 +177,16 @@ export default function Settings(props: SettingsProps) {
                 <TableCell>{item.serialNumber}</TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.powerLevel}</TableCell>
-                <TableCell>{item.averageConsumption}</TableCell>
+                <TableCell>{item.averageConsumption.toFixed(2)}</TableCell>
                 <TableCell>
-                    <Button sx={{width: '100%'}} variant="contained" onClick={() => changeDeviceState(index)}>{item.connected ? 'Rozłącz': 'Połącz'}</Button>
+                    <Button sx={{width: '100%'}} variant="contained"
+                            onClick={() => changeDeviceState(index)}>{item.connected ? 'Rozłącz' : 'Połącz'}</Button>
+                </TableCell>
+                <TableCell>
+                    <Button sx={{width: '100%'}} variant="contained" onClick={() => {
+                        setDeviceToEdit({id: item.id, serialNumber: item.serialNumber, type: item.type, name: item.name, powerLevel: item.powerLevel, manufacturer: item.manufacturer})
+                        setOpen(true)
+                    }}><EditIcon/></Button>
                 </TableCell>
             </TableRow>
         ));
@@ -189,12 +204,8 @@ export default function Settings(props: SettingsProps) {
             </TableRow>
         ));
 
-    // console.log("reload")
-    // console.log(devices)
-
     return (
         <Grid container spacing={2} sx={{marginTop: '30px'}}>
-            <Grid item xs={1} />
             <Grid item xs={5}>
                 <h3>Adres</h3>
                 <Stack direction="column">
@@ -262,6 +273,7 @@ export default function Settings(props: SettingsProps) {
                 </Table>
                 </TableContainer>
             </Grid>
+            {deviceToEdit && open &&  <DeviceEditor device={deviceToEdit} setOpen={setOpen} open={open} refreshItems={() => setTimeout(() => devicesQuery.refetch(), 500)} />}
         </Grid>
     )
 }

@@ -3,7 +3,7 @@ import UserService from "../../service/UserService";
 import {ApiError} from "../../data/ApiError";
 import { SensorAdder, SensorQueryParameters } from '../../data/Sensort';
 import { HomeInfo } from '../../data/HomeInfo';
-import { FunctionalDeviceAdder } from '../../data/FunctionalDevices';
+import {FunctionalDeviceAdder, FunctionalDeviceEditor} from '../../data/FunctionalDevices';
 
 
 const request = axios.create({
@@ -37,8 +37,7 @@ const home_info_api_path = () => '/home';
 const update_home_info_api_path = () => '/editAddress';
 const add_functional_device_api_path = () => '/addFunctionalDevice';
 const add_sensor_api_path = () => '/addSensor';
-const activate_functional_device_api_path = (serial: string) => `/${serial}/activate`;
-const deactivate_functional_device_api_path = (serial: string) => `/${serial}/deactivate`;
+const update_functional_device_path = () => '/updateFunctionalDevice'
 
 const weather_info_api_path = () => '/weather'
 const air_info_api_path = () => '/air'
@@ -50,6 +49,8 @@ const delete_home_activity_hour_path = (activityHour: number) => `/removeHour?ho
 const get_home_activity_hours_path = () => '/getHours';
 const set_air_quality_api_path = (target: number) => `/air-quality?target=${target}`
 const set_air_humidity_api_path = (target: number) => `/humidity?target=${target}`
+const activate_functional_device_api_path = (serial: string) => `/${serial}/activate`;
+const deactivate_functional_device_api_path = (serial: string) => `/${serial}/deactivate`;
 
 
 export const getHouseLocation = async (userId: string) => {
@@ -201,7 +202,14 @@ export const updateHomeInfo = async (parameters: HomeInfo) => {
 export const addNewFunctionalDevice = async (parameters: FunctionalDeviceAdder) => {
     addToken();
 
-    const response = await request.post(data_request(add_functional_device_api_path()), {type: parameters.type, name: parameters.name, manufacturer: parameters.manufacturer, serialNumber: parameters.serialNumber, consumedElectricity: parameters.averageConsumptionPerHour});
+    const response = await request.post(data_request(add_functional_device_api_path()), {type: parameters.type, name: parameters.name, manufacturer: parameters.manufacturer, serialNumber: parameters.serialNumber, powerLevel: parameters.powerLevel});
+    return response.data;
+}
+
+export const updateFunctionalDevice = async (parameters: FunctionalDeviceEditor) => {
+    addToken();
+
+    const response = await request.put(data_request(update_functional_device_path()), {id: parameters.id, type: parameters.type, name: parameters.name, manufacturer: parameters.manufacturer, serialNumber: parameters.serialNumber, powerLevel: parameters.powerLevel});
     return response.data;
 }
 

@@ -16,10 +16,10 @@ export default function DeviceAdder(props: DeviceProps) {
     const [ deviceDestiny, setDeviceDestiny ] = useState<DeviceDestiny>(props.deviceDestiny != null ? props.deviceDestiny : DeviceDestiny.Sensor);
     const [ sensorType, setSensorType ] = useState<SensorType>(SensorType.AirConditionSensor);
     const [ deviceType, setDeviceType ] = useState<DeviceType>(DeviceType.AirConditioner);
+    const [ powerLevel, setPowerLevel ] = useState<number>(2);
     const [ name, setName ] = useState<string>('');
     const [ manufacturer, setManufacturer ] = useState<string>('');
     const [ serialNumber, setSerialNumber ] = useState<string>('');
-    const [ averageConsumptionPerHour, setAverageConsumptionPerHour ] = useState<number>(0);
     const addFunctionalDevice = useMutation(addNewFunctionalDevice);
     const addSensor = useMutation(addNewSensor);
     const navigator = useNavigate();
@@ -30,7 +30,7 @@ export default function DeviceAdder(props: DeviceProps) {
     const handleOnNameChange = (e: any) => setName(e.target.value);
     const handleOnManufacturerChange = (e: any) => setManufacturer(e.target.value);
     const handleOnSerialNumberChange = (e: any) => setSerialNumber(e.target.value);
-    const handleOnAverageConsumptionPerHourChange = (e: any) => setAverageConsumptionPerHour(parseInt(e.target.value));
+    const handleOnPowerLevelChange = (e: any) => setPowerLevel(parseInt(e.target.value));
 
     const handleResetButton = () => {
         setDeviceDestiny(DeviceDestiny.Sensor);
@@ -39,7 +39,7 @@ export default function DeviceAdder(props: DeviceProps) {
         setName('');
         setManufacturer('');
         setSerialNumber('');
-        setAverageConsumptionPerHour(0);
+        setPowerLevel(2)
         navigator(settings_path);
     };
 
@@ -52,7 +52,7 @@ export default function DeviceAdder(props: DeviceProps) {
                 navigator(settings_path);
             }});
         } else {
-            addFunctionalDevice.mutate({serialNumber: serialNumber, type: deviceType, name: name, manufacturer: manufacturer, averageConsumptionPerHour:averageConsumptionPerHour}, {onSuccess: (response: any) => {
+            addFunctionalDevice.mutate({serialNumber: serialNumber, type: deviceType, name: name, manufacturer: manufacturer, powerLevel: powerLevel}, {onSuccess: (response: any) => {
                 console.log(response);
                 navigator(settings_path);
             }});
@@ -64,7 +64,7 @@ export default function DeviceAdder(props: DeviceProps) {
     (
     <>
         <InputLabel sx={{display:'inline-block', width:"10%"}}>Typ czujnika:</InputLabel>
-        <Select sx={{width: '250px'}}value={sensorType} onChange={handleOnSensorTypeChange}>
+        <Select sx={{width: '250px'}} value={sensorType} onChange={handleOnSensorTypeChange}>
             <MenuItem value={SensorType.AirConditionSensor}>{sensorTypeMapper(SensorType.AirConditionSensor)}</MenuItem>
             <MenuItem value={SensorType.Temperature}>{sensorTypeMapper(SensorType.Temperature)}</MenuItem>
             <MenuItem value={SensorType.AirHumidity}>{sensorTypeMapper(SensorType.AirHumidity)}</MenuItem>
@@ -83,10 +83,14 @@ export default function DeviceAdder(props: DeviceProps) {
     </>
     );
 
-    const averageConsumption = (deviceDestiny === DeviceDestiny.FunctionalDevice &&
+    const powerLevelBlock = (deviceDestiny === DeviceDestiny.FunctionalDevice &&
         <Box sx={{marginTop: '20px'}}>
-            <InputLabel sx={{display:'inline-block', width:"10%"}}>Średnie zużycie:</InputLabel>
-            <Input value={averageConsumptionPerHour} onChange={handleOnAverageConsumptionPerHourChange} type="number"/>
+            <InputLabel sx={{display:'inline-block', width:"10%"}}>Poziom mocy</InputLabel>
+            <Select sx={{width: '250px'}} value={powerLevel} onChange={handleOnPowerLevelChange}>
+                <MenuItem value={1}>1</MenuItem>
+                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+            </Select>
         </Box>);
 
     return (
@@ -94,12 +98,12 @@ export default function DeviceAdder(props: DeviceProps) {
             <form method="post" onSubmit={handleOnSubmit}>
                 <Box>
                     <InputLabel sx={{display:'inline-block', width:"10%"}}>Typ urządzenia:</InputLabel>
-                    <Select sx={{width:'250px'}}value={deviceDestiny} onChange={handleOnDeviceDestinyChange}>
+                    <Select sx={{width:'250px'}} value={deviceDestiny} onChange={handleOnDeviceDestinyChange}>
                         <MenuItem value={DeviceDestiny.Sensor}>Sensor</MenuItem>
                         <MenuItem value={DeviceDestiny.FunctionalDevice}>Urządzenie funkcjonalne</MenuItem>
                     </Select>
                 </Box>
-                <Box>
+                <Box sx={{marginTop: '20px'}}>
                     {deviceTypeSelect}
                 </Box>
                 <Box sx={{marginTop: '20px'}}>
@@ -114,7 +118,7 @@ export default function DeviceAdder(props: DeviceProps) {
                     <InputLabel sx={{display:'inline-block', width:"10%"}}>Numer seryjny:</InputLabel>
                     <Input value={serialNumber} onChange={handleOnSerialNumberChange} type="text"/>
                 </Box>
-                {averageConsumption}
+                {powerLevelBlock}
                 <Box sx={{marginTop: '30px'}}>
                     <Button color="warning" variant="contained" sx={{marginRight: '10px'}} onClick={handleResetButton}>Anuluj</Button>
                     <Button color="success" variant="contained" type="submit">Dodaj</Button>
