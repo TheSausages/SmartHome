@@ -47,16 +47,17 @@ public class SecurityConfig {
                 .mvcMatchers("/api/data/temperature").permitAll()
                 .mvcMatchers("/api/data/humidity").permitAll()
 
-                // Change when adding security between microserwises
-                .mvcMatchers("/api/data/homes").permitAll()
-                .mvcMatchers("/api/data/home/*").permitAll()
-                .mvcMatchers("/api/data/latlong/*").permitAll()
-                .mvcMatchers("/api/data/homeFunctionalDevices/*").permitAll()
-                .mvcMatchers("/api/data/inactive/*").permitAll()
-                .mvcMatchers("/api/data/active/*").permitAll()
-                .mvcMatchers("/api/data/consumption").permitAll()
-                .mvcMatchers("/api/data/homeFunctionalDevice/*").permitAll()
+                // Routes used mainly by control
+                .mvcMatchers("/api/data/homes").authenticated()
+                .mvcMatchers("/api/data/home/*").authenticated()
+                .mvcMatchers("/api/data/latlong/*").authenticated()
+                .mvcMatchers("/api/data/homeFunctionalDevices/*").authenticated()
+                .mvcMatchers("/api/data/inactive/*").authenticated()
+                .mvcMatchers("/api/data/active/*").authenticated()
+                .mvcMatchers("/api/data/consumption").authenticated()
+                .mvcMatchers("/api/data/homeFunctionalDevice/*").authenticated()
 
+                // Mostly by user
                 .mvcMatchers("/api/data/measurements").authenticated()
                 .mvcMatchers("/api/data/lastAirFilterMeasurements").authenticated()
                 .mvcMatchers("/api/data/allAirFilterMeasurements").authenticated()

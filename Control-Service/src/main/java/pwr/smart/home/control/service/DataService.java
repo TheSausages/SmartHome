@@ -5,6 +5,7 @@ import dev.failsafe.RetryPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +19,7 @@ import pwr.smart.home.control.model.FunctionalDeviceWithMeasurementsDTO;
 import pwr.smart.home.control.model.Home;
 import pwr.smart.home.common.model.Location;
 import pwr.smart.home.control.model.*;
+import pwr.smart.home.control.security.OAuthRestTemplateConfig;
 
 import java.time.Duration;
 import java.util.*;
@@ -35,8 +37,11 @@ public class DataService {
     @Autowired
     private Endpoint endpoint;
 
+    @Autowired
+    @Qualifier(OAuthRestTemplateConfig.OAUTH_REST_TEMPLATE_WEBCLIENT)
+    RestTemplate restTemplate;
+
     public Optional<Location> getLongLat(String userId) {
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
         try {
@@ -53,7 +58,6 @@ public class DataService {
     }
 
     public List<Home> getHomes() {
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
         try {
@@ -66,8 +70,7 @@ public class DataService {
         return List.of();
     }
 
-    public Home getHome(UUID userId) {
-        RestTemplate restTemplate = new RestTemplate();
+    public Home getHome(UUID userId) {;
         HttpHeaders headers = new HttpHeaders();
 
         try {
@@ -84,7 +87,6 @@ public class DataService {
     }
     
     public List<FunctionalDeviceWithMeasurementsDTO> getFunctionalDevicesWithMeasurementsForHome(Home home) {
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
         try {
@@ -101,7 +103,6 @@ public class DataService {
     }
 
     public void markDeviceAsInactive(String serialNumber) {
-        RestTemplate restTemplate = new RestTemplate();
 
         try {
             Map<String, String> params = new HashMap<>();
@@ -117,7 +118,6 @@ public class DataService {
     }
 
     public void markDeviceAsActive(String serialNumber) {
-        RestTemplate restTemplate = new RestTemplate();
 
         try {
             Map<String, String> params = new HashMap<>();
@@ -133,7 +133,6 @@ public class DataService {
     }
 
     public FunctionalDevice getFunctionalDevice(String serialNumber) {
-        RestTemplate restTemplate = new RestTemplate();
 
         try {
             Map<String, String> params = new HashMap<>();

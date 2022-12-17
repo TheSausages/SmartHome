@@ -6,7 +6,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
 import pwr.smart.home.common.model.enums.DeviceType;
@@ -22,17 +21,17 @@ public class Actions {
 
     @GetMapping("/temperature")
     public ResponseEntity<?> setTargetTemperature(@AuthenticationPrincipal Jwt principal, @RequestParam String target) throws ExecutionException, InterruptedException {
-        return ResponseEntity.ok(actionsService.doActionsForDeviceWithSerialNumber(target, DeviceType.AIR_CONDITIONER, principal));
+        return ResponseEntity.ok(actionsService.doActionsForDeviceWithType(target, DeviceType.AIR_CONDITIONER, principal));
     }
 
     @GetMapping("/air-quality")
     public ResponseEntity<?> setTargetAirQuality(@AuthenticationPrincipal Jwt principal, @RequestParam String target) throws ExecutionException, InterruptedException {
-        return ResponseEntity.ok(actionsService.doActionsForDeviceWithSerialNumber(target, DeviceType.AIR_FILTER, principal));
+        return ResponseEntity.ok(actionsService.doActionsForDeviceWithType(target, DeviceType.AIR_FILTER, principal));
     }
 
     @GetMapping("/humidity")
     public ResponseEntity<?> setTargetHumidity(@AuthenticationPrincipal Jwt principal, @RequestParam String target) throws ExecutionException, InterruptedException {
-        return ResponseEntity.ok(actionsService.doActionsForDeviceWithSerialNumber(target, DeviceType.AIR_HUMIDIFIER, principal));
+        return ResponseEntity.ok(actionsService.doActionsForDeviceWithType(target, DeviceType.AIR_HUMIDIFIER, principal));
     }
 
 
