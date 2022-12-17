@@ -49,7 +49,6 @@ public class StatusService {
 
     @Scheduled(fixedDelay = 50000)
     public void simulateWorkingDevice() {
-        if (currentHumidity < 25) return;
         switch (state) {
             case PERMANENT_OFF:
             case OFF:
@@ -69,6 +68,7 @@ public class StatusService {
 
     @Scheduled(fixedDelay = 50000)
     public void simulateNaturalDrying() {
+        if (currentHumidity < 25) return;
         double multiplier = 1;
         setCurrentHumidity(currentHumidity - (multiplier * GRADATION_SPEED));
         LOGGER.info("Current humidity: {}", currentHumidity);
