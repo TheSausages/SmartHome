@@ -90,7 +90,7 @@ public class StatusService {
         return currentTemperature;
     }
 
-    @Scheduled(fixedDelay = 50000)
+    @Scheduled(fixedDelay = 25000)
     public void simulateWorkingDevice() {
         double multiplier = 1.0;
         switch (state) {
@@ -102,6 +102,12 @@ public class StatusService {
                 break;
             case HEATING:
                 break;
+        }
+
+        if (currentTemperature >= targetTemperature && state == State.HEATING ||
+                currentTemperature < targetTemperature && state == State.COOLING) {
+            state = State.OFF;
+            return;
         }
 
         double newValue = currentTemperature + (GRADATION_SPEED * multiplier * powerLevel);
