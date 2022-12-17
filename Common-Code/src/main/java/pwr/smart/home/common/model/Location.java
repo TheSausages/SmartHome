@@ -1,4 +1,4 @@
-package pwr.smart.home.control.model;
+package pwr.smart.home.common.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,26 +1,36 @@
 package pwr.smart.home.air.conditioning.sensor.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pwr.smart.home.air.conditioning.device.model.State;
+import pwr.smart.home.air.conditioning.sensor.model.Sensor;
+import pwr.smart.home.common.weather.OpenMeteo;
+import pwr.smart.home.common.weather.model.request.ForecastWeatherRequest;
+import pwr.smart.home.common.weather.model.response.ForecastWeatherResponse;
 
 
 import static java.lang.Math.abs;
 
 @Service
 public class StatusService {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(StatusService.class);
     private static State state = State.OFF;
     private static double currentTemperature;
+    private static double targetTemperature;
+    private static int powerLevel;
     private static final double GRADATION_SPEED = 0.1;
 
     @Autowired
     private DataEmitter dataEmitter;
 
-    @Value("${new.value.propagation.delay}")
-    private int propagationDelay;
+    @Autowired
+    private Sensor sensor;
 
     @Value("${device.power.1.kw}")
     private int devicePower1;
@@ -33,45 +43,24 @@ public class StatusService {
 
     @Async("asyncExecutor")
     public void setTargetTemperature(double targetTemperature, int powerLevel) throws InterruptedException {
+        setTargetTemperature(targetTemperature);
+        setPowerLevel(powerLevel);
         double temperatureDifference = targetTemperature - currentTemperature;
-
-        if (temperatureDifference != 0) {
-            turnOnDevice(temperatureDifference, powerLevel);
-        } else {
+        if (Math.round(temperatureDifference) == 0) {
             state = State.OFF;
+            LOGGER.info("Turning off");
+            return;
         }
-    }
-
-    private void turnOnDevice(double temperatureDifference, int powerLevel) throws InterruptedException {
-        double multiplier = 1.0;
-
         if (temperatureDifference > 0) {
             state = State.HEATING;
+            LOGGER.info("Turning on heating");
         } else if (temperatureDifference < 0) {
             state = State.COOLING;
-            multiplier = -1.0;
+            LOGGER.info("Turning on cooling");
         }
-
-        double iterations = temperatureDifference / GRADATION_SPEED;
-        int iterationsInt = abs((int) iterations);
-
-        for (int i = 0; i < iterationsInt; i++) {
-            double newValue = currentTemperature + (GRADATION_SPEED * multiplier);
-            currentTemperature = Math.round(newValue * 100.0) / 100.0;
-
-            if (currentTemperature > 40 || currentTemperature < 5) {
-                state = State.OFF;
-                return;
-            }
-
-            Thread.sleep(propagationDelay);
-        }
-        state = State.OFF;
-        calculateConsumption(temperatureDifference, powerLevel);
     }
 
     private void calculateConsumption(double temperatureDifference, int powerLevel) {
-
         int devicePower;
         double divider;
 
@@ -93,7 +82,7 @@ public class StatusService {
         //2:jeden stopień / godzinę
         //3:dwa stopnie / godzinę
 
-        double consumption = (abs(temperatureDifference)/divider)* devicePower; //Wh
+        double consumption = (abs(temperatureDifference)/divider) * devicePower; //Wh
         dataEmitter.reportConsumption(consumption);
     }
 
@@ -101,8 +90,64 @@ public class StatusService {
         return currentTemperature;
     }
 
+    @Scheduled(fixedDelay = 25000)
+    public void simulateWorkingDevice() {
+        double multiplier = 1.0;
+        switch (state) {
+            case PERMANENT_OFF:
+            case OFF:
+                return;
+            case COOLING:
+                multiplier = -1.0;
+                break;
+            case HEATING:
+                break;
+        }
+
+        if (currentTemperature >= targetTemperature && state == State.HEATING ||
+                currentTemperature < targetTemperature && state == State.COOLING) {
+            state = State.OFF;
+            return;
+        }
+
+        double newValue = currentTemperature + (GRADATION_SPEED * multiplier * powerLevel);
+        currentTemperature = Math.round(newValue * 100.0) / 100.0;
+        LOGGER.info("Current temperature {}", getCurrentTemperature());
+
+        calculateConsumption(currentTemperature - newValue, powerLevel);
+
+        if (currentTemperature > 40 || currentTemperature < 5) {
+            state = State.OFF;
+        }
+    }
+
+    @Scheduled(fixedDelay = 50000)
+    public void simulateNaturalCooling() {
+        ForecastWeatherRequest forecastWeatherRequest = new ForecastWeatherRequest(
+                sensor.getLocation().getLatitude(),
+                sensor.getLocation().getLongitude(),
+                true
+        );
+        ForecastWeatherResponse weather = OpenMeteo.getWeather(forecastWeatherRequest);
+        if (weather == null)
+            return;
+        float outsideTemperature = weather.getCurrent_weather().getTemperature();
+        double temperatureDifference = currentTemperature - outsideTemperature;
+        double multiplier = 0.01;
+        setCurrentTemperature(currentTemperature - (temperatureDifference * multiplier * GRADATION_SPEED));
+        LOGGER.info("Current temp: {}, because there is {} C outside", currentTemperature, outsideTemperature);
+    }
+
     public static void setCurrentTemperature(double currentTemperature) {
         StatusService.currentTemperature = currentTemperature;
+    }
+
+    public static void setPowerLevel(int powerLevel) {
+        StatusService.powerLevel = powerLevel;
+    }
+
+    public static void setTargetTemperature(double targetTemperature) {
+        StatusService.targetTemperature = targetTemperature;
     }
 
     public State getState() {

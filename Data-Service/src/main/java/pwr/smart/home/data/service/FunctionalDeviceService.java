@@ -48,7 +48,6 @@ public class FunctionalDeviceService {
         } else {
             return new ArrayList<>();
         }
-
     }
 
     public void saveFunctionalDevice(FunctionalDevice functionalDevice) {
@@ -97,7 +96,7 @@ public class FunctionalDeviceService {
                             .stream()
                             .collect(Collectors.toMap(
                                     it -> it,
-                                    key -> measurementRepository.findTop12ByTypeIsOrderByCreatedAt(key)
+                                    key -> measurementRepository.findTop12ByTypeIsOrderByCreatedAtDesc(key)
                             ));
 
                     return new FunctionalDeviceWithMeasurementsDTO(

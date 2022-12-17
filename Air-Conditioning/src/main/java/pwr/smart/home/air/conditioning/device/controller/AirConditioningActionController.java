@@ -60,15 +60,20 @@ public class AirConditioningActionController {
     public ResponseEntity<Void> activateDevice() {
         statusService.setState(State.OFF);
         LOGGER.info("Activate device");
-
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/deactivate")
     public ResponseEntity<Void> deactivateDevice() {
         statusService.setState(State.PERMANENT_OFF);
         LOGGER.info("Deactivate device");
+        return ResponseEntity.ok().build();
+    }
 
-        return ResponseEntity.ok(null);
+    @PostMapping("/turnOff")
+    public ResponseEntity<Void> turnOffDevice() {
+        statusService.setState(State.OFF);
+        LOGGER.info("Turning off");
+        return ResponseEntity.ok().build();
     }
 }

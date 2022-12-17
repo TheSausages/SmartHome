@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
 import pwr.smart.home.common.error.ErrorDTO;
 import pwr.smart.home.data.dao.FunctionalDevice;
+import pwr.smart.home.data.dao.Home;
 import pwr.smart.home.data.dao.Sensor;
 import pwr.smart.home.data.dao.User;
+import pwr.smart.home.data.model.Location;
+import pwr.smart.home.data.service.HomeService;
 import pwr.smart.home.data.service.SensorService;
 import pwr.smart.home.data.service.UserService;
 
@@ -29,6 +32,8 @@ public class SensorController {
     private UserService userHomeService;
     @Autowired
     private SensorService sensorService;
+    @Autowired
+    private HomeService homeService;
 
     @GetMapping("/homeSensors")
     public ResponseEntity<?> getHomeSensors(@AuthenticationPrincipal Jwt principal) {
@@ -58,6 +63,18 @@ public class SensorController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ErrorDTO.builder().message("Wrong house").status(HttpStatus.UNAUTHORIZED).build());
         }
+    }
+
+    @GetMapping("/sensorLocation")
+    public ResponseEntity<?> getHomeSensorLocation(String serialNumber) {
+        Optional<Sensor> sensor = sensorService.findSensorById(serialNumber);
+        if (sensor.isPresent()) {
+            Optional<Home> home = homeService.getHomeLocation(sensor.get().getHomeId());
+            if (home.isPresent())
+                return ResponseEntity.ok(new Location(home.get().getLatitude(), home.get().getLongitude()));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorDTO.builder().message("Wrong house").status(HttpStatus.BAD_REQUEST).build());
     }
 
     private boolean checkIfFieldsAreNotEmpty(Sensor sensor) {
