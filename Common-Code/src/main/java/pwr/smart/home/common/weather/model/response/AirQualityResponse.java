@@ -1,10 +1,10 @@
-package pwr.smart.home.control.weather.model.response;
+package pwr.smart.home.common.weather.model.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pwr.smart.home.control.weather.model.Hourly;
-import pwr.smart.home.control.weather.model.HourlyUnits;
+import pwr.smart.home.common.weather.model.Hourly;
+import pwr.smart.home.common.weather.model.HourlyUnits;
 
 @Setter
 @Getter

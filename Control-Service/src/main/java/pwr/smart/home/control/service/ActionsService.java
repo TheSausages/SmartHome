@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import pwr.smart.home.control.model.Endpoint;
 import pwr.smart.home.control.model.FunctionalDeviceWithMeasurementsDTO;
 import pwr.smart.home.control.model.Home;
-import pwr.smart.home.control.weather.model.response.AirQualityResponse;
-import pwr.smart.home.control.weather.model.response.ForecastWeatherResponse;
+import pwr.smart.home.common.weather.model.response.AirQualityResponse;
+import pwr.smart.home.common.weather.model.response.ForecastWeatherResponse;
 
 import java.util.List;
 import java.util.Objects;

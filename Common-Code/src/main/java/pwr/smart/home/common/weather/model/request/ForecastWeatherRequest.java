@@ -1,4 +1,4 @@
-package pwr.smart.home.control.weather.model.request;
+package pwr.smart.home.common.weather.model.request;
 
 
 import java.text.SimpleDateFormat;
@@ -16,14 +16,20 @@ public class ForecastWeatherRequest extends WeatherRequest {
             "apparent_temperature_min", "precipitation_hours", "weathercode"
     };
 
-    private final String[] daily;
+    private String[] daily;
     private final boolean current_weather;
 
     public ForecastWeatherRequest(Float latitude, Float longitude, String[] daily) {
         super(latitude, longitude);
         this.daily = daily;
-        this.current_weather = false;
+        this.current_weather = true;
         setTodayAndTomorrowsDate();
+    }
+
+    public ForecastWeatherRequest(Float latitude, Float longitude, boolean current_weather) {
+        super(latitude, longitude);
+        this.current_weather = current_weather;
+        setTodayDate();
     }
 
     private void setTodayAndTomorrowsDate() {
@@ -36,10 +42,18 @@ public class ForecastWeatherRequest extends WeatherRequest {
         this.setEndDate(formattedTomorrow);
     }
 
+    private void setTodayDate() {
+        String today = new SimpleDateFormat(pattern).format(new Date());
+        this.setStartDate(today);
+        this.setEndDate(today);
+    }
+
     @Override
     public String toString() {
-        return super.toString() +
-                "&daily=" + String.join(",", daily) +
+        String str = super.toString() +
                 "&current_weather=" + current_weather;
+        if (daily != null)
+            str += "&daily=" + String.join(",", daily);
+        return str;
     }
 }

@@ -2,8 +2,6 @@ package pwr.smart.home.control.service;
 
 import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import pwr.smart.home.control.model.Endpoint;
 import pwr.smart.home.control.model.FunctionalDeviceWithMeasurementsDTO;
 import pwr.smart.home.control.model.Home;
-import pwr.smart.home.control.model.Location;
+import pwr.smart.home.common.model.Location;
 
 import java.time.Duration;
 import java.util.*;
@@ -46,7 +44,6 @@ public class DataService {
             HttpEntity<String> entity = new HttpEntity<>(headers);
             ResponseEntity<Location> response = Failsafe.with(retryPolicy).get(() -> restTemplate.exchange(endpoint.getDataServiceUrl() + "/latlong/{userId}", HttpMethod.GET, entity, Location.class, params));
             Location returned = Objects.requireNonNull(response.getBody());
-            LOGGER.info(returned.getLongitude() + String.valueOf(returned.getLatitude()));
             return Optional.of(returned);
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());

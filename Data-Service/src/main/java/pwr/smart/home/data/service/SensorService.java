@@ -29,4 +29,8 @@ public class SensorService {
     public Sensor addNewSensor(Sensor sensor) {
         return sensorRepository.save(sensor);
     }
+
+    public Optional<Sensor> findSensorById(String serialNumber) {
+        return sensorRepository.findBySerialNumber(serialNumber);
+    }
 }

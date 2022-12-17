@@ -1,4 +1,4 @@
-package pwr.smart.home.control.weather;
+package pwr.smart.home.common.weather;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import pwr.smart.home.control.weather.model.request.AirQualityRequest;
-import pwr.smart.home.control.weather.model.request.ForecastWeatherRequest;
-import pwr.smart.home.control.weather.model.response.AirQualityResponse;
-import pwr.smart.home.control.weather.model.response.ForecastWeatherResponse;
+import pwr.smart.home.common.weather.model.request.AirQualityRequest;
+import pwr.smart.home.common.weather.model.request.ForecastWeatherRequest;
+import pwr.smart.home.common.weather.model.response.ForecastWeatherResponse;
+import pwr.smart.home.common.weather.model.response.AirQualityResponse;
 
 import java.net.URI;
 import java.util.Objects;
@@ -28,7 +28,7 @@ public class OpenMeteo {
     private final static String AIR_QUALITY_PATH = "/v1/air-quality";
 
 
-    public ForecastWeatherResponse getTodayAndTomorrowWeather(ForecastWeatherRequest value) {
+    public static ForecastWeatherResponse getWeather(ForecastWeatherRequest value) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
@@ -37,16 +37,14 @@ public class OpenMeteo {
             URI uri = UriComponentsBuilder.fromUriString(WEATHER_URL + FORECAST_PATH + value.toString()).build().encode().toUri();
 
             ResponseEntity<ForecastWeatherResponse> response = restTemplate.exchange(uri, HttpMethod.GET, entity, ForecastWeatherResponse.class);
-            ForecastWeatherResponse returned = Objects.requireNonNull(response.getBody());
-            LOGGER.info(String.valueOf(returned));
-            return returned;
+            return Objects.requireNonNull(response.getBody());
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());
         }
         return null;
     }
 
-    public AirQualityResponse getCurrentAirCondition(AirQualityRequest airQualityRequest) {
+    public static AirQualityResponse getCurrentAirCondition(AirQualityRequest airQualityRequest) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
@@ -55,9 +53,7 @@ public class OpenMeteo {
             URI uri = UriComponentsBuilder.fromUriString(AIR_QUALITY_URL + AIR_QUALITY_PATH + airQualityRequest.toString()).build().encode().toUri();
 
             ResponseEntity<AirQualityResponse> response = restTemplate.exchange(uri, HttpMethod.GET, entity, AirQualityResponse.class);
-            AirQualityResponse returned = Objects.requireNonNull(response.getBody());
-            LOGGER.info(returned.toString());
-            return returned;
+            return Objects.requireNonNull(response.getBody());
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());
         }

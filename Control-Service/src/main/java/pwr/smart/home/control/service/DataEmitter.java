@@ -42,7 +42,7 @@ public class DataEmitter {
         try {
             ResponseEntity<?> response = Failsafe.with(retryPolicy).get(() -> restTemplate.exchange(endpoint, HttpMethod.POST, entity, String.class));
 
-            return Objects.requireNonNull(response.getBody()).toString();
+            return String.valueOf(response.getBody());
         } catch (Exception e) {
             dataService.markDeviceAsInactive(serialNumber);
 

@@ -1,4 +1,4 @@
-package pwr.smart.home.control.weather.model.request;
+package pwr.smart.home.common.weather.model.request;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

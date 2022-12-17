@@ -11,13 +11,15 @@ import pwr.smart.home.control.model.Endpoint;
 import pwr.smart.home.control.model.FunctionalDeviceWithMeasurementsDTO;
 import pwr.smart.home.control.model.Home;
 import pwr.smart.home.control.model.Measurement;
-import pwr.smart.home.control.weather.model.response.AirQualityResponse;
-import pwr.smart.home.control.weather.model.response.ForecastWeatherResponse;
+import pwr.smart.home.common.weather.model.response.AirQualityResponse;
+import pwr.smart.home.common.weather.model.response.ForecastWeatherResponse;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -57,23 +59,34 @@ public class FunctionalDevicesAsyncMethods {
 
         temperatureMeasurement.forEach( mes -> regression.addData(mes.getCreatedAt().getTime(), mes.getValue()));
 
-        double prediction = regression.predict(Timestamp.from(Instant.now().plus(12, ChronoUnit.HOURS)).getTime());
+        Calendar rightNow = Calendar.getInstance();
+        int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
+        int nextHour = findNextUsageHour(currentHour, home.getHours());
 
-        if (prediction <= home.getPreferredTemp()) {
-            // For testing purposes add something with weather
-            int settingTemp = home.getPreferredTemp() + 1;
-
-            LOGGER.info("Set Temperature device to {}", settingTemp);
-
-            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber()));
-        } else {
-            // For testing purposes add something with weather
-            int settingTemp = home.getPreferredTemp() - 1;
-
-            LOGGER.info("Set Temperature device to {}", settingTemp);
-
-            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber()));
+        if (nextHour == -1) {
+            return null;
         }
+
+        double prediction = regression.predict(Timestamp.from(Instant.now().plus(nextHour - currentHour, ChronoUnit.HOURS)).getTime());
+        boolean isWarmOutside = !(weather.getCurrent_weather().getTemperature() < 13f);
+
+        int settingTemp;
+        if (prediction > home.getPreferredTemp() && isWarmOutside) {
+            settingTemp = (int) Math.round((home.getPreferredTemp() - prediction ) / 2);
+        }
+        else if (prediction < home.getPreferredTemp()) {
+            settingTemp = (int) Math.round((prediction + home.getPreferredTemp()) / 2);
+        }
+        else {
+            return CompletableFuture.completedFuture(dataEmitter.callForAction("", endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber()));
+        }
+
+        LOGGER.info("Set Temperature device to {}", settingTemp);
+        return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber()));
+    }
+
+    private int findNextUsageHour(int currentHour, Set<Integer> hours) {
+        return hours.stream().filter(h -> h > currentHour).min(Integer::compareTo).orElse(-1);
     }
 
     @Async(value = "HumidityThreadPoolTaskExecutor")
@@ -89,23 +102,22 @@ public class FunctionalDevicesAsyncMethods {
 
         temperatureMeasurement.forEach( mes -> regression.addData(mes.getCreatedAt().getTime(), mes.getValue()));
 
-        double prediction = regression.predict(Timestamp.from(Instant.now().plus(12, ChronoUnit.HOURS)).getTime());
+        Calendar rightNow = Calendar.getInstance();
+        int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
+        int nextHour = findNextUsageHour(currentHour, home.getHours());
 
-        if (prediction <= home.getPreferredTemp()) {
-            // For testing purposes add something with weather
-            int settingTemp = home.getPreferredTemp() + 1;
-
-            LOGGER.info("Set Humidity device to {}", settingTemp);
-
-            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber()));
-        } else {
-            // For testing purposes add something with weather
-            int settingTemp = home.getPreferredTemp() - 1;
-
-            LOGGER.info("Set Humidity device to {}", settingTemp);
-
-            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber()));
+        if (nextHour == -1) {
+            return null;
         }
+
+        double prediction = regression.predict(Timestamp.from(Instant.now().plus(nextHour - currentHour, ChronoUnit.HOURS)).getTime());
+
+        if (prediction < home.getPreferredHum()) {
+            int settingHum = (int) Math.round((home.getPreferredHum() + prediction) / 2);
+            LOGGER.info("Set Humidity device to {}", settingHum);
+            return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingHum), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber()));
+        }
+        return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(0), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber()));
     }
 
     @Async(value = "FilterThreadPoolTaskExecutor")

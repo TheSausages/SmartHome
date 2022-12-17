@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .mvcMatchers("/api/control/air").authenticated()
                 .mvcMatchers("/api/control/*/activate").authenticated()
                 .mvcMatchers("/api/control/*/deactivate").authenticated()
+                .mvcMatchers("/api/control/*/turnOff").authenticated()
                 .mvcMatchers("/api/**").authenticated()
                 .anyRequest().denyAll()
                 .and()

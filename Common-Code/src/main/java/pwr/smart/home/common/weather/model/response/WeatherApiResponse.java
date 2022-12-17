@@ -1,4 +1,4 @@
-package pwr.smart.home.control.weather.model.response;
+package pwr.smart.home.common.weather.model.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

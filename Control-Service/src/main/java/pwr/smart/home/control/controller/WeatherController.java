@@ -7,28 +7,19 @@ import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
 import pwr.smart.home.common.error.ErrorDTO;
-import pwr.smart.home.control.model.Endpoint;
-import pwr.smart.home.control.model.Location;
+import pwr.smart.home.common.model.Location;
 import pwr.smart.home.control.service.DataService;
-import pwr.smart.home.control.weather.OpenMeteo;
-import pwr.smart.home.control.weather.model.request.AirQualityRequest;
-import pwr.smart.home.control.weather.model.request.ForecastWeatherRequest;
+import pwr.smart.home.common.weather.OpenMeteo;
+import pwr.smart.home.common.weather.model.request.AirQualityRequest;
+import pwr.smart.home.common.weather.model.request.ForecastWeatherRequest;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestControllerWithBasePath
 public class WeatherController {
     private static final Logger LOGGER = LoggerFactory.getLogger(WeatherController.class);
-
-    @Autowired
-    private OpenMeteo openMeteo;
 
     @Autowired
     private DataService dataService;
@@ -42,7 +33,7 @@ public class WeatherController {
                     location.get().getLongitude(),
                     ForecastWeatherRequest.dailyParameters
             );
-            return ResponseEntity.ok(openMeteo.getTodayAndTomorrowWeather(forecastWeatherRequest));
+            return ResponseEntity.ok(OpenMeteo.getWeather(forecastWeatherRequest));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Wrong location").status(HttpStatus.BAD_REQUEST).build());
     }
@@ -55,7 +46,7 @@ public class WeatherController {
                     location.get().getLatitude(),
                     location.get().getLongitude()
             );
-            return ResponseEntity.ok(openMeteo.getCurrentAirCondition(airQualityRequest));
+            return ResponseEntity.ok(OpenMeteo.getCurrentAirCondition(airQualityRequest));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Wrong location").status(HttpStatus.BAD_REQUEST).build());
     }
