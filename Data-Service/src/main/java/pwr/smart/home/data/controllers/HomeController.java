@@ -54,11 +54,11 @@ public class HomeController {
         }
     }
 
-    @GetMapping("/home/{serialNumber}")
-    public ResponseEntity<?> getHomeForFunctionalDevice(@PathVariable String serialNumber) {
-        Optional<Home> home = homeService.findHomeBySerialNumber(serialNumber);
-        if (home.isPresent()) {
-            return ResponseEntity.ok(home.get());
+    @GetMapping("/home/{userId}")
+    public ResponseEntity<?> getHomeForFunctionalDevice(@PathVariable UUID userId) {
+        Optional<User> user = userHomeService.findHomeByUserId(userId);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get().getHome());
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDTO.builder().message("Wrong house").status(HttpStatus.BAD_REQUEST).build());
         }

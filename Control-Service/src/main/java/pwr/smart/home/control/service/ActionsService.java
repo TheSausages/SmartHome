@@ -3,7 +3,9 @@ package pwr.smart.home.control.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import pwr.smart.home.common.model.enums.DeviceType;
 import pwr.smart.home.control.model.Endpoint;
 import pwr.smart.home.control.model.FunctionalDevice;
 import pwr.smart.home.control.model.FunctionalDeviceWithMeasurementsDTO;
@@ -13,8 +15,10 @@ import pwr.smart.home.common.weather.model.response.ForecastWeatherResponse;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @Service
 public class ActionsService {
@@ -35,8 +39,8 @@ public class ActionsService {
     @Autowired
     private FunctionalDevicesAsyncMethods functionalDevicesAsyncMethods;
 
-    public String doActionsForDeviceWithSerialNumber(String target, String serialNumber) throws ExecutionException, InterruptedException {
-        Home home = dataService.getHome(serialNumber);
+    public String doActionsForDeviceWithSerialNumber(String target, DeviceType deviceType, Jwt jwt) throws ExecutionException, InterruptedException {
+        Home home = dataService.getHome(UUID.fromString(jwt.getSubject()));
 
         Future<List<FunctionalDeviceWithMeasurementsDTO>> devices = functionalDevicesAsyncMethods.getFunctionalDevicesWithMeasurementsForHome(home);
         Future<ForecastWeatherResponse> weather = openMeteoAsyncMethods.getWeatherForecast(home);
@@ -44,28 +48,27 @@ public class ActionsService {
 
         // For now we only get the selected machine
         // In a more complicated model, more than one device may be changed in a single action
-        FunctionalDeviceWithMeasurementsDTO device = devices.get().stream()
-                .filter(dev -> serialNumber.equals(dev.getDevice().getSerialNumber()))
-                .findAny()
-                .orElse(null);
+        List<FunctionalDeviceWithMeasurementsDTO> device = devices.get().stream()
+                .filter(dev -> deviceType.equals(dev.getDevice().getType()))
+                .collect(Collectors.toList());
 
-        LOGGER.info("Try to set target {} for device with serial number {}", target, serialNumber);
+        for (FunctionalDeviceWithMeasurementsDTO devi : device) {
+            LOGGER.info("Try to set target {} for device with serial number {}", target, devi.getDevice().getSerialNumber());
 
-        if (Objects.nonNull(device)) {
-            if (device.getDevice().isConnected()) {
-                switch (device.getDevice().getType()) {
+            if (devi.getDevice().isConnected()) {
+                switch (devi.getDevice().getType()) {
                     case AIR_FILTER:
-                        return functionalDevicesAsyncMethods.handleFilter(device, target, home, air.get()).get();
+                        return functionalDevicesAsyncMethods.handleFilter(devi, target, home, air.get()).get();
                     case AIR_HUMIDIFIER:
-                        return functionalDevicesAsyncMethods.handleHumidity(device, target, home, weather.get()).get();
+                        return functionalDevicesAsyncMethods.handleHumidity(devi, target, home, weather.get()).get();
                     case AIR_CONDITIONER:
-                        return functionalDevicesAsyncMethods.handleTemperature(device, target, home, weather.get()).get();
+                        return functionalDevicesAsyncMethods.handleTemperature(devi, target, home, weather.get()).get();
                     default:
-                        LOGGER.info("Device of unknown type found: {}", device.getDevice().getType());
+                        LOGGER.info("Device of unknown type found: {}", devi.getDevice().getType());
                         return "";
                 }
             } else {
-                LOGGER.info("Device {} disconnected - passing", serialNumber);
+                LOGGER.info("Device {} disconnected - passing", devi.getDevice().getSerialNumber());
             }
         }
 

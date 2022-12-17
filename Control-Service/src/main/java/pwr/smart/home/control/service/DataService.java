@@ -66,16 +66,16 @@ public class DataService {
         return List.of();
     }
 
-    public Home getHome(String serialNumber) {
+    public Home getHome(UUID userId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
         try {
             Map<String, String> params = new HashMap<>();
-            params.put("serialNumber", serialNumber);
+            params.put("userId", userId.toString());
             HttpEntity<String> entity = new HttpEntity<>(headers);
             // IMPORTANT - the type must be present in the ParameterizedTypeReference - will not compile without it
-            ResponseEntity<Home> response = Failsafe.with(retryPolicy).get(() -> restTemplate.exchange(endpoint.getDataServiceUrl() + "/home/{serialNumber}", HttpMethod.GET, entity, new ParameterizedTypeReference<Home>() {}, params));
+            ResponseEntity<Home> response = Failsafe.with(retryPolicy).get(() -> restTemplate.exchange(endpoint.getDataServiceUrl() + "/home/{userId}", HttpMethod.GET, entity, new ParameterizedTypeReference<Home>() {}, params));
             return Objects.requireNonNull(response.getBody());
         } catch (ResourceAccessException e) {
             LOGGER.error(e.getMessage());

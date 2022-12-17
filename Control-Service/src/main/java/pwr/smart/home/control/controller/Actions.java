@@ -2,11 +2,14 @@ package pwr.smart.home.control.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pwr.smart.home.common.controllers.RestControllerWithBasePath;
+import pwr.smart.home.common.model.enums.DeviceType;
 import pwr.smart.home.control.service.ActionsService;
 
 import java.util.concurrent.ExecutionException;
@@ -18,29 +21,18 @@ public class Actions {
     private ActionsService actionsService;
 
     @GetMapping("/temperature")
-    public ResponseEntity<?> setTargetTemperature(@RequestParam String target) throws ExecutionException, InterruptedException {
-        String serial = "HIBWCDUIYHWASDAE";
-
-        return ResponseEntity.ok(actionsService.doActionsForDeviceWithSerialNumber(target, serial));
+    public ResponseEntity<?> setTargetTemperature(@AuthenticationPrincipal Jwt principal, @RequestParam String target) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok(actionsService.doActionsForDeviceWithSerialNumber(target, DeviceType.AIR_CONDITIONER, principal));
     }
 
     @GetMapping("/air-quality")
-    public ResponseEntity<?> setTargetAirQuality(@RequestParam String target) throws ExecutionException, InterruptedException {
-        String serial = "HIBWCDUIYHWASDAD";
-
-        return ResponseEntity.ok(actionsService.doActionsForDeviceWithSerialNumber(target, serial));
+    public ResponseEntity<?> setTargetAirQuality(@AuthenticationPrincipal Jwt principal, @RequestParam String target) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok(actionsService.doActionsForDeviceWithSerialNumber(target, DeviceType.AIR_FILTER, principal));
     }
 
     @GetMapping("/humidity")
-    public ResponseEntity<?> setTargetHumidity(@RequestParam String target) throws ExecutionException, InterruptedException {
-        String serial = "HIBWCDUIYHWASDAF";
-
-        return ResponseEntity.ok(actionsService.doActionsForDeviceWithSerialNumber(target, serial));
-    }
-
-    @PostMapping("/{serial}")
-    public ResponseEntity<?> setTarget(@PathVariable(name = "serial") String serialNumber, @RequestParam String target) throws ExecutionException, InterruptedException {
-        return ResponseEntity.ok(actionsService.doActionsForDeviceWithSerialNumber(target, serialNumber));
+    public ResponseEntity<?> setTargetHumidity(@AuthenticationPrincipal Jwt principal, @RequestParam String target) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok(actionsService.doActionsForDeviceWithSerialNumber(target, DeviceType.AIR_HUMIDIFIER, principal));
     }
 
 
