@@ -4,5 +4,7 @@ export interface HomeInfo
     country: string,
     city: string,
     postCode: string,
-    street: string
+    street: string,
+    preferredTemp?: number,
+    preferredHum?: number
 }

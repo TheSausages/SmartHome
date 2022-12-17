@@ -22,10 +22,22 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import BloodtypeIcon from '@mui/icons-material/Bloodtype';
 import {deviceNameMapper, DeviceType} from '../../../common/DeviceType';
-import {getLastHumidifierFilterMeasurement, getLastAirFilterMeasurement, getLastAirConditionerMeasurement, setHomeTemperature, setHomeHumidity, addHomeActivityHour, deleteHomeActivityHour, getHomeActivityHours, getWeatherInfo} from "../../../common/RequestHelper/RequestHelper";
+import {
+    getLastHumidifierFilterMeasurement,
+    getLastAirFilterMeasurement,
+    getLastAirConditionerMeasurement,
+    setHomeTemperature,
+    setHomeHumidity,
+    addHomeActivityHour,
+    deleteHomeActivityHour,
+    getHomeActivityHours,
+    getWeatherInfo,
+    runAgainWithTemperature, runAgainWithHumidity, getHomeInfo
+} from "../../../common/RequestHelper/RequestHelper";
 import {useQueries, useMutation} from "react-query";
 import { Measurement, MeasurementType } from '../../../data/Sensort';
 import { ForecastWeather } from '../../../data/Weather';
+import {HomeInfo} from "../../../data/HomeInfo";
 
 export interface HomeProps
 {
@@ -53,10 +65,12 @@ export default function Home(props: HomeProps) {
 
     const setHomeTemperatureRequest = useMutation(setHomeTemperature);
     const setHomeHumidityRequest = useMutation(setHomeHumidity);
+    const runAgainWithTemperatureRequest = useMutation(runAgainWithTemperature);
+    const runAgainWithHumidityRequest = useMutation(runAgainWithHumidity);
     const addHomeActivityHourRequest = useMutation(addHomeActivityHour);
     const deleteHomeActivityHourRequest = useMutation(deleteHomeActivityHour);
 
-    const [forecastWeatherQuery, airConditionQuery, temperatureQuery, humidityQuery, getActivityHours] = useQueries([
+    const [forecastWeatherQuery, airConditionQuery, temperatureQuery, humidityQuery, getActivityHours, getHomeInformation] = useQueries([
             {
                 queryKey: ['GetWeatherInfo'],
                 queryFn: (() => getWeatherInfo()),
@@ -97,13 +111,22 @@ export default function Home(props: HomeProps) {
                 onSuccess: (activityHours: number[]) => {
                     setActivityHours(activityHours);
                 }
+            },
+            {
+                queryKey: ['GetHomeInfoQuery'],
+                queryFn: (getHomeInfo),
+                onSuccess: (data: HomeInfo) => {
+                    setRequestedTemperature(prevState => (data.preferredTemp !== undefined && data.preferredTemp !== null) ? data.preferredTemp : prevState)
+                    setRequestedAirHumadity(prevState => (data.preferredHum !== undefined && data.preferredHum !== null) ? data.preferredHum : prevState)
+                }
             }
     ])
 
     useEffect(() => {
         getActivityHours.refetch();
         forecastWeatherQuery.refetch();
-    }, [getActivityHours.refetch, forecastWeatherQuery.refetch])
+        getHomeInformation.refetch()
+    }, [getActivityHours.refetch, forecastWeatherQuery.refetch, getHomeInformation.refetch])
 
     useEffect(() => {
         airConditionQuery.refetch();
@@ -155,11 +178,19 @@ export default function Home(props: HomeProps) {
         {
             console.log(response);
         }})
+        runAgainWithTemperatureRequest.mutate(parseInt(e.target.value), {onSuccess: (response: any) =>
+        {
+            console.log(response);
+        }})
     };
 
     const handleOnAirHumadityChange = (e: SelectChangeEvent) => {
         setRequestedAirHumadity(parseInt(e.target.value));
         setHomeHumidityRequest.mutate(parseInt(e.target.value), {onSuccess: (response: any) => {
+            console.log(response);
+        }})
+        runAgainWithHumidityRequest.mutate(parseInt(e.target.value), {onSuccess: (response: any) =>
+        {
             console.log(response);
         }})
     };
@@ -293,7 +324,6 @@ export default function Home(props: HomeProps) {
     const airHumadityOptions = availableAirHumadityLevels.map((item, index) => (
         <MenuItem value={item} key={index}>{item}%</MenuItem>
     ))
-
     return (
         <Grid container spacing={2} sx={{marginTop: '20px'}}>
             <Grid item xs={1}>

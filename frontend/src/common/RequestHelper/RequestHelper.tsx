@@ -233,3 +233,18 @@ export const deactivateFunctionalDevice = async (serial: string) => {
     const response = await request.get(control_request(deactivate_functional_device_api_path(serial)))
     return response.data;
 }
+
+export const runAgainWithTemperature = async (temperature: number) => {
+    addToken();
+
+    const response = await request.get(control_request(set_temperature_api_path(temperature)))
+    return response.data;
+}
+
+export const runAgainWithHumidity = async (humidity: number) => {
+    addToken();
+
+    const response = await request.get(control_request(set_air_humidity_api_path(humidity)))
+    return response.data;
+}
+

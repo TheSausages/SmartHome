@@ -17,21 +17,21 @@ public class Actions {
     @Autowired
     private ActionsService actionsService;
 
-    @PostMapping("/temperature")
+    @GetMapping("/temperature")
     public ResponseEntity<?> setTargetTemperature(@RequestParam String target) throws ExecutionException, InterruptedException {
         String serial = "HIBWCDUIYHWASDAE";
 
         return ResponseEntity.ok(actionsService.doActionsForDeviceWithSerialNumber(target, serial));
     }
 
-    @PostMapping("/air-quality")
+    @GetMapping("/air-quality")
     public ResponseEntity<?> setTargetAirQuality(@RequestParam String target) throws ExecutionException, InterruptedException {
         String serial = "HIBWCDUIYHWASDAD";
 
         return ResponseEntity.ok(actionsService.doActionsForDeviceWithSerialNumber(target, serial));
     }
 
-    @PostMapping("/humidity")
+    @GetMapping("/humidity")
     public ResponseEntity<?> setTargetHumidity(@RequestParam String target) throws ExecutionException, InterruptedException {
         String serial = "HIBWCDUIYHWASDAF";
 

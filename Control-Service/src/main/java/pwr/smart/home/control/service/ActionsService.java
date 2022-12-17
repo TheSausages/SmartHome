@@ -51,17 +51,21 @@ public class ActionsService {
 
         LOGGER.info("Try to set target {} for device with serial number {}", target, serialNumber);
 
-        if (Objects.nonNull(device) && devices.isDone() && weather.isDone() && air.isDone()) {
-            switch (device.getDevice().getType()) {
-                case AIR_FILTER:
-                    return functionalDevicesAsyncMethods.handleFilter(device, target, home, air.get()).get();
-                case AIR_HUMIDIFIER:
-                    return functionalDevicesAsyncMethods.handleHumidity(device, target, home, weather.get()).get();
-                case AIR_CONDITIONER:
-                    return functionalDevicesAsyncMethods.handleTemperature(device, target, home, weather.get()).get();
-                default:
-                    LOGGER.info("Device of unknown type found: {}", device.getDevice().getType());
-                    return "";
+        if (Objects.nonNull(device)) {
+            if (device.getDevice().isConnected()) {
+                switch (device.getDevice().getType()) {
+                    case AIR_FILTER:
+                        return functionalDevicesAsyncMethods.handleFilter(device, target, home, air.get()).get();
+                    case AIR_HUMIDIFIER:
+                        return functionalDevicesAsyncMethods.handleHumidity(device, target, home, weather.get()).get();
+                    case AIR_CONDITIONER:
+                        return functionalDevicesAsyncMethods.handleTemperature(device, target, home, weather.get()).get();
+                    default:
+                        LOGGER.info("Device of unknown type found: {}", device.getDevice().getType());
+                        return "";
+                }
+            } else {
+                LOGGER.info("Device {} disconnected - passing", serialNumber);
             }
         }
 
