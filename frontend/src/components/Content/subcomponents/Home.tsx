@@ -201,10 +201,10 @@ export default function Home(props: HomeProps) {
 
     const checkIAIMeasurement = (value: number) => 
     {
-        if( value >= 1 && value <= 6 )
+        if( value >= 1 && value <= 3 )
         {
             return AirCondition.Good;
-        } else if ( value > 6 && value <= 9 )
+        } else if ( value > 3 && value <= 6 )
         {
             return AirCondition.Acceptable;
         }
@@ -216,10 +216,10 @@ export default function Home(props: HomeProps) {
 
     const checkPM25Measurement = (value: number) =>
     {
-        if( value >= 1 && value <= 120 )
+        if( value >= 1 && value <= 20 )
         {
             return AirCondition.Good;
-        } else if ( value > 120 && value <= 250)
+        } else if ( value > 20 && value <= 35)
         {
             return AirCondition.Acceptable;
         }
@@ -231,10 +231,10 @@ export default function Home(props: HomeProps) {
 
     const checkGASMeasurement = (value: number) => 
     {
-        if( value === 1 || value === 2 )
+        if( value === 1 )
         {
             return AirCondition.Good;
-        } else if ( value === 3)
+        } else if (value === 3 || value === 2)
         {
             return AirCondition.Acceptable;
         }
