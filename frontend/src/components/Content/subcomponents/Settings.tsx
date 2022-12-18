@@ -197,10 +197,11 @@ export default function Settings(props: SettingsProps) {
             <TableRow key={index}>
                 <TableCell>{item.serialNumber}</TableCell>
                 <TableCell>{item.name}</TableCell>
-                <TableCell>{item.connected ? "Połączony" : "Rozłączony"}</TableCell>
-                <TableCell>
-                    <Button sx={{width: '100%'}} variant="contained" onClick={() => changeSensorState(index)}>{item.connected ? 'Rozłącz': 'Połącz'}</Button>
-                </TableCell>
+                <TableCell></TableCell>
+                {/*<TableCell>{item.connected ? "Połączony" : "Rozłączony"}</TableCell>*/}
+                {/*<TableCell>*/}
+                {/*    <Button sx={{width: '100%'}} variant="contained" onClick={() => changeSensorState(index)}>{item.connected ? 'Rozłącz': 'Połącz'}</Button>*/}
+                {/*</TableCell>*/}
             </TableRow>
         ));
 
@@ -264,7 +265,7 @@ export default function Settings(props: SettingsProps) {
                         <TableRow>
                             <TableCell>Nr seryjny</TableCell>
                             <TableCell>Nazwa</TableCell>
-                            <TableCell>Status</TableCell>
+                            {/*<TableCell>Status</TableCell>*/}
                             <TableCell><Button component={NavLink} to={add_sensor_path}>+</Button></TableCell>
                         </TableRow>
                     </TableHead>
