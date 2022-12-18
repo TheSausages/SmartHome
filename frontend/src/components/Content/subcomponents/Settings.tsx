@@ -247,6 +247,7 @@ export default function Settings(props: SettingsProps) {
                             <TableCell>Nazwa</TableCell>
                             <TableCell>Poziom mocy</TableCell>
                             <TableCell>Śr. zużycie / 24h</TableCell>
+                            <TableCell>Status</TableCell>
                             <TableCell><Button component={NavLink} to={add_device_path}>+</Button></TableCell>
                         </TableRow>
                     </TableHead>
