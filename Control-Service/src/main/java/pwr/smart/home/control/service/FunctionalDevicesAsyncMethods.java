@@ -70,7 +70,7 @@ public class FunctionalDevicesAsyncMethods {
 
         int lastMeasurement = temperatureMeasurement.stream().max(Comparator.comparing(Measurement::getCreatedAt)).get().getValue();
 
-        double prediction = regression.predict(Timestamp.from(Instant.now().plus((nextHour - currentHour) % 24, ChronoUnit.HOURS)).getTime());
+        double prediction = regression.predict(Timestamp.from(Instant.now().plus(timeDifference(nextHour, currentHour), ChronoUnit.HOURS)).getTime());
         if (checkIfActionsNeedToBeTaken(home, currentHour, lastMeasurement, weather, nextHour)) {
             LOGGER.info("Temperature for {} is ok for now", data.getDevice().getSerialNumber());
             return CompletableFuture.completedFuture(dataEmitter.callForAction("", endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber(), AirConditionerState.OFF));
@@ -95,8 +95,13 @@ public class FunctionalDevicesAsyncMethods {
          boolean isWarmOutside = !(weather.getCurrent_weather().getTemperature() < 20f);
          return nextHour == -1 ||
                  (home.getHours().contains(currentHour) && home.getPreferredTemp() <= lastMeasurement && !isWarmOutside) ||
-                 home.getHours().contains(currentHour) && home.getPreferredTemp() > lastMeasurement && isWarmOutside;
+                 (home.getHours().contains(currentHour) && home.getPreferredTemp() > lastMeasurement && isWarmOutside) ||
+                 (timeDifference(nextHour, currentHour) > 2 && !home.getHours().contains(currentHour));
      }
+
+    private int timeDifference(int nextHour, int currentHour) {
+        return (nextHour - currentHour) % 24;
+    }
 
     private int findNextUsageHour(int currentHour, Set<Integer> hours) {
         return hours.stream().filter(h -> h > currentHour).min(Integer::compareTo).orElse(hours.stream().min(Integer::compareTo).orElse(-1));
@@ -121,12 +126,13 @@ public class FunctionalDevicesAsyncMethods {
         int nextHour = findNextUsageHour(currentHour, home.getHours());
 
         int lastMeasurement = humidityMeasurement.stream().max(Comparator.comparing(Measurement::getCreatedAt)).get().getValue();
-        if (nextHour == -1 || (home.getHours().contains(currentHour) && home.getPreferredHum() <= lastMeasurement)) {
+        if (nextHour == -1 || (home.getHours().contains(currentHour) && home.getPreferredHum() <= lastMeasurement) ||
+                timeDifference(nextHour, currentHour) > 2 && !home.getHours().contains(currentHour)) {
             LOGGER.info(NO_HOURS_CHOSEN_SO_ACTION_IS_NOT_REQUIRED, data.getDevice().getSerialNumber());
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(0), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber(), null));
         }
 
-        double prediction = regression.predict(Timestamp.from(Instant.now().plus((nextHour - currentHour) % 24, ChronoUnit.HOURS)).getTime());
+        double prediction = regression.predict(Timestamp.from(Instant.now().plus(timeDifference(nextHour, currentHour), ChronoUnit.HOURS)).getTime());
 
         if (lastMeasurement <= home.getPreferredHum() || prediction < home.getPreferredHum()) {
             int settingHum = home.getPreferredHum() + 2;
@@ -168,14 +174,14 @@ public class FunctionalDevicesAsyncMethods {
         int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
         int nextHour = findNextUsageHour(currentHour, home.getHours());
 
-        if (nextHour == -1) {
+        if (nextHour == -1 || timeDifference(nextHour, currentHour) > 2 && !home.getHours().contains(currentHour)) {
             LOGGER.info(NO_HOURS_CHOSEN_SO_ACTION_IS_NOT_REQUIRED, data.getDevice().getSerialNumber());
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(0), endpoint.getAirFilterUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber(), null));
         }
 
-        double pm25Prediction = pm25Regression.predict(Timestamp.from(Instant.now().plus((nextHour - currentHour) % 24, ChronoUnit.HOURS)).getTime());
-        double gasPrediction = gasRegression.predict(Timestamp.from(Instant.now().plus((nextHour - currentHour) % 24, ChronoUnit.HOURS)).getTime());
-        double iaiPrediction = iaiRegression.predict(Timestamp.from(Instant.now().plus((nextHour - currentHour) % 24, ChronoUnit.HOURS)).getTime());
+        double pm25Prediction = pm25Regression.predict(Timestamp.from(Instant.now().plus(timeDifference(nextHour, currentHour), ChronoUnit.HOURS)).getTime());
+        double gasPrediction = gasRegression.predict(Timestamp.from(Instant.now().plus(timeDifference(nextHour, currentHour), ChronoUnit.HOURS)).getTime());
+        double iaiPrediction = iaiRegression.predict(Timestamp.from(Instant.now().plus(timeDifference(nextHour, currentHour), ChronoUnit.HOURS)).getTime());
 
         AirCondition predictedPmCondition = AirCondition.getAirConditionForPm(pm25Prediction);
         AirCondition predictedGasCondition = AirCondition.getAirConditionForGas(gasPrediction);
