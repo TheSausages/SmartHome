@@ -359,8 +359,8 @@ export default function Home(props: HomeProps) {
                 <Table sx={{minWidth: 250}} aria-label='simple table'>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Czujnik</TableCell>
-                            <TableCell>Odczyt</TableCell>
+                            <TableCell><b>Czujnik</b></TableCell>
+                            <TableCell><b>Odczyt</b></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
