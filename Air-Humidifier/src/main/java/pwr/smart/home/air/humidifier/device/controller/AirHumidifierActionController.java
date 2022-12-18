@@ -31,7 +31,7 @@ public class AirHumidifierActionController {
                 } else {
 
                     try {
-                        statusService.setTargetHumidity(targetHumidityInt);
+                        statusService.setTargetHumidity(targetHumidityInt, powerLevel);
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);

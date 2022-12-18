@@ -21,17 +21,25 @@ public class StatusService {
     private static State state = State.OFF;
     private static double currentHumidity;
     private static double humidityDifference;
+    private static int currentPowerLevel = 2;
     private static final double GRADATION_SPEED = 0.1;
 
     @Autowired
     private DataEmitter dataEmitter;
 
-    @Value("${device.power.watts}")
+    @Value("${device.power.1.watts}")
     private int devicePower;
 
+    @Value("${device.power.2.watts}")
+    private int devicePower2;
+
+    @Value("${device.power.3.watts}")
+    private int devicePower3;
+
     @Async("asyncExecutor")
-    public void setTargetHumidity(int targetHumidity) throws InterruptedException {
+    public void setTargetHumidity(int targetHumidity, int powerLevel) throws InterruptedException {
         setHumidityDifference(targetHumidity - currentHumidity);
+        setCurrentPowerLevel(powerLevel);
         if (Math.round(humidityDifference) == 0) {
             state = State.OFF;
             LOGGER.info("Turning off");
@@ -42,7 +50,18 @@ public class StatusService {
     }
 
     private void calculateConsumption() {
-        double consumption =   25000 * devicePower / 3600000d ; //Wh
+        int power;
+        switch (currentPowerLevel) {
+            case 1:
+                power = devicePower;
+                break;
+            case 2:
+                power = devicePower2;
+                break;
+            default:
+                power = devicePower3;
+        }
+        double consumption = 25000 * power / 3600000d ; //Wh
         dataEmitter.reportConsumption(consumption);
     }
 
@@ -55,7 +74,8 @@ public class StatusService {
             case WORKING:
         }
 
-        double newValue = currentHumidity + GRADATION_SPEED;
+        double multiplayer = 2d;
+        double newValue = currentHumidity + GRADATION_SPEED * multiplayer * currentPowerLevel;
         currentHumidity = Math.round(newValue * 100.0) / 100.0;
 
         calculateConsumption();
@@ -91,5 +111,13 @@ public class StatusService {
 
     public void setState(State state) {
         StatusService.state = state;
+    }
+
+    public static int getCurrentPowerLevel() {
+        return currentPowerLevel;
+    }
+
+    public static void setCurrentPowerLevel(int currentPowerLevel) {
+        StatusService.currentPowerLevel = currentPowerLevel;
     }
 }
