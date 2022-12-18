@@ -97,7 +97,7 @@ export default function History(props: HistoryProps) {
     <LineChart width={900} height={300} key={item}>
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip/>
-        <XAxis height={80} dataKey="createdAt" tickFormatter={(value: Date) => (value ? moment(value).format('MM-DD-YYYY hh:mm') : value)} minTickGap={15} label="Data pomiaru"/>
+        <XAxis height={80} dataKey="createdAt" tickFormatter={(value: Date) => (value ? moment(value).format('DD-MM-YYYY HH:mm') : value)} minTickGap={15} label="Data pomiaru"/>
         <YAxis allowDecimals={false} width={100} dataKey="value" label={{value: fulfillLabelInfo(item), angle: -90}}/>
         <Legend layout="vertical" verticalAlign="middle" align="right"/>
         <Line name={item} type="monotone" dataKey="value" stroke="#4CAF50" data={receivedData.filter((value: Measurement) => (value.type === item))} />
@@ -109,7 +109,7 @@ export default function History(props: HistoryProps) {
     <LineChart width={900} height={300} data={receivedData}>
         <Tooltip formatter={(value, name, props) => [value, "Wartość: "]}/>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis height={80} dataKey="createdAt" tickFormatter={(value: Date) => (value ? moment(value).format('MM-DD-YYYY hh:mm') : value)} minTickGap={15} label="Data pomiaru"/>
+        <XAxis height={80} dataKey="createdAt" tickFormatter={(value: Date) => (value ? moment(value).format('DD-MM-YYYY HH:mm') : value)} minTickGap={15} label="Data pomiaru"/>
         <YAxis allowDecimals={false} width={80} dataKey="value" label={{value: (receivedData.length > 0 ? fulfillLabelInfo(receivedData[0].type) : "Nieznana wartość"), angle: -90}}/>
         <Line type="monotone" dataKey="value" stroke="#4CAF50"/>
     </LineChart>);
