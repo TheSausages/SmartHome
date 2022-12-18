@@ -103,7 +103,7 @@ public class StatusService {
         double multiplier = 0.1;
         setCurrentIAI(getNewIncreasedIAI());
         setCurrentGas(getNewIncreasedGas());
-        setCurrentPM25(currentPM25 - (differencePM25 * multiplier * GRADATION_SPEED));
+        setCurrentPM25(currentPM25 + (differencePM25 * multiplier * GRADATION_SPEED));
         LOGGER.info("Current PM2,5: {}, because there is {} PM 2.5 outside", currentPM25, outsidePM);
         LOGGER.info("Current Gas: {}", currentGas);
         LOGGER.info("Current IAI: {}", currentIAI);
