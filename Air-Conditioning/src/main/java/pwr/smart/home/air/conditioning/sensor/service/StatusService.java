@@ -58,29 +58,25 @@ public class StatusService {
         setState(stateFromControl);
     }
 
-    private void calculateConsumption(double temperatureDifference, int powerLevel) {
+    private void calculateConsumption(int powerLevel) {
         int devicePower;
-        double divider;
 
         switch (powerLevel) {
             case 1:
                 devicePower = devicePower1;
-                divider = 0.5;
                 break;
             case 2:
                 devicePower = devicePower2;
-                divider = 1;
                 break;
             default:
                 devicePower = devicePower3;
-                divider = 2;
         }
 
         //1:pol stopnia / godzinę
         //2:jeden stopień / godzinę
         //3:dwa stopnie / godzinę
 
-        double consumption = (abs(temperatureDifference)/divider) * devicePower; //Wh
+        double consumption = (25000 * devicePower / 3600000d); //Wh
         dataEmitter.reportConsumption(consumption);
     }
 
@@ -112,7 +108,7 @@ public class StatusService {
         currentTemperature = Math.round(newValue * 100.0) / 100.0;
         LOGGER.info("Current temperature {}", getCurrentTemperature());
 
-        calculateConsumption(currentTemperature - newValue, powerLevel);
+        calculateConsumption(powerLevel);
     }
 
     @Scheduled(fixedDelay = 50000)

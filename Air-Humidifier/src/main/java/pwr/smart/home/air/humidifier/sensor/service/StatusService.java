@@ -41,9 +41,8 @@ public class StatusService {
         }
     }
 
-    private void calculateConsumption(double humidityDifference) {
-        //10% / godzinę
-        double consumption = (abs(humidityDifference)/10) * devicePower; //Wh
+    private void calculateConsumption() {
+        double consumption =   25000 * devicePower / 3600000d ; //Wh
         dataEmitter.reportConsumption(consumption);
     }
 
@@ -59,7 +58,7 @@ public class StatusService {
         double newValue = currentHumidity + GRADATION_SPEED;
         currentHumidity = Math.round(newValue * 100.0) / 100.0;
 
-        calculateConsumption(humidityDifference);
+        calculateConsumption();
 
         if (currentHumidity < 0 || currentHumidity > 100) {
             state = State.OFF;

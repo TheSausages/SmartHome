@@ -8,6 +8,5 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class ControlServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ControlServiceApplication.class, args);
-
 	}
 }

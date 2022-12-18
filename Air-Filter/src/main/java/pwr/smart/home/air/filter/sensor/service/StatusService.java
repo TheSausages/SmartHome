@@ -45,8 +45,7 @@ public class StatusService {
     @Autowired
     private DataEmitter dataEmitter;
 
-    @Value("${new.value.propagation.delay}")
-    private final int propagationDelay = 2500;
+    private final int propagationDelay = 25000;
 
     @Value("${device.power.1.watts}")
     private int devicePower;
@@ -128,7 +127,7 @@ public class StatusService {
                 power = devicePower3;
                 break;
         }
-        double consumption = (propagationDelay / 3600000f) * power; //Wh
+        double consumption = (power * propagationDelay / 360000d); //Wh
         dataEmitter.reportConsumption(consumption);
     }
 
@@ -142,16 +141,16 @@ public class StatusService {
         int newGas = getCurrentGas();
         if(doesItHappened(4) && newGas < 4)
             newGas += 1;
-        else if(doesItHappened(4) && newGas > 1)
+        else if(doesItHappened(2) && newGas > 1)
             newGas -= 1;
         return newGas;
     }
 
     private int getNewIncreasedIAI() {
         int newIAI = getCurrentGas();
-        if(doesItHappened(8) && newIAI < 12)
+        if(doesItHappened(9) && newIAI < 12)
             newIAI += 1;
-        else if(doesItHappened(8) && newIAI > 1)
+        else if(doesItHappened(3) && newIAI > 1)
             newIAI -= 1;
         return newIAI;
     }

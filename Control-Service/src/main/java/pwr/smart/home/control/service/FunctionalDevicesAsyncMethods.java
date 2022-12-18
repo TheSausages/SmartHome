@@ -52,7 +52,8 @@ public class FunctionalDevicesAsyncMethods {
     @Async(value = "TemperatureThreadPoolTaskExecutor")
     public Future<String> handleTemperature(FunctionalDeviceWithMeasurementsDTO data, String target, Home home, ForecastWeatherResponse weather) {
         LOGGER.info("Handle Temperature for {}", data.getDevice().getSerialNumber());
-
+        if (target != null)
+            home.setPreferredTemp(Integer.parseInt(target));
         if (!data.getMeasurements().containsKey(MeasurementType.CELSIUS)) {
             throw new RuntimeException("No Celsius measurement for temperature");
         }
@@ -68,30 +69,34 @@ public class FunctionalDevicesAsyncMethods {
         int nextHour = findNextUsageHour(currentHour, home.getHours());
 
         int lastMeasurement = temperatureMeasurement.stream().max(Comparator.comparing(Measurement::getCreatedAt)).get().getValue();
-        if (nextHour == -1|| (home.getHours().contains(currentHour) && home.getPreferredTemp() >= lastMeasurement)) {
-            LOGGER.info(NO_HOURS_CHOSEN_SO_ACTION_IS_NOT_REQUIRED, data.getDevice().getSerialNumber());
+
+        double prediction = regression.predict(Timestamp.from(Instant.now().plus((nextHour - currentHour) % 24, ChronoUnit.HOURS)).getTime());
+        if (checkIfActionsNeedToBeTaken(home, currentHour, lastMeasurement, weather, nextHour)) {
+            LOGGER.info("Temperature for {} is ok for now", data.getDevice().getSerialNumber());
             return CompletableFuture.completedFuture(dataEmitter.callForAction("", endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber(), AirConditionerState.OFF));
         }
 
-        double prediction = regression.predict(Timestamp.from(Instant.now().plus((nextHour - currentHour) % 24, ChronoUnit.HOURS)).getTime());
-        boolean isWarmOutside = !(weather.getCurrent_weather().getTemperature() < 20f);
-
         int settingTemp = home.getPreferredTemp();
-        if (prediction > home.getPreferredTemp() && !isWarmOutside) {
+        if (prediction > home.getPreferredTemp()) {
             settingTemp -= 1;
-            LOGGER.info("Set Temperature device to {} with predict {} for {}", settingTemp, prediction, nextHour);
+            LOGGER.info("Set Temperature device to {} with predict {} for {}:00", settingTemp, prediction, nextHour);
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber(), AirConditionerState.COOLING));
         }
         else if (prediction < home.getPreferredTemp()) {
             settingTemp += 1;
-            LOGGER.info("Set Temperature device to {} with predict {} for {}", settingTemp, prediction, nextHour);
+            LOGGER.info("Set Temperature device to {} with predict {} for {}:00", settingTemp, prediction, nextHour);
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber(), AirConditionerState.HEATING));
         }
-        else {
-            LOGGER.info(NO_ACTION_REQUIRED, data.getDevice().getSerialNumber());
-            return CompletableFuture.completedFuture(dataEmitter.callForAction("", endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber(), AirConditionerState.OFF));
-        }
+        LOGGER.info(NO_ACTION_REQUIRED, data.getDevice().getSerialNumber());
+        return CompletableFuture.completedFuture(dataEmitter.callForAction("", endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber(), AirConditionerState.OFF));
     }
+
+     private boolean checkIfActionsNeedToBeTaken(Home home, int currentHour, int lastMeasurement, ForecastWeatherResponse weather, int nextHour) {
+         boolean isWarmOutside = !(weather.getCurrent_weather().getTemperature() < 20f);
+         return nextHour == -1 ||
+                 (home.getHours().contains(currentHour) && home.getPreferredTemp() <= lastMeasurement && !isWarmOutside) ||
+                 home.getHours().contains(currentHour) && home.getPreferredTemp() > lastMeasurement && isWarmOutside;
+     }
 
     private int findNextUsageHour(int currentHour, Set<Integer> hours) {
         return hours.stream().filter(h -> h > currentHour).min(Integer::compareTo).orElse(hours.stream().min(Integer::compareTo).orElse(-1));
@@ -116,16 +121,16 @@ public class FunctionalDevicesAsyncMethods {
         int nextHour = findNextUsageHour(currentHour, home.getHours());
 
         int lastMeasurement = humidityMeasurement.stream().max(Comparator.comparing(Measurement::getCreatedAt)).get().getValue();
-        if (nextHour == -1 || (home.getHours().contains(currentHour) && home.getPreferredHum() >= lastMeasurement)) {
+        if (nextHour == -1 || (home.getHours().contains(currentHour) && home.getPreferredHum() <= lastMeasurement)) {
             LOGGER.info(NO_HOURS_CHOSEN_SO_ACTION_IS_NOT_REQUIRED, data.getDevice().getSerialNumber());
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(0), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber(), null));
         }
 
         double prediction = regression.predict(Timestamp.from(Instant.now().plus((nextHour - currentHour) % 24, ChronoUnit.HOURS)).getTime());
 
-        if (prediction < home.getPreferredHum()) {
+        if (lastMeasurement <= home.getPreferredHum() || prediction < home.getPreferredHum()) {
             int settingHum = home.getPreferredHum() + 2;
-            LOGGER.info("Set Humidity device to {} with predict {} for {}", settingHum, prediction, nextHour);
+            LOGGER.info("Set Humidity device to {} with predict {} for {}:00", settingHum, prediction, nextHour);
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingHum), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber(), null));
         }
 
@@ -201,9 +206,9 @@ public class FunctionalDevicesAsyncMethods {
     }
 
     private enum AirCondition {
-        GOOD(25, 1, 3),
-        ACCEPTABLE(50, 2, 6),
-        BAD(Integer.MAX_VALUE, 4, Integer.MAX_VALUE);
+        GOOD(20, 1, 3),
+        ACCEPTABLE(35, 2, 6),
+        BAD(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
         private final int pmThreshold;
         private final int gasThreshold;
