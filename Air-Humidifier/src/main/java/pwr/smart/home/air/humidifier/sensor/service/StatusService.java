@@ -26,7 +26,7 @@ public class StatusService {
     @Autowired
     private DataEmitter dataEmitter;
 
-    @Value("${device.power.kw}")
+    @Value("${device.power.watts}")
     private int devicePower;
 
     @Async("asyncExecutor")

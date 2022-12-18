@@ -48,13 +48,13 @@ public class StatusService {
     @Value("${new.value.propagation.delay}")
     private final int propagationDelay = 2500;
 
-    @Value("${device.power.1.kw}")
+    @Value("${device.power.1.watts}")
     private int devicePower;
 
-    @Value("${device.power.2.kw}")
+    @Value("${device.power.2.watts}")
     private int devicePower2;
 
-    @Value("${device.power.3.kw}")
+    @Value("${device.power.3.watts}")
     private int devicePower3;
 
     @Async("asyncExecutor")
@@ -142,6 +142,8 @@ public class StatusService {
         int newGas = getCurrentGas();
         if(doesItHappened(4) && newGas < 4)
             newGas += 1;
+        else if(doesItHappened(4) && newGas > 1)
+            newGas -= 1;
         return newGas;
     }
 
@@ -149,6 +151,8 @@ public class StatusService {
         int newIAI = getCurrentGas();
         if(doesItHappened(8) && newIAI < 12)
             newIAI += 1;
+        else if(doesItHappened(8) && newIAI > 1)
+            newIAI -= 1;
         return newIAI;
     }
 

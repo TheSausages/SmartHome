@@ -31,13 +31,13 @@ public class StatusService {
     @Autowired
     private Sensor sensor;
 
-    @Value("${device.power.1.kw}")
+    @Value("${device.power.1.watts}")
     private int devicePower1;
 
-    @Value("${device.power.2.kw}")
+    @Value("${device.power.2.watts}")
     private int devicePower2;
 
-    @Value("${device.power.3.kw}")
+    @Value("${device.power.3.watts}")
     private int devicePower3;
 
     @Async("asyncExecutor")
