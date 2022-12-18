@@ -48,13 +48,13 @@ public class StatusService {
     @Value("${new.value.propagation.delay}")
     private final int propagationDelay = 2500;
 
-    @Value("${device.power.1.kw}")
+    @Value("${device.power.1.watts}")
     private int devicePower;
 
-    @Value("${device.power.2.kw}")
+    @Value("${device.power.2.watts}")
     private int devicePower2;
 
-    @Value("${device.power.3.kw}")
+    @Value("${device.power.3.watts}")
     private int devicePower3;
 
     @Async("asyncExecutor")
