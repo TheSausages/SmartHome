@@ -128,7 +128,7 @@ public class StatusService {
                 power = devicePower3;
                 break;
         }
-        double consumption = (3600000f / propagationDelay) * power; //Wh
+        double consumption = (propagationDelay / 3600000f) * power; //Wh
         dataEmitter.reportConsumption(consumption);
     }
 
