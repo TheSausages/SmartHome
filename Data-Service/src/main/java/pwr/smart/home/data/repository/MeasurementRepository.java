@@ -15,5 +15,5 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
     List<Measurement> findAllBySensorId(Long id, Pageable pageable);
     List<Measurement> findAllBySensorIdAndCreatedAtIsBetween(Long id, Timestamp from, Timestamp to);
 
-    List<Measurement> findTop50ByTypeIsOrderByCreatedAtDesc(MeasurementType type);
+    List<Measurement> findTop20ByTypeIsOrderByCreatedAtDesc(MeasurementType type);
 }

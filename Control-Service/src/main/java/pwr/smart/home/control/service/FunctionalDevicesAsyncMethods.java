@@ -79,12 +79,12 @@ public class FunctionalDevicesAsyncMethods {
         int settingTemp = home.getPreferredTemp();
         if (prediction > home.getPreferredTemp()) {
             settingTemp -= 1;
-            LOGGER.info("Set Temperature device to {} with predict {} for {}:00", settingTemp, prediction, nextHour);
+            LOGGER.info("Set Temperature device to {}", settingTemp);
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber(), AirConditionerState.COOLING));
         }
         else if (prediction < home.getPreferredTemp()) {
             settingTemp += 1;
-            LOGGER.info("Set Temperature device to {} with predict {} for {}:00", settingTemp, prediction, nextHour);
+            LOGGER.info("Set Temperature device to {}", settingTemp);
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingTemp), endpoint.getAirConditionerUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber(), AirConditionerState.HEATING));
         }
         LOGGER.info(NO_ACTION_REQUIRED, data.getDevice().getSerialNumber());
@@ -127,7 +127,7 @@ public class FunctionalDevicesAsyncMethods {
 
         int lastMeasurement = humidityMeasurement.stream().max(Comparator.comparing(Measurement::getCreatedAt)).get().getValue();
         if (nextHour == -1 || (home.getHours().contains(currentHour) && home.getPreferredHum() <= lastMeasurement) ||
-                timeDifference(nextHour, currentHour) > 2 && !home.getHours().contains(currentHour)) {
+                (timeDifference(nextHour, currentHour) > 2 && !home.getHours().contains(currentHour))) {
             LOGGER.info(NO_HOURS_CHOSEN_SO_ACTION_IS_NOT_REQUIRED, data.getDevice().getSerialNumber());
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(0), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber(), null));
         }
@@ -136,7 +136,7 @@ public class FunctionalDevicesAsyncMethods {
 
         if (lastMeasurement <= home.getPreferredHum() || prediction < home.getPreferredHum()) {
             int settingHum = home.getPreferredHum() + 2;
-            LOGGER.info("Set Humidity device to {} with predict {} for {}:00", settingHum, prediction, nextHour);
+            LOGGER.info("Set Humidity device to {}", settingHum);
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(settingHum), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/setTarget", data.getDevice().getPowerLevel(), data.getDevice().getSerialNumber(), null));
         }
 
@@ -174,7 +174,7 @@ public class FunctionalDevicesAsyncMethods {
         int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
         int nextHour = findNextUsageHour(currentHour, home.getHours());
 
-        if (nextHour == -1 || timeDifference(nextHour, currentHour) > 2 && !home.getHours().contains(currentHour)) {
+        if (nextHour == -1 || (timeDifference(nextHour, currentHour) > 2 && !home.getHours().contains(currentHour))) {
             LOGGER.info(NO_HOURS_CHOSEN_SO_ACTION_IS_NOT_REQUIRED, data.getDevice().getSerialNumber());
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(0), endpoint.getAirFilterUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber(), null));
         }

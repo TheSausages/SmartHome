@@ -96,7 +96,7 @@ public class FunctionalDeviceService {
                             .stream()
                             .collect(Collectors.toMap(
                                     it -> it,
-                                    key -> measurementRepository.findTop50ByTypeIsOrderByCreatedAtDesc(key)
+                                    key -> measurementRepository.findTop20ByTypeIsOrderByCreatedAtDesc(key)
                             ));
 
                     return new FunctionalDeviceWithMeasurementsDTO(
