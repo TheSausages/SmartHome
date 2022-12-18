@@ -1,13 +1,5 @@
 # SmartHome
 
-## Todo
-- zuzycie pradu
-- godziny aktywnosci i preferencje
-- lepszy model dla zmian elementów
-- walidacja dodawanych sensorow
-- security wszystkich endpointów sprawdzic
-
-
 ## How to start
 
 ### Prerequisites
