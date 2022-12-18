@@ -33,6 +33,7 @@ public class SecurityConfig {
         registrationBean.addUrlPatterns("/api/data/filter");
         registrationBean.addUrlPatterns("/api/data/temperature");
         registrationBean.addUrlPatterns("/api/data/humidifier");
+        registrationBean.addUrlPatterns("/api/data/consumption");
         return registrationBean;
     }
 
@@ -46,6 +47,7 @@ public class SecurityConfig {
                 .mvcMatchers("/api/data/air-quality").permitAll()
                 .mvcMatchers("/api/data/temperature").permitAll()
                 .mvcMatchers("/api/data/humidity").permitAll()
+                .mvcMatchers("/api/data/consumption").permitAll()
 
                 // Routes used mainly by control
                 .mvcMatchers("/api/data/homes").authenticated()
@@ -54,7 +56,6 @@ public class SecurityConfig {
                 .mvcMatchers("/api/data/homeFunctionalDevices/*").authenticated()
                 .mvcMatchers("/api/data/inactive/*").authenticated()
                 .mvcMatchers("/api/data/active/*").authenticated()
-                .mvcMatchers("/api/data/consumption").authenticated()
                 .mvcMatchers("/api/data/homeFunctionalDevice/*").authenticated()
 
                 // Mostly by user
