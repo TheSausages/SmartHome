@@ -142,6 +142,8 @@ public class StatusService {
         int newGas = getCurrentGas();
         if(doesItHappened(4) && newGas < 4)
             newGas += 1;
+        else if(doesItHappened(4) && newGas > 1)
+            newGas -= 1;
         return newGas;
     }
 
@@ -149,6 +151,8 @@ public class StatusService {
         int newIAI = getCurrentGas();
         if(doesItHappened(8) && newIAI < 12)
             newIAI += 1;
+        else if(doesItHappened(8) && newIAI > 1)
+            newIAI -= 1;
         return newIAI;
     }
 
