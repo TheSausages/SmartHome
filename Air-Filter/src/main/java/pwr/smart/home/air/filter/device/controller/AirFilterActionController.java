@@ -25,30 +25,20 @@ public class AirFilterActionController {
 
         switch (statusService.getState()) {
             case OFF:
-                int targetAirQualityInt = Integer.parseInt(targetAirQuality);
-
-                if (targetAirQualityInt < 1) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Air Quality value out of range.");
-                } else {
-
-                    try {
-                        statusService.setAirQualityValue(targetAirQualityInt);
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    return ResponseEntity.status(HttpStatus.OK).body(statusService.getState().name());
+                LOGGER.info("Devices was started");
+            case WORKING:
+                LOGGER.info("Action in progress");
+                try {
+                    statusService.startDevice(powerLevel);
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
 
-            case WORKING:
-                LOGGER.info("Action in progress. Ignoring action request.");
                 return ResponseEntity.status(HttpStatus.OK).body(statusService.getState().name());
-
             case PERMANENT_OFF:
                 LOGGER.info("Permanently off. Ignoring action request.");
                 return ResponseEntity.status(HttpStatus.OK).body(statusService.getState().name());
-
             default:
                 LOGGER.info("Unknown State {}. Ignoring action request.", statusService.getState());
                 return ResponseEntity.status(HttpStatus.OK).body(statusService.getState().name());

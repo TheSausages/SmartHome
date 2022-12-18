@@ -3,6 +3,7 @@ package pwr.smart.home.air.filter.sensor.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pwr.smart.home.common.model.Location;
 
 @Getter
 @Setter
@@ -11,4 +12,5 @@ public class Sensor {
     private String serialNumber;
     private String brand;
     private SensorType type;
+    private Location location;
 }

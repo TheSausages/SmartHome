@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import pwr.smart.home.common.model.enums.AirConditionerState;
 import pwr.smart.home.control.model.Endpoint;
 
 import java.time.Duration;
@@ -30,12 +31,15 @@ public class DataEmitter {
             .withMaxRetries(3)
             .build();
 
-    public String callForAction(String body, String endpoint, int level, String serialNumber) {
+    public String callForAction(String body, String endpoint, int level, String serialNumber, AirConditionerState airConditionerState) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
         headers.set("Authorization", "Basic dXNlcjpwYXNzd29yZA==");
         headers.set("PowerLevel", String.valueOf(level));
+
+        if (airConditionerState != null)
+            headers.set("Mode", String.valueOf(airConditionerState));
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 

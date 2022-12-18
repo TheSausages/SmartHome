@@ -78,9 +78,9 @@ public class DataEmitter {
         data.setSerialNumber(sensor.getSerialNumber());
         data.setTimestamp(getSystemTimestamp());
         data.setType(sensor.getType());
-        data.setPM25((int) Math.round(StatusService.getCurrentAirQuality()));
-        data.setIAI(StatusService.getIAI());
-        data.setGas(StatusService.getGas());
+        data.setPM25((int) Math.round(StatusService.getCurrentPM25()));
+        data.setIAI(StatusService.getCurrentIAI());
+        data.setGas(StatusService.getCurrentGas());
         return data;
     }
 

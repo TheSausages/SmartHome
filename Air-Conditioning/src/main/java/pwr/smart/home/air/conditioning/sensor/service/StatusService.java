@@ -4,11 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import pwr.smart.home.air.conditioning.device.model.State;
+import pwr.smart.home.common.model.enums.AirConditionerState;
 import pwr.smart.home.air.conditioning.sensor.model.Sensor;
 import pwr.smart.home.common.weather.OpenMeteo;
 import pwr.smart.home.common.weather.model.request.ForecastWeatherRequest;
@@ -20,7 +19,7 @@ import static java.lang.Math.abs;
 @Service
 public class StatusService {
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusService.class);
-    private static State state = State.OFF;
+    private static AirConditionerState state = AirConditionerState.OFF;
     private static double currentTemperature;
     private static double targetTemperature;
     private static int powerLevel;
@@ -42,22 +41,21 @@ public class StatusService {
     private int devicePower3;
 
     @Async("asyncExecutor")
-    public void setTargetTemperature(double targetTemperature, int powerLevel) throws InterruptedException {
+    public void setTargetTemperature(double targetTemperature, int powerLevel, AirConditionerState stateFromControl) throws InterruptedException {
         setTargetTemperature(targetTemperature);
         setPowerLevel(powerLevel);
-        double temperatureDifference = targetTemperature - currentTemperature;
-        if (Math.round(temperatureDifference) == 0) {
-            state = State.OFF;
-            LOGGER.info("Turning off");
-            return;
+        switch (stateFromControl) {
+            case COOLING:
+                LOGGER.info("Turning on cooling");
+                break;
+            case HEATING:
+                LOGGER.info("Turning on heating");
+                break;
+            case OFF:
+                LOGGER.info("Turning off");
+                break;
         }
-        if (temperatureDifference > 0) {
-            state = State.HEATING;
-            LOGGER.info("Turning on heating");
-        } else if (temperatureDifference < 0) {
-            state = State.COOLING;
-            LOGGER.info("Turning on cooling");
-        }
+        setState(stateFromControl);
     }
 
     private void calculateConsumption(double temperatureDifference, int powerLevel) {
@@ -104,9 +102,9 @@ public class StatusService {
                 break;
         }
 
-        if (currentTemperature >= targetTemperature && state == State.HEATING ||
-                currentTemperature < targetTemperature && state == State.COOLING) {
-            state = State.OFF;
+        if (currentTemperature >= targetTemperature && state == AirConditionerState.HEATING ||
+                currentTemperature < targetTemperature && state == AirConditionerState.COOLING) {
+            state = AirConditionerState.OFF;
             return;
         }
 
@@ -115,10 +113,6 @@ public class StatusService {
         LOGGER.info("Current temperature {}", getCurrentTemperature());
 
         calculateConsumption(currentTemperature - newValue, powerLevel);
-
-        if (currentTemperature > 40 || currentTemperature < 5) {
-            state = State.OFF;
-        }
     }
 
     @Scheduled(fixedDelay = 50000)
@@ -150,11 +144,11 @@ public class StatusService {
         StatusService.targetTemperature = targetTemperature;
     }
 
-    public State getState() {
+    public AirConditionerState getState() {
         return state;
     }
 
-    public void setState(State state) {
+    public void setState(AirConditionerState state) {
         StatusService.state = state;
     }
 }

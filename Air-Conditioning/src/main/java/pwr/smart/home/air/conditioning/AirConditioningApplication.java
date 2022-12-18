@@ -20,9 +20,8 @@ import pwr.smart.home.common.model.Location;
 public class AirConditioningApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AirConditioningApplication.class, args);
-
 		StatusService.setCurrentTemperature(21.0);
+		SpringApplication.run(AirConditioningApplication.class, args);
 	}
 
 	@Bean

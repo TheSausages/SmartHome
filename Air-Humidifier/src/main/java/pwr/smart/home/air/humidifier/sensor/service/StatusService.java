@@ -47,7 +47,7 @@ public class StatusService {
         dataEmitter.reportConsumption(consumption);
     }
 
-    @Scheduled(fixedDelay = 50000)
+    @Scheduled(fixedDelay = 25000)
     public void simulateWorkingDevice() {
         switch (state) {
             case PERMANENT_OFF:
