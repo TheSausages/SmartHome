@@ -128,7 +128,7 @@ public class FunctionalDevicesAsyncMethods {
         int lastMeasurement = humidityMeasurement.stream().max(Comparator.comparing(Measurement::getCreatedAt)).get().getValue();
         if (nextHour == -1 || (home.getHours().contains(currentHour) && home.getPreferredHum() <= lastMeasurement) ||
                 (timeDifference(nextHour, currentHour) > 2 && !home.getHours().contains(currentHour))) {
-            LOGGER.info(NO_HOURS_CHOSEN_SO_ACTION_IS_NOT_REQUIRED, data.getDevice().getSerialNumber());
+            LOGGER.info("Humidity for {} is ok for now", data.getDevice().getSerialNumber());
             return CompletableFuture.completedFuture(dataEmitter.callForAction(Integer.toString(0), endpoint.getAirHumidifierUrl(data.getDevice().getSerialNumber()) + "/turnOff", 0, data.getDevice().getSerialNumber(), null));
         }
 

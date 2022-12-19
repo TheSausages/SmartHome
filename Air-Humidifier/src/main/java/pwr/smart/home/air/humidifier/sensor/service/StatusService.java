@@ -74,8 +74,7 @@ public class StatusService {
             case WORKING:
         }
 
-        double multiplayer = 2d;
-        double newValue = currentHumidity + GRADATION_SPEED * multiplayer * currentPowerLevel;
+        double newValue = currentHumidity + GRADATION_SPEED * currentPowerLevel;
         currentHumidity = Math.round(newValue * 100.0) / 100.0;
 
         calculateConsumption();
