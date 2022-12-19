@@ -19,7 +19,7 @@ FROM nginx:1.22.1-alpine
 # Copy the build, env file and nginx cofnig file
 COPY --from=build build /usr/share/nginx/html
 COPY --from=build .env /usr/share/nginx/html/.env
-COPY --from=build nginx.conf.template /etc/nginx/conf.d/default.conf.template
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # install nodejs & npm
 RUN apk add --update nodejs
