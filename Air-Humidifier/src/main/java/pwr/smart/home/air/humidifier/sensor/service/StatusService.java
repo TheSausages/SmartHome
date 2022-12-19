@@ -40,7 +40,7 @@ public class StatusService {
     public void setTargetHumidity(int targetHumidity, int powerLevel) throws InterruptedException {
         setHumidityDifference(targetHumidity - currentHumidity);
         setCurrentPowerLevel(powerLevel);
-        if (Math.round(humidityDifference) == 0) {
+        if (currentHumidity >= targetHumidity) {
             state = State.OFF;
             LOGGER.info("Turning off");
         } else {
