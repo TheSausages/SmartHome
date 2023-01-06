@@ -26,10 +26,10 @@ export default function NavBar(props: NavbarProps) {
                     <IconButton component={NavLink} to="/">
                         <img src="logo.svg" alt="logo"/>
                     </IconButton>
-                    <Button color="inherit" component={NavLink} to="/">Dom</Button>
-                    <Button color="inherit" component={NavLink} to={history_path}>Historia odczytów</Button>
-                    <Button color="inherit" component={NavLink} to={help_path}>Pomoc</Button>
-                    <Button color="inherit" component={NavLink} to={settings_path}>Ustawienia</Button>
+                    <Button color="inherit" component={NavLink} id="home" to="/">Dom</Button>
+                    <Button color="inherit" component={NavLink} id="history" to={history_path}>Historia odczytów</Button>
+                    <Button color="inherit" component={NavLink} id="help" to={help_path}>Pomoc</Button>
+                    <Button color="inherit" component={NavLink} id="settings" to={settings_path}>Ustawienia</Button>
                 </div>
                 <div style={{ marginBlock: 'auto' }}>
                     {!UserService.isLoggedIn() && <Button color="inherit" onClick={() => UserService.doLogin()}>Zaloguj</Button>}

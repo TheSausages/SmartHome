@@ -75,3 +75,34 @@ Please note: the images take a while to create
 
 When using the complete docker file, all non-frontend env variables are set for docker network.
 When communicating with the containers from the host machine, use localhost.
+
+## Selenium Tests
+
+Selenium tests can be run standalone by running the [Selenium Tests](./Selenium-Tests/src/test).
+Requirements:
+* Having Chrome installed
+* Having all containers from [docker compose complete](./docker/compose/complete-docker-compose.yml) running
+  * NOTE: they must be from this compose, as necessary environment variables are set
+* Run tests from [Selenium Test Folder](./Selenium-Tests/src/test)
+
+\
+\
+In order to run selenium tests in docker, you need:
+* Run the [Selenium Docker Compose](./docker/compose/selenium-docker-compose.yml)
+  * NOTE: must be this one! 
+* When all of them are running, go to [Selenum-Tests test section](./Selenium-Tests/src/test)
+* Run the tests:
+  * with 2 additional environmental properties (they can also be found [here](./Selenium-Tests/src/main/resources/application-docker.properties)):
+    * grid.url=http://localhost:4444
+    * frontend.url=http://frontend:800
+  * change the file name in [Base Selenium Test](./Selenium-Tests/src/test/java/pwr/smart/home/selenium/BaseSeleniumTest.java), line 44 to `application.properties`
+    * `cc.addConfiguration(new Configurations().properties(new File("application-docker.properties")));`
+
+If the tests are run on docker, a video of them will be saved to the [`tests` folder](./Selenium-Tests/tests)
+NOTE: you must close the `Selenium Chrome Docker` container to get the videos to run correctly
+
+### Selenium Tests Debuting
+
+The easiest way is to test something, is to start the tests in debuging and place a breakpoint somewhere.
+When the code reaches the breakpoint, go to `http://localhost:4444` -> session -> click on the camera.
+The password is `secret`.
