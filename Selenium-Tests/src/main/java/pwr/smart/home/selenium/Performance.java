@@ -1,5 +1,6 @@
 package pwr.smart.home.selenium;
 
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -10,6 +11,7 @@ import lombok.experimental.SuperBuilder;
  */
 @NoArgsConstructor
 @SuperBuilder
+@EqualsAndHashCode
 public class Performance {
     private Long timeOrigin;
     private Timing timing;
@@ -17,6 +19,7 @@ public class Performance {
 
     @SuperBuilder
     @NoArgsConstructor
+    @EqualsAndHashCode
     public static class Timing {
         private Long connectEnd;
         private Long connectStart;
@@ -43,6 +46,7 @@ public class Performance {
 
     @SuperBuilder
     @NoArgsConstructor
+    @EqualsAndHashCode
     public static class Memory {
         private Long jsHeapSizeLimit;
         private Long totalJSHeapSize;

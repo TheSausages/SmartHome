@@ -33,8 +33,8 @@ public class SensorHistoryTest extends BaseSeleniumTest {
 
         // Click the dates and get the chart
         SmartHomeHistoryPage historyPage = new SmartHomeHistoryPage(driver);
-        historyPage.getStartDateElement().sendKeys("01052023");
-        historyPage.getEndDateElement().sendKeys("01062023");
+        historyPage.getStartDateElement().sendKeys("07012023");
+        historyPage.getEndDateElement().sendKeys("08012023");
         historyPage.getHistoryButton().click();
         historyPage.getHistoryButton().click();
 
