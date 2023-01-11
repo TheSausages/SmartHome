@@ -837,9 +837,7 @@
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
         "http://frontend:80/*",
-        "https://frontend:80/*",
-        "http://frontend/*",
-        "https://frontend/*"
+        "https://frontend:80/*"
       ],
       "webOrigins": [
         "https://frontend:80",

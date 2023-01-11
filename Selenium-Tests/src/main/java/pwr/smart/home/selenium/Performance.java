@@ -1,7 +1,6 @@
 package pwr.smart.home.selenium;
 
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -10,16 +9,34 @@ import lombok.experimental.SuperBuilder;
  * https://developer.mozilla.org/en-US/docs/Web/API/Navigation_timing_API
  */
 @NoArgsConstructor
-@SuperBuilder
-@EqualsAndHashCode
+@Builder
+@AllArgsConstructor
+@Data
 public class Performance {
     private Long timeOrigin;
     private Timing timing;
     private Memory memory;
 
-    @SuperBuilder
+    public static class PerformanceBuilder {
+        private Long timeOrigin;
+
+        public PerformanceBuilder timeOrigin(Object timeOriginObj) {
+            if (timeOriginObj instanceof Double) {
+                this.timeOrigin = ((Double) timeOriginObj).longValue();
+            }
+
+            if (timeOriginObj instanceof Long) {
+                this.timeOrigin = (Long) timeOriginObj;
+            }
+
+            return this;
+        }
+    }
+
+    @Builder
+    @AllArgsConstructor
     @NoArgsConstructor
-    @EqualsAndHashCode
+    @Data
     public static class Timing {
         private Long connectEnd;
         private Long connectStart;
@@ -44,9 +61,10 @@ public class Performance {
         private Long unloadEventStart;
     }
 
-    @SuperBuilder
+    @Builder
     @NoArgsConstructor
-    @EqualsAndHashCode
+    @AllArgsConstructor
+    @Data
     public static class Memory {
         private Long jsHeapSizeLimit;
         private Long totalJSHeapSize;

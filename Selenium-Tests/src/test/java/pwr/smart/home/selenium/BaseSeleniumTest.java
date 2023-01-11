@@ -17,9 +17,11 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class BaseSeleniumTest {
     protected static Logger logger = Logger.getLogger(BaseSeleniumTest.class.getName());
@@ -36,7 +38,7 @@ public class BaseSeleniumTest {
             cc.addConfiguration(new EnvironmentConfiguration());
 
             // If not take from properties file with default values
-            cc.addConfiguration(new Configurations().properties(new File("application.properties")));
+            cc.addConfiguration(new Configurations().properties(new File("application-docker.properties")));
 
             configuration = cc;
         } catch (ConfigurationException e) {
@@ -80,13 +82,48 @@ public class BaseSeleniumTest {
     }
 
     @SuppressWarnings("unchecked")
+    public ResourceTimings getResourceTimings(WebDriver driver) {
+        List<Map<String, Object>> main = (List<Map<String, Object>>) executeScript(driver, "return performance.getEntriesByType(\"resource\")");
+
+        List<ResourceTimings.PerformanceResourceTiming> timings = main.stream().map(pure ->
+                ResourceTimings.PerformanceResourceTiming.builder()
+                        .connectEnd(pure.get("connectEnd"))
+                        .connectStart(pure.get("connectStart"))
+                        .decodedBodySize(pure.get("decodedBodySize"))
+                        .domainLookupStart(pure.get("domainLookupStart"))
+                        .domainLookupEnd(pure.get("domainLookupEnd"))
+                        .duration(pure.get("duration"))
+                        .encodedBodySize(pure.get("encodedBodySize"))
+                        .fetchStart(pure.get("fetchStart"))
+                        .redirectEnd(pure.get("redirectEnd"))
+                        .redirectStart(pure.get("redirectStart"))
+                        .requestStart(pure.get("requestStart"))
+                        .responseEnd(pure.get("responseEnd"))
+                        .responseStart(pure.get("responseStart"))
+                        .secureConnectionStart(pure.get("secureConnectionStart"))
+                        .startTime(pure.get("startTime"))
+                        .transferSize(pure.get("transferSize"))
+                        .workerStart(pure.get("workerStart"))
+                        .entryType((String) pure.get("entryType"))
+                        .initiatorType((String) pure.get("initiatorType"))
+                        .name((String) pure.get("name"))
+                        .nextHopProtocol((String) pure.get("nextHopProtocol"))
+                        .renderBlockingStatus((String) pure.get("renderBlockingStatus"))
+                        .serverTiming(new Object[]{pure.get("serverTiming")})
+                        .build())
+                .collect(Collectors.toList());
+
+        return new ResourceTimings(timings);
+    }
+
+    @SuppressWarnings("unchecked")
     public Performance getPerformanceMetrics(WebDriver driver) {
         Map<String, Object> main = (Map<String, Object>) executeScript(driver, "return window.performance");
         Map<String, Long> timing = (Map<String, Long>) executeScript(driver, "return window.performance.timing");
         Map<String, Long> memory = (Map<String, Long>) executeScript(driver, "return window.performance.memory");
 
         return Performance.builder()
-                .timeOrigin(((Double) main.get("timeOrigin")).longValue())
+                .timeOrigin(main.get("timeOrigin"))
                 .memory(Performance.Memory.builder()
                         .jsHeapSizeLimit(memory.get("jsHeapSizeLimit"))
                         .totalJSHeapSize(memory.get("totalJSHeapSize"))

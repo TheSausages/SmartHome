@@ -29,13 +29,10 @@ public class SensorHistoryTest extends BaseSeleniumTest {
         SmartHomeMainPage mainPage = new SmartHomeMainPage(driver);
         mainPage.getHistoryElement().click();
 
-        Performance performance = getPerformanceMetrics(driver);
-
         // Click the dates and get the chart
         SmartHomeHistoryPage historyPage = new SmartHomeHistoryPage(driver);
-        historyPage.getStartDateElement().sendKeys("07012023");
-        historyPage.getEndDateElement().sendKeys("08012023");
-        historyPage.getHistoryButton().click();
+        historyPage.getStartDateElement().sendKeys("11012023");
+        historyPage.getEndDateElement().sendKeys("12012023");
         historyPage.getHistoryButton().click();
 
         // Wait for a response and check if chart exists
@@ -44,5 +41,8 @@ public class SensorHistoryTest extends BaseSeleniumTest {
 
         // Assert some charts exist
         assertThat(historyPage.getCharts(), iterableWithSize(greaterThanOrEqualTo(1)));
+
+        // We can use timings to get request values
+        ResourceTimings timings = getResourceTimings(driver);
     }
 }

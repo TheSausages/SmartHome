@@ -1,6 +1,5 @@
 version: '3.9'
 
-name: 'selenium-tests'
 services:
   postgres-app:
     build:
@@ -11,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgresApp:/var/lib/postgresql/data
+      - seleniumPostgresApp:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: SmartHomeApp
       POSTGRES_USER: SmartHomeAdminUser
@@ -31,7 +30,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - postgresKeycloak:/var/lib/postgresql/data
+      - seleniumPostgresKeycloak:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloakUser
@@ -201,7 +200,7 @@ services:
       - FILE_NAME=test_chrome_video.mp4
 
 volumes:
-  postgresKeycloak:
+  seleniumPostgresKeycloak:
     driver: local
-  postgresApp:
+  seleniumPostgresApp:
     driver: local
