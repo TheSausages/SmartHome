@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Configuration
 public class PreloadService {
@@ -29,12 +31,12 @@ public class PreloadService {
                 while ((line = br.readLine()) != null) {
                     String[] record = line.split(splitBy);
 
+                    if (record[0].charAt(0) != '2') record[0] = record[0].substring(1);
+
+                    Timestamp timestamp = Timestamp.valueOf(ZonedDateTime.parse(record[0], DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSz")).toLocalDateTime());
                     float temperatureValue = Float.parseFloat(record[1]);
                     int humidityValue = Integer.parseInt(record[2]);
                     int pm25Value = Integer.parseInt(record[3]);
-
-                    LocalDateTime date = LocalDateTime.now().minusHours(96-i);
-                    Timestamp timestamp = Timestamp.valueOf(date);
 
                     measurementRepository.save(new Measurement(MeasurementType.CELSIUS, temperatureValue, 2L, timestamp));
                     measurementRepository.save(new Measurement(MeasurementType.HUMIDITY, humidityValue, 3L, timestamp));

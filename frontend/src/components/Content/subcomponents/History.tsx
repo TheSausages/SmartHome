@@ -115,7 +115,7 @@ export default function History(props: HistoryProps) {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis height={80} dataKey="createdAt" tickFormatter={(value: Date) => (value ? moment(value).format('DD-MM-YYYY HH:mm') : value)} minTickGap={15} label="Data pomiaru"/>
             <YAxis allowDecimals={false} width={80} dataKey="value" label={{value: (receivedData.length > 0 ? fulfillLabelInfo(receivedData[0].type) : "Nieznana wartość"), angle: -90}}/>
-            <Line type="monotone" dataKey="value" stroke="#4CAF50"/>
+            <Line type="monotone" dataKey="value" stroke="#4CAF50" onAnimationStart={() => localStorage.setItem(`Animation-Start`, `${new Date().toISOString()}`)} onAnimationEnd={() => localStorage.setItem(`Animation-End`, `${new Date().toISOString()}`)} />
         </LineChart>
     </div>);
 

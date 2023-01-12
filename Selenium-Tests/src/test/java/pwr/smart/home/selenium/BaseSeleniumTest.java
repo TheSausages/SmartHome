@@ -13,10 +13,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -51,7 +57,7 @@ public class BaseSeleniumTest {
         ChromeOptions options = new ChromeOptions();
 
         // Uncomment to add F12 by default
-        // options.addArguments("--auto-open-devtools-for-tabs");
+        options.addArguments("--auto-open-devtools-for-tabs");
 
         driver = Objects.nonNull(getProperty("grid.url")) ?
                 new RemoteWebDriver(new URL(getProperty("grid.url")), options) :
@@ -75,10 +81,46 @@ public class BaseSeleniumTest {
         }
     }
 
+    public void waitForItemInLocalStorage(String name, WebDriver driver) {
+        while(Objects.isNull(executeScript(driver, "return localStorage.getItem('" + name + "')"))) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void cleanLocalStorage(String name, WebDriver driver) {
+        executeScript(driver, "localStorage.removeItem('" + name + "')");
+    }
+
     public Object executeScript(WebDriver driver, String script) {
         JavascriptExecutor jse = (JavascriptExecutor) driver;
 
         return jse.executeScript(script);
+    }
+
+    public TimingsWithAnimationTimings getResourceTimingsWithAnimationTimes(WebDriver driver) {
+        ResourceTimings timings = getResourceTimings(driver);
+        String startString = (String) executeScript(driver, "return localStorage.getItem('Animation-Start')");
+        String endString = (String) executeScript(driver, "return localStorage.getItem('Animation-End')");
+
+        // Get rid of 'Z' at the end
+        startString = startString.substring(0, startString.length() - 1);
+        endString = endString.substring(0, endString.length() - 1);
+
+        LocalDateTime start = LocalDateTime.parse(startString);
+        LocalDateTime end = LocalDateTime.parse(endString);
+
+        cleanLocalStorage("Animation-Start", driver);
+        cleanLocalStorage("Animation-End", driver);
+
+        return TimingsWithAnimationTimings.builder()
+                .resourceTimings(timings)
+                .animationStart(start)
+                .animationEnd(end)
+                .build();
     }
 
     @SuppressWarnings("unchecked")
