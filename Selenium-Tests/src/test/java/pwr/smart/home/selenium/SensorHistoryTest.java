@@ -61,7 +61,9 @@ public class SensorHistoryTest extends BaseSeleniumTest {
         mapper.findAndRegisterModules();
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         try(FileOutputStream strW = new FileOutputStream("./history-times.csv")) {
-            var seqW = mapper.writerWithSchemaFor(HistoryTestCSVSchema.class)
+            var seqW = mapper
+                    .writerFor(HistoryTestCSVSchema.class)
+                    .with(mapper.schemaFor(HistoryTestCSVSchema.class).withHeader())
                     .writeValues(strW);
 
             timings.forEach((key, value) -> {
