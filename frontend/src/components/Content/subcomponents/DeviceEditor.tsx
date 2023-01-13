@@ -96,15 +96,15 @@ export default function DeviceEditor(props: DeviceProps) {
                 </Box>
                 <Box sx={{marginTop: '20px'}}>
                     <InputLabel sx={{display:'inline-block', width:"33%"}}>Poziom mocy</InputLabel>
-                    <Select sx={{width: '250px'}} value={powerLevel} onChange={handleOnPowerLevelChange}>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
+                    <Select id={"Select-Power-Level"} sx={{width: '250px'}} value={powerLevel} onChange={handleOnPowerLevelChange}>
+                        <MenuItem id={"Select-Power-Level-1"} value={1}>1</MenuItem>
+                        <MenuItem id={"Select-Power-Level-2"} value={2}>2</MenuItem>
+                        <MenuItem id={"Select-Power-Level-3"} value={3}>3</MenuItem>
                     </Select>
                 </Box>
                 <Box  sx={{marginBlock: '30px', justifyContent: "center", display: "flex"}}>
                     <Button color="warning" variant="contained" sx={{marginRight: '10px'}} onClick={() => props.setOpen(false)}>Anuluj</Button>
-                    <Button color="success" variant="contained" type="submit">Aktualizuj</Button>
+                    <Button id={"Device-Edit-Submit"} color="success" variant="contained" type="submit">Aktualizuj</Button>
                 </Box>
             </form>
         </Dialog>

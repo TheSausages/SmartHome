@@ -176,14 +176,14 @@ export default function Settings(props: SettingsProps) {
             <TableRow key={index}>
                 <TableCell>{item.serialNumber}</TableCell>
                 <TableCell>{item.name}</TableCell>
-                <TableCell>{item.powerLevel}</TableCell>
+                <TableCell id={`Device-Table-Power-Level-${item.serialNumber}`}>{item.powerLevel}</TableCell>
                 <TableCell>{item.averageConsumption.toFixed(2)}</TableCell>
                 <TableCell>
                     <Button sx={{width: '100%'}} variant="contained"
                             onClick={() => changeDeviceState(index)}>{item.connected ? 'Rozłącz' : 'Połącz'}</Button>
                 </TableCell>
                 <TableCell>
-                    <Button sx={{width: '100%'}} variant="contained" onClick={() => {
+                    <Button id={`Edit-Sensor-Button-${item.serialNumber}`} sx={{width: '100%'}} variant="contained" onClick={() => {
                         setDeviceToEdit({id: item.id, serialNumber: item.serialNumber, type: item.type, name: item.name, powerLevel: item.powerLevel, manufacturer: item.manufacturer})
                         setOpen(true)
                     }}><EditIcon/></Button>

@@ -19,4 +19,7 @@ public class PageWithNavbar {
         return driver.findElement(By.id("home"));
     }
 
+    public WebElement getSettingsElement() {
+        return driver.findElement(By.id("settings"));
+    }
 }

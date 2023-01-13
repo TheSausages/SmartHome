@@ -16,7 +16,7 @@ import static org.hamcrest.Matchers.*;
 
 public class MainPageTemperatureTest extends BaseSeleniumTest {
     @Test
-    public void checkMainPageMetrics() {
+    public void changeTemperatureTest() {
         driver.navigate().to(getProperty("frontend.url"));
 
         // Log into keycloak and wait for redirect
