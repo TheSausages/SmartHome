@@ -57,7 +57,7 @@ public class BaseSeleniumTest {
         ChromeOptions options = new ChromeOptions();
 
         // Uncomment to add F12 by default
-        options.addArguments("--auto-open-devtools-for-tabs");
+        // options.addArguments("--auto-open-devtools-for-tabs");
 
         driver = Objects.nonNull(getProperty("grid.url")) ?
                 new RemoteWebDriver(new URL(getProperty("grid.url")), options) :

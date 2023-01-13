@@ -8,10 +8,11 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-@AllArgsConstructor
-@Builder
-public class SmartHomeHistoryPage {
-    private final WebDriver driver;
+public class SmartHomeHistoryPage extends PageWithNavbar {
+
+    public SmartHomeHistoryPage(WebDriver driver) {
+        super(driver);
+    }
 
     public WebElement getStartDateElement() {
         return driver.findElement(By.id("date-start"));

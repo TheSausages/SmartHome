@@ -1,17 +1,20 @@
 package pwr.smart.home.selenium.pages;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-@AllArgsConstructor
-@Builder
-public class SmartHomeMainPage {
-    private final WebDriver driver;
+public class SmartHomeMainPage extends PageWithNavbar {
 
-    public WebElement getHistoryElement() {
-        return driver.findElement(By.id("history"));
+    public SmartHomeMainPage(WebDriver driver) {
+        super(driver);
+    }
+
+    public WebElement getTemperatureSelect() {
+        return driver.findElement(By.id("Select-Temperature"));
+    }
+
+    public WebElement getTemperatureItemWithTemperature(int temperature) {
+        return driver.findElement(By.id("Temperature-Options-" + temperature));
     }
 }

@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class MainPageTest extends BaseSeleniumTest {
+public class MainPagePerformanceTest extends BaseSeleniumTest {
     @Test
     public void checkMainPageMetrics() {
         driver.navigate().to(getProperty("frontend.url"));

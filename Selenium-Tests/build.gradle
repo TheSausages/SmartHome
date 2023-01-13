@@ -11,6 +11,8 @@ repositories {
 }
 
 dependencies {
+//    implementation project(':Common-Code')
+
     implementation 'commons-beanutils:commons-beanutils:1.9.4'
     implementation 'org.apache.commons:commons-configuration2:2.8.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'

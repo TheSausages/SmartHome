@@ -318,7 +318,7 @@ export default function Home(props: HomeProps) {
     ));
 
     const temperatureOptions = availableTemperatures.map((item, index) => (
-        <MenuItem value={item} key={index}>{item}°C</MenuItem>
+        <MenuItem id={`Temperature-Options-${item}`} value={item} key={index}>{item}°C</MenuItem>
     ));
 
     const airHumadityOptions = availableAirHumadityLevels.map((item, index) => (
@@ -412,7 +412,7 @@ export default function Home(props: HomeProps) {
                             <p>Temperatura</p>
                             <ThermostatIcon fontSize="large"/>
                             <Box>
-                                <Select value={`${requestedTemperature}`} onChange={handleOnTemperatureChange}>
+                                <Select id={"Select-Temperature"} value={`${requestedTemperature}`} onChange={handleOnTemperatureChange}>
                                     {temperatureOptions}
                                 </Select>
                             </Box>
