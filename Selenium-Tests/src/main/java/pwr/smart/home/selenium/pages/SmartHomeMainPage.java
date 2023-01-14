@@ -10,6 +10,22 @@ public class SmartHomeMainPage extends PageWithNavbar {
         super(driver);
     }
 
+    public WebElement getTodayMaxTemperature() {
+        return driver.findElement(By.id("Temperature-Today-Max"));
+    }
+
+    public WebElement getTodayMinTemperature() {
+        return driver.findElement(By.id("Temperature-Today-Min"));
+    }
+
+    public WebElement getTomorrowMaxTemperature() {
+        return driver.findElement(By.id("Temperature-Tomorrow-Max"));
+    }
+
+    public WebElement getTomorrowMinTemperature() {
+        return driver.findElement(By.id("Temperature-Tomorrow-Min"));
+    }
+
     public WebElement getTemperatureSelect() {
         return driver.findElement(By.id("Select-Temperature"));
     }

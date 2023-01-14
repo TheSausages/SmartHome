@@ -106,7 +106,13 @@ public class SensorHistoryTest extends BaseSeleniumTest {
         waitForItemInLocalStorage("Animation-Start", driver);
         waitForItemInLocalStorage("Animation-End", driver);
 
+        TimingsWithAnimationTimings timings = getResourceTimingsWithAnimationTimes(driver);
+
+        // Reset the page
+        historyPage.getSettingsElement().click();
+        historyPage.getHistoryElement().click();
+
         // We can use timings to get request values
-        return getResourceTimingsWithAnimationTimes(driver);
+        return timings;
     }
 }

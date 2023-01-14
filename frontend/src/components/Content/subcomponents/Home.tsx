@@ -334,9 +334,9 @@ export default function Home(props: HomeProps) {
                         <br/>
                         <br/>
                         <WbSunnyIcon/>
-                        <p>{todayMaxTemperature}°C</p>
+                        <p id={"Temperature-Today-Max"}>{todayMaxTemperature}°C</p>
                         <NightlightIcon/>
-                        <p>{todayMinTemperature}°C</p>
+                        <p id={"Temperature-Today-Min"}>{todayMinTemperature}°C</p>
 
                     </Box>
                     <Box sx={{border: 1, borderRadius: '10px', margin: '20px', minWidth:'50px'}}>
@@ -344,9 +344,9 @@ export default function Home(props: HomeProps) {
                         <br/>
                         <br/>
                         <WbSunnyIcon/>
-                        <p>{tomorrowMaxTemperature}°C</p>
+                        <p id={"Temperature-Tomorrow-Max"}>{tomorrowMaxTemperature}°C</p>
                         <NightlightIcon/>
-                        <p>{tomorrowMinTemperature}°C</p>
+                        <p id={"Temperature-Tomorrow-Min"}>{tomorrowMinTemperature}°C</p>
 
                     </Box>
                 </Box>
