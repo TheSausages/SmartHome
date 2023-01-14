@@ -29,6 +29,7 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-security:${springVersion}"
 	implementation "org.springframework.boot:spring-boot-starter-web:${springVersion}"
 	implementation "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}"
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.7'
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 	implementation 'org.springframework.boot:spring-boot-configuration-processor'

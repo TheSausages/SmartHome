@@ -49,6 +49,9 @@ public class SecurityConfig {
                 .mvcMatchers("/api/data/humidity").permitAll()
                 .mvcMatchers("/api/data/consumption").permitAll()
 
+                // Actuator endpoints are for all
+                .mvcMatchers("/actuator/**").permitAll()
+
                 // Routes used mainly by control
                 .mvcMatchers("/api/data/homes").authenticated()
                 .mvcMatchers("/api/data/home/*").authenticated()
