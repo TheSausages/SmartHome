@@ -86,7 +86,7 @@ if __name__ == '__main__':
     f = open('results.csv', 'w')
     f.close()
 
-    for j in range(1, 11):
+    for j in range(1, 34):
         sent_requests(j)
         time.sleep(1)
         collect_metrics(j)
