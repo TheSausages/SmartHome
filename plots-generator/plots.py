@@ -4,11 +4,14 @@ import csv
 from datetime import datetime
 import math
 
-def draw_plots(x, y, names, labels):
+def draw_plots(x, y, names, labels, data_in_x=False):
     plt.clf()
     xpoints = np.array(x)
     ypoints = np.array(y)
-    plt.plot(xpoints, ypoints, label=labels, linewidth=3)
+    if data_in_x:
+        plt.plot_date(xpoints, ypoints, label=labels, linewidth=3, xdate=data_in_x)
+    else:
+        plt.plot(xpoints, ypoints, label=labels, linewidth=3)
     plt.xlabel(names[0])
     plt.ylabel(names[1])
     plt.legend()
@@ -29,10 +32,8 @@ def handle_data_service_metrics(path):
 
     for i, name in enumerate(names[1:]):
         new_data = []
-        print(i, name)
         for el in data:
             new_data.append(el[i])
-        print(new_data)
         draw_plots(number_of_requests, new_data, ['number_of_requests', name], name)
 
 def handle_history_times(path):
@@ -46,13 +47,13 @@ def handle_history_times(path):
         names = spamreader[0]
         for row in spamreader[1:]:
             from_date.append(row[0])
-            dataServiceDifference.append(row[3])
+            dataServiceDifference.append(float(row[3]))
             t1 = datetime.strptime(row[4], fmt)
             t2 = datetime.strptime(row[5], fmt)
             renderDifference.append((t2 - t1).total_seconds())
 
-    draw_plots(from_date, dataServiceDifference, ['Zakres początkowy danych', names[3] + ' w sekundach'], names[3])
-    draw_plots(from_date, renderDifference, ['Zakres początkowy danych', names[6] + ' w sekundach'], names[6])
+    draw_plots(from_date, dataServiceDifference, ['Zakres początkowy danych', names[3]], names[3], True)
+    draw_plots(from_date, renderDifference, ['Zakres początkowy danych', names[6]], names[6], True)
 
 def draw_bar_plot(x, names, labels):
     plt.clf()
@@ -78,4 +79,5 @@ def main_page_times(path):
     draw_bar_plot(data[0], names, ['Metryka', 'Czas w milisekundach'])
 
 
-main_page_times('main-page-times.csv')
+#handle_history_times('history-times.csv')
+#handle_data_service_metrics('data-service-metrics.csv')
