@@ -841,9 +841,7 @@
       ],
       "webOrigins": [
         "https://frontend:80",
-        "http://frontend:80",
-        "https://frontend",
-        "http://frontend"
+        "http://frontend:80"
       ],
       "notBefore": 0,
       "bearerOnly": false,
