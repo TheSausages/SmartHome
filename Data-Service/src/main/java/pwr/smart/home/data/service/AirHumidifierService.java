@@ -18,15 +18,13 @@ public class AirHumidifierService {
     @Autowired
     private MeasurementRepository measurementRepository;
     @Autowired
+    private MeasurementService measurementService;
+    @Autowired
     private SensorRepository sensorRepository;
 
     public void addAirHumidifierMeasurements(AirHumidifierData airHumidifierData) {
         Optional<Sensor> sensor = sensorRepository.findBySerialNumber(airHumidifierData.getSerialNumber());
-        if (sensor.isPresent()) {
-            List<Measurement> measurementList = new ArrayList<>();
-            measurementList.add(new Measurement(MeasurementType.HUMIDITY, airHumidifierData.getHumidity(), sensor.get().getId(), airHumidifierData.getTimestamp()));
-            measurementRepository.saveAll(measurementList);
-        }
+        sensor.ifPresent(value -> measurementService.saveMeasurement(new Measurement(MeasurementType.HUMIDITY, airHumidifierData.getHumidity(), value.getId(), airHumidifierData.getTimestamp())));
     }
 
     public Measurement getLastAirHumidifierMeasurement(String sensorSerialNumber) {

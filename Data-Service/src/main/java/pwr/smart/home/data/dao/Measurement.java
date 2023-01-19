@@ -1,6 +1,7 @@
 package pwr.smart.home.data.dao;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,8 +10,7 @@ import pwr.smart.home.common.model.enums.MeasurementType;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
 public class Measurement {

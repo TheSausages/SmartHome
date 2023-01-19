@@ -16,12 +16,14 @@ public class AirConditionerService {
     @Autowired
     private MeasurementRepository measurementRepository;
     @Autowired
+    private MeasurementService measurementService;
+    @Autowired
     private SensorRepository sensorRepository;
 
     public void addAirConditionerMeasurements(AirConditionerData airConditionerData) {
         Optional<Sensor> sensor = sensorRepository.findBySerialNumber(airConditionerData.getSerialNumber());
         sensor.ifPresent(value ->
-                measurementRepository.save(
+                measurementService.saveMeasurement(
                         new Measurement(
                                 MeasurementType.CELSIUS,
                                 airConditionerData.getTemperature(),
