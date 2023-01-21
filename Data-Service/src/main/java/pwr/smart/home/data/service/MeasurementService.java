@@ -6,28 +6,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MessageConverter;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pwr.smart.home.data.dao.Measurement;
 import pwr.smart.home.data.dao.Sensor;
 import pwr.smart.home.common.model.enums.SensorType;
+import pwr.smart.home.data.repository.AggregatedMeasurementRepository;
 import pwr.smart.home.data.repository.MeasurementRepository;
 import pwr.smart.home.data.repository.SensorRepository;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Queue;
-import javax.jms.QueueBrowser;
 
 @Service
 public class MeasurementService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementService.class);
+    private final long SEVEN_DAYS_IN_MILLISECONDS = 604_800_000;
 
     @Autowired
     private MeasurementRepository measurementRepository;
+
+    @Autowired
+    private AggregatedMeasurementRepository aggregatedMeasurementRepository;
 
     @Autowired
     private SensorRepository sensorRepository;
@@ -59,7 +63,12 @@ public class MeasurementService {
     public List<Measurement> getMeasurementsBetweenDates(String sensorSerialNumber, Timestamp from, Timestamp to) {
         Optional<Sensor> sensor = sensorRepository.findBySerialNumber(sensorSerialNumber);
         if (sensor.isPresent()) {
-            return measurementRepository.findAllBySensorIdAndCreatedAtIsBetween(sensor.get().getId(), from, to);
+            if (to.getTime() - from.getTime() < SEVEN_DAYS_IN_MILLISECONDS) {
+                return measurementRepository.findAllBySensorIdAndCreatedAtIsBetween(sensor.get().getId(), from, to);
+            } else {
+                return aggregatedMeasurementRepository.findAllBySensorIdAndCreatedAtIsBetween(sensor.get().getId(), from, to)
+                        .stream().map(Measurement::fromAggregated).collect(Collectors.toList());
+            }
         }
         return new ArrayList<>();
     }
