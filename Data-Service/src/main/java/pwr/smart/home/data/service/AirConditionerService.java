@@ -6,6 +6,7 @@ import pwr.smart.home.data.dao.Measurement;
 import pwr.smart.home.data.dao.Sensor;
 import pwr.smart.home.data.model.AirConditionerData;
 import pwr.smart.home.common.model.enums.MeasurementType;
+import pwr.smart.home.data.model.MeasurementQueue;
 import pwr.smart.home.data.repository.MeasurementRepository;
 import pwr.smart.home.data.repository.SensorRepository;
 
@@ -21,15 +22,12 @@ public class AirConditionerService {
     private SensorRepository sensorRepository;
 
     public void addAirConditionerMeasurements(AirConditionerData airConditionerData) {
-        Optional<Sensor> sensor = sensorRepository.findBySerialNumber(airConditionerData.getSerialNumber());
-        sensor.ifPresent(value ->
-                measurementService.saveMeasurement(
-                        new Measurement(
-                                MeasurementType.CELSIUS,
-                                airConditionerData.getTemperature(),
-                                value.getId(),
-                                airConditionerData.getTimestamp()
-                        )
+        measurementService.saveMeasurement(
+                new MeasurementQueue(
+                        airConditionerData.getSerialNumber(),
+                        MeasurementType.CELSIUS,
+                        airConditionerData.getTemperature(),
+                        airConditionerData.getTimestamp()
                 )
         );
     }

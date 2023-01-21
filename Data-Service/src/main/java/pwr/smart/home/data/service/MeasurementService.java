@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import pwr.smart.home.data.dao.Measurement;
 import pwr.smart.home.data.dao.Sensor;
 import pwr.smart.home.common.model.enums.SensorType;
+import pwr.smart.home.data.model.MeasurementQueue;
 import pwr.smart.home.data.repository.AggregatedMeasurementRepository;
 import pwr.smart.home.data.repository.MeasurementRepository;
 import pwr.smart.home.data.repository.SensorRepository;
@@ -73,7 +74,7 @@ public class MeasurementService {
         return new ArrayList<>();
     }
 
-    public void saveMeasurement(Measurement measurement) {
+    public void saveMeasurement(MeasurementQueue measurement) {
         // Send it to the queue
         jmsTemplate.convertAndSend(queue, measurement);
     }
@@ -83,17 +84,17 @@ public class MeasurementService {
      */
     @Scheduled(cron = "*/30 * * * * *")
     public void saveToDatabase() {
-        LOGGER.info("Scheduled job started");
+        LOGGER.info("Measurement queue saving started");
 
-        List<Measurement> measurements = jmsTemplate.execute(session -> {
+        List<MeasurementQueue> measurements = jmsTemplate.execute(session -> {
             Enumeration<?> enumeration = session.createBrowser(queue).getEnumeration();
             LOGGER.info("Nr. of messages: " + Collections.list(enumeration).size());
 
             try (final MessageConsumer consumer = session.createConsumer(queue)) {
-                List<Measurement> messages = new ArrayList<>();
+                List<MeasurementQueue> messages = new ArrayList<>();
                 Message message;
                 while ((message = consumer.receiveNoWait()) != null) {
-                    messages.add((Measurement) messageConverter.fromMessage(message));
+                    messages.add((MeasurementQueue) messageConverter.fromMessage(message));
                 }
 
                 return messages;
@@ -103,23 +104,29 @@ public class MeasurementService {
             }
         }, true);
 
-//        List<Measurement> measurements = jmsTemplate.execute(session -> {
-//            List<Measurement> messages = new ArrayList<>();
-//            QueueBrowser browser = session.createBrowser(queue);
-//            Enumeration<?> messagesInQueue = browser.getEnumeration();
-//
-//            LOGGER.info("Nr. of messages: " + Collections.list(messagesInQueue).size());
-//            while(messagesInQueue.hasMoreElements()) {
-//                LOGGER.info("Message read");
-//                messages.add((Measurement) messageConverter.fromMessage((Message) messagesInQueue.nextElement()));
-//            }
-//
-//            return messages;
-//        }, true);
-
         if (Objects.nonNull(measurements) && !measurements.isEmpty()) {
             LOGGER.info("Saving " + measurements.size() + " elements");
-            measurementRepository.saveAll(measurements);
+            List<String> uniqueSensors = measurements.stream().map(MeasurementQueue::getSerialNumber).distinct().collect(Collectors.toList());
+
+            Map<String, Long> map = sensorRepository
+                    .findAllBySerialNumberIn(uniqueSensors)
+                    .stream()
+                    .collect(Collectors.toMap(Sensor::getSerialNumber, Sensor::getId));
+
+            measurementRepository.saveAll(
+                    measurements
+                            .stream()
+                            .map(measurementQueue ->
+                                    new Measurement(
+                                            measurementQueue.getType(),
+                                            measurementQueue.getValue(),
+                                            map.get(measurementQueue.getSerialNumber()),
+                                            measurementQueue.getCreatedAt()
+                                    ))
+                            .collect(Collectors.toList())
+            );
+        } else {
+            LOGGER.info("No elements saved");
         }
     }
 }

@@ -37,7 +37,7 @@ public class MeasurementAggregationJob {
     // @Scheduled(cron = "* * 3 * * *")
     @Scheduled(cron = "*/50 * * * * *")
     public void addAggregationData() {
-        LOGGER.info("Add aggregation data");
+        LOGGER.info("Data Aggregation Started");
 
         // Get last aggregated one, so the date will  be the starting point for aggregation
         Optional<Measurement_Aggregated> lastAggregated = aggregatedMeasurementRepository.findTopByOrderByCreatedAtDesc();
@@ -54,6 +54,12 @@ public class MeasurementAggregationJob {
             if (firstMeasurement.isEmpty()) return;
 
             startingDate = firstMeasurement.get().getCreatedAt();
+        }
+
+        // If the whole day is not yet finished, just skip
+        if (startingDate.toLocalDateTime().toLocalDate().isEqual(LocalDate.now()) || startingDate.toLocalDateTime().toLocalDate().isAfter(LocalDate.now())) {
+            LOGGER.info("Day is not yet finished - could not aggregate data");
+            return;
         }
 
         // Group the measurement by the sensor
@@ -83,9 +89,8 @@ public class MeasurementAggregationJob {
                 .map(integerListMap -> integerListMap
                         .entrySet()
                         .stream()
-                        // Only use the itervals, where measurements exist
+                        // Only use the intervals, where measurements exist
                         .filter(pair -> !pair.getValue().isEmpty())
-//                        .collect(Collectors.groupingBy(entry -> entry.getKey()))
                         .map(pair -> {
                             // Get one measurement for information
                             Measurement exampleMs = pair.getValue().get(0);
@@ -103,12 +108,14 @@ public class MeasurementAggregationJob {
                             return new Measurement_Aggregated(exampleMs.getType(), meanValue.getAsDouble(), exampleMs.getSensorId(), time);
                         })
                         .collect(toList()))
-                // Flatmap the list of lists (each sensor had a list of max 4 elemements) into a single list (get rid of the sensorId index)
+                // Flatmap the list of lists (each sensor had a list of max 4 elements) into a single list (get rid of the sensorId index)
                 .flatMap(List::stream)
                 .collect(toList());
 
         // save the aggregations
         aggregatedMeasurementRepository.saveAll(agg);
+
+        LOGGER.info("Data Aggregation Finished");
     }
 
     private Timestamp mapIntervalToTimestamp(int interval, Timestamp timestamp) {

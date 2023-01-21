@@ -6,6 +6,7 @@ import pwr.smart.home.data.dao.Measurement;
 import pwr.smart.home.data.dao.Sensor;
 import pwr.smart.home.data.model.AirFilterData;
 import pwr.smart.home.common.model.enums.MeasurementType;
+import pwr.smart.home.data.model.MeasurementQueue;
 import pwr.smart.home.data.repository.MeasurementRepository;
 import pwr.smart.home.data.repository.SensorRepository;
 
@@ -23,12 +24,9 @@ public class AirFilterService {
     private SensorRepository sensorRepository;
 
     public void addAirFilterMeasurements(AirFilterData airFilterData) {
-        Optional<Sensor> sensor = sensorRepository.findBySerialNumber(airFilterData.getSerialNumber());
-        if (sensor.isPresent()) {
-            measurementService.saveMeasurement(new Measurement(MeasurementType.IAI, airFilterData.getIAI(), sensor.get().getId(), airFilterData.getTimestamp()));
-            measurementService.saveMeasurement(new Measurement(MeasurementType.PM25, airFilterData.getPM25(), sensor.get().getId(), airFilterData.getTimestamp()));
-            measurementService.saveMeasurement(new Measurement(MeasurementType.GAS, airFilterData.getGas(), sensor.get().getId(), airFilterData.getTimestamp()));
-        }
+        measurementService.saveMeasurement(new MeasurementQueue(airFilterData.getSerialNumber(), MeasurementType.IAI, airFilterData.getIAI(), airFilterData.getTimestamp()));
+        measurementService.saveMeasurement(new MeasurementQueue(airFilterData.getSerialNumber(), MeasurementType.PM25, airFilterData.getPM25(), airFilterData.getTimestamp()));
+        measurementService.saveMeasurement(new MeasurementQueue(airFilterData.getSerialNumber(), MeasurementType.GAS, airFilterData.getGas(), airFilterData.getTimestamp()));
     }
 
     public List<Measurement> getLastAirFilterMeasurements(String sensorSerialNumber) {
