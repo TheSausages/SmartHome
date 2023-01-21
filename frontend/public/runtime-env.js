@@ -1,0 +1,1 @@
+window.__RUNTIME_CONFIG__ = {"NODE_ENV":"development","REACT_APP_KEYCLOAK_URL":"http://localhost:8180","REACT_APP_FRONTEND_URL":"http://localhost:3000","DATA_API_PATH":"http://localhost:8081/api/data","CONTROL_API_PATH":"http://localhost:8080/api/control"};

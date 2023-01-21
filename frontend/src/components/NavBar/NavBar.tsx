@@ -24,7 +24,7 @@ export default function NavBar(props: NavbarProps) {
             <StyledDiv>
                 <div>
                     <IconButton component={NavLink} to="/">
-                        <img src="logo.svg" alt="logo"/>
+                    <img src="css_sprites.webp" style={{height: '48px', width: '48px', objectFit: "none", objectPosition: "-10px -230px"}}/>
                     </IconButton>
                     <Button color="inherit" component={NavLink} id="home" to="/">Dom</Button>
                     <Button color="inherit" component={NavLink} id="history" to={history_path}>Historia odczytów</Button>
