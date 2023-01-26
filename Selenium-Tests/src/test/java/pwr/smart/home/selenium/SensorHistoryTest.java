@@ -48,12 +48,13 @@ public class SensorHistoryTest extends BaseSeleniumTest {
         var timings = Stream
                 .of(
                         LocalDate.of(2023, 1, 30),
-                        LocalDate.of(2023, 1, 25),
-                        LocalDate.of(2023, 1, 20),
                         LocalDate.of(2023, 1, 15),
-                        LocalDate.of(2023, 1, 10),
-                        LocalDate.of(2023, 1, 5),
-                        LocalDate.of(2023, 1, 1)
+                        LocalDate.of(2022, 12, 31),
+                        LocalDate.of(2022, 12, 15),
+                        LocalDate.of(2022, 11, 30),
+                        LocalDate.of(2022, 11, 15),
+                        LocalDate.of(2022, 10, 31),
+                        LocalDate.of(2022, 10, 15)
                 )
                 .collect(Collectors.toMap(fromDate -> fromDate, this::getSensorHistoryForDuration));
 

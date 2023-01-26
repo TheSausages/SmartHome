@@ -353,7 +353,7 @@ export default function Home(props: HomeProps) {
             </Grid>
             <Grid item xs={6} sx={{marginLeft: '30px', minWidth: '500px'}}>
                 <Box sx={{ marginLeft: '10px', marginRight: '10px'}}>
-                    <img src="home.jpg" style={{height: '200px', width: '100%', borderRadius:'10px'}}/>
+                    <img src="css_sprites.webp" style={{height: '200px', width: '712px', borderRadius:'10px', objectFit: "none", objectPosition: "-10px -10px"}}/>
                 </Box>
                 <TableContainer component={Paper} sx={{marginTop: '30px', borderRadius:'10px'}}>
                 <Table sx={{minWidth: 250}} aria-label='simple table'>

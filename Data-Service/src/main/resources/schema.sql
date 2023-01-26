@@ -47,6 +47,16 @@ CREATE TABLE MEASUREMENT (
     FOREIGN KEY (sensor_id) REFERENCES SENSOR(ID)
 );
 
+DROP TABLE IF EXISTS MEASUREMENT_AGGREGATED CASCADE;
+CREATE TABLE MEASUREMENT_AGGREGATED (
+                             id   SERIAL PRIMARY KEY,
+                             type varchar(128) NOT NULL,
+                             value float NOT NULL,
+                             created_at TIMESTAMP,
+                             sensor_id INT,
+                             FOREIGN KEY (sensor_id) REFERENCES SENSOR(ID)
+);
+
 DROP TYPE IF EXISTS DEVICE_TYPE CASCADE;
 CREATE TYPE DEVICE_TYPE AS ENUM ('AIR_FILTER', 'AIR_CONDITIONER', 'AIR_HUMIDIFIER');
 DROP TABLE IF EXISTS FUNCTIONAL_DEVICE CASCADE;

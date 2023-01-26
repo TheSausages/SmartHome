@@ -840,8 +840,8 @@
         "https://frontend:80/*"
       ],
       "webOrigins": [
-        "https://frontend:80",
-        "http://frontend:80"
+        "https://frontend",
+        "http://frontend"
       ],
       "notBefore": 0,
       "bearerOnly": false,

@@ -34,6 +34,9 @@ public class PreloadService {
                     if (record[0].charAt(0) != '2') record[0] = record[0].substring(1);
 
                     Timestamp timestamp = Timestamp.valueOf(ZonedDateTime.parse(record[0], DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSz")).toLocalDateTime());
+
+                    if (timestamp.before(Timestamp.valueOf(LocalDateTime.of(2023, 1, 1, 0, 0, 0)))) continue;
+
                     float temperatureValue = Float.parseFloat(record[1]);
                     int humidityValue = Integer.parseInt(record[2]);
                     int pm25Value = Integer.parseInt(record[3]);

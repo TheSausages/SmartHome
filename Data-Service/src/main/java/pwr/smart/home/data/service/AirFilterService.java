@@ -6,6 +6,7 @@ import pwr.smart.home.data.dao.Measurement;
 import pwr.smart.home.data.dao.Sensor;
 import pwr.smart.home.data.model.AirFilterData;
 import pwr.smart.home.common.model.enums.MeasurementType;
+import pwr.smart.home.data.model.MeasurementQueue;
 import pwr.smart.home.data.repository.MeasurementRepository;
 import pwr.smart.home.data.repository.SensorRepository;
 
@@ -18,17 +19,14 @@ public class AirFilterService {
     @Autowired
     private MeasurementRepository measurementRepository;
     @Autowired
+    private MeasurementService measurementService;
+    @Autowired
     private SensorRepository sensorRepository;
 
     public void addAirFilterMeasurements(AirFilterData airFilterData) {
-        Optional<Sensor> sensor = sensorRepository.findBySerialNumber(airFilterData.getSerialNumber());
-        if (sensor.isPresent()) {
-            List<Measurement> measurementList = new ArrayList<>();
-            measurementList.add(new Measurement(MeasurementType.IAI, airFilterData.getIAI(), sensor.get().getId(), airFilterData.getTimestamp()));
-            measurementList.add(new Measurement(MeasurementType.PM25, airFilterData.getPM25(), sensor.get().getId(), airFilterData.getTimestamp()));
-            measurementList.add(new Measurement(MeasurementType.GAS, airFilterData.getGas(), sensor.get().getId(), airFilterData.getTimestamp()));
-            measurementRepository.saveAll(measurementList);
-        }
+        measurementService.saveMeasurement(new MeasurementQueue(airFilterData.getSerialNumber(), MeasurementType.IAI, airFilterData.getIAI(), airFilterData.getTimestamp()));
+        measurementService.saveMeasurement(new MeasurementQueue(airFilterData.getSerialNumber(), MeasurementType.PM25, airFilterData.getPM25(), airFilterData.getTimestamp()));
+        measurementService.saveMeasurement(new MeasurementQueue(airFilterData.getSerialNumber(), MeasurementType.GAS, airFilterData.getGas(), airFilterData.getTimestamp()));
     }
 
     public List<Measurement> getLastAirFilterMeasurements(String sensorSerialNumber) {

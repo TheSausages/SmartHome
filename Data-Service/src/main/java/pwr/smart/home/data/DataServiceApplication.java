@@ -2,6 +2,7 @@ package pwr.smart.home.data;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.time.YearMonth;
 
 @SpringBootApplication
+@EnableScheduling
 public class DataServiceApplication {
 	public static void main(String[] args) throws IOException {
 //			BufferedWriter writer = new BufferedWriter(new FileWriter("./test.txt", true));
